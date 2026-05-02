@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PT SLMAN | بطاقة ذكية متوافقة مع الجوال</title>
+    <title>PT SLMAN | بطاقة ذكية PWA</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PT SLMAN">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%233b82f6'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-weight='bold' font-family='Arial'%3EPT%3C/text%3E%3C/svg%3E">
+    <link rel="manifest" id="manifestLink">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -20,12 +27,10 @@
             position: relative;
         }
 
-        /* حاوية البطاقة */
         .preview-wrapper {
             border-radius: 48px;
             padding: 8px;
             background: rgba(255,255,255,0.04);
-            backdrop-filter: blur(4px);
             margin-bottom: 20px;
             width: auto;
             max-width: 100%;
@@ -39,15 +44,15 @@
             background: #ffffff;
             border-radius: 40px;
             position: relative;
-            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.2);
-            transition: max-width 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), min-width 0.2s ease;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.4);
+            transition: max-width 0.15s ease;
             contain: layout style;
         }
 
         .art-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 20% 30%, var(--accent-light, rgba(59,130,246,0.12)), transparent 70%);
+            background: radial-gradient(circle at 20% 30%, var(--accent-light, rgba(59,130,246,0.1)), transparent 70%);
             z-index: 0;
             pointer-events: none;
             border-radius: inherit;
@@ -101,203 +106,159 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            border-top: 2px solid rgba(0,0,0,0.05);
-            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 18px;
         }
         .dr-name { font-size: 22px; font-weight: 800; color: #0f172a; }
         .dr-sub { font-size: 13px; font-weight: 700; color: var(--accent, #3b82f6); }
         .logo-icon {
             font-size: 42px; font-weight: 900; color: rgba(0,0,0,0.1);
             width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;
-            border-radius: 24px; background: rgba(0,0,0,0.02);
+            border-radius: 24px;
         }
 
-        /* لوحة التحكم - خوارزمية ذكية تضبط تخطيطها بشكل ديناميكي */
         .smart-panel {
-            background: rgba(18, 25, 45, 0.96);
-            backdrop-filter: blur(24px);
+            background: rgba(18, 25, 45, 0.98);
             border-radius: 48px;
-            padding: var(--panel-padding, 22px);
+            padding: 20px;
             width: 100%;
-            max-width: var(--panel-max-width, 620px);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.5);
+            max-width: 620px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
             margin-top: 20px;
             max-height: 65vh;
             overflow-y: auto;
-            transition: all 0.2s ease;
-            font-size: var(--panel-font-size, 14px);
-        }
-        .smart-panel.hidden {
-            display: none;
-        }
-
-        /* تعديلات داخلية للوحة لتتناسب مع الأبعاد */
-        .smart-panel .slider-label {
-            font-size: calc(var(--panel-font-size, 14px) * 0.93);
-            min-width: calc(var(--panel-label-width, 80px));
-        }
-        .smart-panel .control-section {
-            margin-bottom: calc(var(--panel-padding, 22px) * 0.8);
-        }
-        .smart-panel .color-dot {
-            width: calc(var(--panel-dot-size, 44px));
-            height: calc(var(--panel-dot-size, 44px));
-        }
-        .smart-panel .btn {
-            font-size: calc(var(--panel-font-size, 14px) * 1);
-            padding: calc(var(--panel-padding, 22px) * 0.4) 8px;
-        }
-        .smart-panel .slider-group {
-            padding: calc(var(--panel-padding, 22px) * 0.25) 12px;
-        }
-
-        /* زر إظهار/إخفاء اللوحة */
-        .toggle-panel-btn {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(12px);
-            border-radius: 60px;
-            padding: 8px 20px;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 700;
+            transition: all 0.15s ease;
             font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            transition: 0.1s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            -webkit-overflow-scrolling: touch;
         }
-        .toggle-panel-btn:active { transform: scale(0.97); }
+        .smart-panel.hidden { display: none; }
 
-        .control-section {
-            margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 18px;
-        }
-        .section-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-            font-weight: 800;
-            color: #e2e8f0;
-            margin-bottom: 14px;
-        }
-        .color-grid {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .color-grid { display: flex; gap: 10px; flex-wrap: wrap; }
         .color-dot {
-            width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
-            border: 2px solid rgba(255,255,255,0.9);
-            transition: transform 0.1s;
-            box-shadow: 0 2px 6px black;
+            width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.8);
+            transition: transform 0.08s;
         }
         .color-dot:active { transform: scale(0.94); }
-
         .slider-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
-            background: rgba(0,0,0,0.35);
-            padding: 6px 14px;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
             border-radius: 60px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .slider-label {
-            font-size: 13px; font-weight: 600; color: #cbd5e1; min-width: 80px;
+            font-size: 12px; font-weight: 600; color: #cbd5e1; min-width: 75px;
         }
         input[type="range"] {
-            flex: 1; height: 4px; -webkit-appearance: none; background: #334155; border-radius: 10px;
+            flex: 1; height: 3px; -webkit-appearance: none; background: #334155; border-radius: 10px;
         }
         input[type="range"]::-webkit-slider-thumb {
-            width: 18px; height: 18px; border-radius: 50%;
+            width: 16px; height: 16px; border-radius: 50%;
             background: var(--accent, #3b82f6); cursor: pointer; border: none;
         }
         .value-display {
-            color: white; width: 40px; text-align: center; font-weight: 600; font-size: 13px;
+            color: white; width: 36px; text-align: center; font-weight: 600; font-size: 12px;
         }
         .font-select, .bullet-select {
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 40px; padding: 6px 14px; color: white;
-            font-family: 'Cairo', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer;
+            border-radius: 40px; padding: 5px 12px; color: white; font-size: 12px; cursor: pointer;
         }
         .ai-tools {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .ai-btn {
             flex: 1;
             background: rgba(168, 85, 247, 0.2);
             border: 1px solid rgba(168, 85, 247, 0.5);
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 40px;
-            font-family: 'Cairo', sans-serif;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
             color: #e2e8f0;
-            transition: 0.1s;
         }
-        .ai-btn:active { transform: scale(0.96); background: rgba(168,85,247,0.4); }
+        .ai-btn:active { transform: scale(0.96); }
         .word-counter {
             background: rgba(0,0,0,0.4);
             border-radius: 60px;
-            padding: 8px 16px;
+            padding: 6px 14px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
             color: #a5f3fc;
             font-weight: 600;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .action-group {
             display: flex;
-            gap: 12px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-top: 12px;
         }
         .btn {
-            flex: 1; padding: 12px; border: none; border-radius: 60px;
-            font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 14px;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            cursor: pointer; transition: transform 0.1s;
+            flex: 1; padding: 10px; border: none; border-radius: 60px;
+            font-weight: 800; font-size: 13px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+            cursor: pointer;
             background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);
         }
         .btn-primary {
             background: var(--accent, #3b82f6); border: none;
-            box-shadow: 0 6px 14px -4px rgba(59,130,246,0.4);
+            box-shadow: 0 4px 10px -3px rgba(59,130,246,0.4);
         }
-        .btn-primary:active, .btn-outline:active { transform: scale(0.97); }
+        .btn:active, .ai-btn:active { transform: scale(0.96); }
         [contenteditable="true"] {
-            outline: none; border-radius: 10px; padding: 2px 4px; margin: -2px -4px;
+            outline: none; border-radius: 8px; padding: 2px 4px; margin: -2px -4px;
         }
         [contenteditable="true"]:focus {
-            background: rgba(59,130,246,0.08); box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+            background: rgba(59,130,246,0.08);
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
         }
-        @media (max-width: 550px) {
-            .content-wrap { padding: 24px 18px 20px; gap: 16px; }
-            .title { font-size: 26px; }
-            .body-text { font-size: 15px; }
-            .dr-name { font-size: 18px; }
-            .dr-sub { font-size: 11px; }
-            .logo-icon { width: 44px; height: 44px; font-size: 32px; }
-            .color-dot { width: 38px; height: 38px; }
+        .toggle-panel-btn, .install-btn {
+            background: rgba(255,255,255,0.1);
+            border-radius: 60px;
+            padding: 8px 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .install-btn { background: rgba(59,130,246,0.3); border-color: #3b82f6; }
+        .button-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
         .dynamic-toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #0f172ae6; backdrop-filter: blur(16px); color: white;
-            padding: 8px 20px; border-radius: 60px; font-size: 13px; z-index: 10000;
-            font-family: 'Cairo', sans-serif; white-space: nowrap; pointer-events: none;
+            background: #0f172aee; color: white;
+            padding: 6px 18px; border-radius: 60px; font-size: 12px; z-index: 10000;
+            white-space: nowrap; pointer-events: none;
+        }
+        @media (max-width: 550px) {
+            .content-wrap { padding: 22px 18px 18px; gap: 14px; }
+            .title { font-size: 24px; }
+            .body-text { font-size: 14px; }
+            .dr-name { font-size: 17px; }
+            .logo-icon { width: 44px; height: 44px; font-size: 32px; }
+            .color-dot { width: 36px; height: 36px; }
+            .slider-label { min-width: 65px; }
         }
     </style>
 </head>
@@ -326,14 +287,14 @@
     </div>
 </div>
 
-<!-- زر إظهار/إخفاء اللوحة -->
-<div style="display: flex; justify-content: center; margin-top: 5px;">
-    <div class="toggle-panel-btn" id="togglePanelBtn">🔽 إخفاء لوحة التحكم</div>
+<div class="button-bar">
+    <div class="toggle-panel-btn" id="togglePanelBtn">🔽 إخفاء اللوحة</div>
+    <div class="install-btn" id="installPwaBtn" style="display: none;">📲 تثبيت التطبيق (PWA)</div>
 </div>
 
 <div class="smart-panel" id="smartPanel">
     <div class="control-section">
-        <div class="section-label">🎨 الألوان</div>
+        <div class="section-label" style="display:flex; gap:8px; margin-bottom:12px;">🎨 الألوان</div>
         <div class="color-grid">
             <div class="color-dot" style="background:#3b82f6" data-color="#3b82f6"></div>
             <div class="color-dot" style="background:#ef4444" data-color="#ef4444"></div>
@@ -346,7 +307,7 @@
     </div>
 
     <div class="control-section">
-        <div class="section-label">📐 أبعاد البطاقة (تلقائية بالذكاء)</div>
+        <div class="section-label" style="margin-bottom:12px;">📐 أبعاد البطاقة</div>
         <div class="slider-group">
             <span class="slider-label">العرض الأقصى (vw)</span>
             <input type="range" id="cardMaxWidth" min="60" max="98" value="95" step="1">
@@ -360,7 +321,7 @@
     </div>
 
     <div class="control-section">
-        <div class="section-label">✍️ النصوص</div>
+        <div class="section-label" style="margin-bottom:12px;">✍️ النصوص</div>
         <div class="slider-group">
             <span class="slider-label">حجم العنوان</span>
             <input type="range" id="titleSize" min="20" max="48" value="34" step="1">
@@ -397,9 +358,9 @@
     </div>
 
     <div class="control-section">
-        <div class="section-label">🧠 أدوات الذكاء</div>
+        <div class="section-label" style="margin-bottom:12px;">🧠 أدوات الذكاء</div>
         <div class="ai-tools">
-            <div class="ai-btn" id="autoFitBtn">📏 ضبط تلقائي ذكي للعرض</div>
+            <div class="ai-btn" id="autoFitBtn">📏 ضبط ذكي للعرض</div>
             <div class="ai-btn" id="aiEnhanceBtn">✨ تحسين النص بالذكاء</div>
         </div>
         <div class="word-counter" id="wordCounter">عدد الكلمات: 0</div>
@@ -409,15 +370,13 @@
         <button class="btn btn-primary" id="saveImageBtn">📸 حفظ كصورة PNG</button>
         <button class="btn btn-outline" id="resetTextBtn">⟳ إعادة ضبط الكل</button>
     </div>
-    <div style="margin-top: 12px; text-align: center; font-size: 11px; color: #94a3b8;">
-        💡 النص قابل للتعديل المباشر
-    </div>
+    <div style="margin-top: 10px; text-align: center; font-size: 11px; color: #94a3b8;">💡 النص قابل للتعديل المباشر</div>
 </div>
 
 <script>
     (function(){
-        // === دوال مساعدة ===
-        function showToast(msg, duration=2500){
+        // Toast
+        function showToast(msg, duration=2000){
             let toast = document.querySelector('.dynamic-toast');
             if(!toast){
                 toast = document.createElement('div');
@@ -429,6 +388,7 @@
             setTimeout(()=> toast.style.display = 'none', duration);
         }
 
+        // Word counter
         function updateWordCount(){
             const bodyText = document.querySelector('.body-text').innerText;
             const words = bodyText.trim().split(/\s+/).filter(w => w.length > 0);
@@ -436,11 +396,12 @@
             document.getElementById('wordCounter').innerHTML = `📝 عدد الكلمات: ${count} | ~${Math.ceil(count/50)} دقيقة قراءة`;
         }
 
+        // Theme
         function applyTheme(color){
             document.documentElement.style.setProperty('--accent', color);
-            document.documentElement.style.setProperty('--accent-light', `${color}30`);
+            document.documentElement.style.setProperty('--accent-light', `${color}20`);
             const artBg = document.querySelector('.art-bg');
-            if(artBg) artBg.style.background = `radial-gradient(circle at 20% 30%, ${color}20, transparent 70%)`;
+            if(artBg) artBg.style.background = `radial-gradient(circle at 20% 30%, ${color}15, transparent 70%)`;
             const titleElem = document.querySelector('.title');
             if(titleElem) titleElem.style.color = color;
             if(titleElem) titleElem.style.borderRightColor = color;
@@ -452,123 +413,34 @@
             document.querySelector('.body-text').style.setProperty('--bullet', `"${document.getElementById('bulletSelect').value}"`);
         }
 
-        // === خوارزمية ذكية لضبط تخطيط لوحة التحكم بناءً على أبعاد البطاقة وحجم الشاشة ===
-        function aiAdjustPanelLayout() {
-            const panel = document.querySelector('.smart-panel');
-            if (!panel) return;
-            // الحصول على عرض البطاقة الفعلي أو العرض الأقصى المحدد
-            const cardMaxWidth = getComputedStyle(document.getElementById('export-area')).maxWidth;
-            let cardWidthValue = parseFloat(cardMaxWidth);
-            if (isNaN(cardWidthValue)) cardWidthValue = 95;
-            
-            // عرض الشاشة الفعلي للجوال
-            const screenWidth = window.innerWidth;
-            
-            // خوارزمية ذكية: اختيار أفضل الإعدادات للوحة التحكم تبعاً لعرض الشاشة وعرض البطاقة
-            let optimalPanelMaxWidth = 620; // بكسل
-            let panelPadding = 22;
-            let panelFontSize = 14;
-            let panelLabelWidth = 80;
-            let panelDotSize = 44;
-            
-            if (screenWidth < 550) {
-                // جوال صغير
-                optimalPanelMaxWidth = Math.min(screenWidth - 20, 500);
-                panelPadding = 14;
-                panelFontSize = 12;
-                panelLabelWidth = 65;
-                panelDotSize = 36;
-            } else if (screenWidth < 700) {
-                optimalPanelMaxWidth = Math.min(screenWidth - 30, 560);
-                panelPadding = 18;
-                panelFontSize = 13;
-                panelLabelWidth = 72;
-                panelDotSize = 40;
-            } else {
-                // شاشات أكبر
-                optimalPanelMaxWidth = 620;
-                panelPadding = 22;
-                panelFontSize = 14;
-                panelLabelWidth = 80;
-                panelDotSize = 44;
-            }
-            
-            // إذا كان عرض البطاقة المحدد أقل من 70vw ، نقوم بتقليل حجم اللوحة قليلاً لتحسين التماسك
-            if (cardWidthValue < 75 && screenWidth < 600) {
-                optimalPanelMaxWidth = Math.min(optimalPanelMaxWidth, screenWidth - 15);
-                panelPadding = Math.max(10, panelPadding - 4);
-                panelFontSize = Math.max(11, panelFontSize - 1);
-            }
-            
-            // تطبيق المتغيرات على اللوحة
-            panel.style.setProperty('--panel-max-width', optimalPanelMaxWidth + 'px');
-            panel.style.setProperty('--panel-padding', panelPadding + 'px');
-            panel.style.setProperty('--panel-font-size', panelFontSize + 'px');
-            panel.style.setProperty('--panel-label-width', panelLabelWidth + 'px');
-            panel.style.setProperty('--panel-dot-size', panelDotSize + 'px');
-            
-            // تحديث مباشر لبعض العناصر الحرجة لضمان المطابقة
-            const sliderGroups = panel.querySelectorAll('.slider-group');
-            sliderGroups.forEach(group => {
-                group.style.padding = `calc(${panelPadding}px * 0.25) 12px`;
-            });
-            const btns = panel.querySelectorAll('.btn');
-            btns.forEach(btn => {
-                btn.style.fontSize = panelFontSize + 'px';
-                btn.style.padding = `calc(${panelPadding}px * 0.4) 8px`;
-            });
-            const allLabels = panel.querySelectorAll('.slider-label');
-            allLabels.forEach(label => {
-                label.style.fontSize = (panelFontSize * 0.93) + 'px';
-                label.style.minWidth = panelLabelWidth + 'px';
-            });
-        }
-
-        // === خوارزمية ذكاء اصطناعي لتحديد العرض الأمثل للبطاقة ===
+        // AI optimal width
         function aiOptimalWidth() {
-            const bodyElement = document.querySelector('.body-text');
-            const titleElement = document.querySelector('.title');
-            const text = bodyElement.innerText;
-            const titleText = titleElement.innerText;
-            const lines = text.split(/\n/);
+            const bodyText = document.querySelector('.body-text').innerText;
+            const titleText = document.querySelector('.title').innerText;
+            const lines = bodyText.split(/\n/);
             let maxLineLength = 0;
-            for(let line of lines){
-                if(line.length > maxLineLength) maxLineLength = line.length;
-            }
-            const wordCount = text.split(/\s+/).filter(w=>w.length>0).length;
+            for(let line of lines) if(line.length > maxLineLength) maxLineLength = line.length;
+            const wordCount = bodyText.split(/\s+/).filter(w=>w.length>0).length;
             let baseWidth = 70;
             if(maxLineLength > 80) baseWidth = 90;
             else if(maxLineLength > 50) baseWidth = 85;
             else if(maxLineLength > 30) baseWidth = 78;
             else baseWidth = 72;
-            
             if(wordCount > 150) baseWidth = Math.min(baseWidth + 8, 98);
             else if(wordCount > 80) baseWidth = Math.min(baseWidth + 4, 96);
-            
             if(titleText.length > 40) baseWidth += 3;
-            
-            const finalWidth = Math.min(98, Math.max(70, baseWidth));
-            return finalWidth;
+            return Math.min(98, Math.max(70, baseWidth));
         }
 
-        // ضبط العرض تلقائياً باستخدام الذكاء
-        async function autoFitWidthAI() {
+        function autoFitWidthAI(){
             const optimal = aiOptimalWidth();
             document.getElementById('cardMaxWidth').value = optimal;
             document.getElementById('maxWidthVal').innerText = optimal + '%';
             document.getElementById('export-area').style.maxWidth = optimal + 'vw';
             document.documentElement.style.setProperty('--ai-card-width', optimal + 'vw');
-            // إعادة ضبط اللوحة بعد تغيير العرض
-            aiAdjustPanelLayout();
-            showToast(`🧠 الذكاء يوصي بعرض ${optimal}% من الشاشة`, 2000);
-            
-            const currentFontSize = parseInt(getComputedStyle(document.querySelector('.body-text')).fontSize);
-            if(optimal < 75 && currentFontSize < 18){
-                showToast("💡 نصيحة ذكية: يمكنك زيادة حجم الخط قليلاً للراحة", 2500);
-            }
+            showToast(`🧠 العرض الأمثل: ${optimal}%`, 1500);
         }
 
-        // تحسين النص بالذكاء
         function aiEnhanceText(){
             let text = document.querySelector('.body-text').innerHTML;
             text = text.replace(/^[•\-*]\s*/gm, '• ');
@@ -582,8 +454,8 @@
             });
             document.querySelector('.body-text').innerHTML = lines.join('<br>');
             updateWordCount();
-            autoFitWidthAI(); // يعيد ضبط العرض بناءً على النص الجديد
-            showToast("✨ تم تحسين النص وإعادة ضبط العرض تلقائياً", 2000);
+            autoFitWidthAI();
+            showToast("✨ تم تحسين النص وتنسيقه", 1500);
         }
 
         function resetToDefault(){
@@ -598,7 +470,6 @@
             document.getElementById('minWidthVal').innerText = '280px';
             document.getElementById('export-area').style.maxWidth = '95vw';
             document.getElementById('export-area').style.minWidth = '280px';
-            document.documentElement.style.setProperty('--card-min-width', '280px');
             document.getElementById('titleSize').value = 34;
             document.getElementById('titleSizeVal').innerText = 34;
             document.getElementById('bodySize').value = 18;
@@ -613,28 +484,18 @@
             document.querySelector('#export-area').style.fontFamily = "'Cairo', sans-serif";
             document.querySelector('.body-text').style.setProperty('--bullet', '"•"');
             updateWordCount();
-            aiAdjustPanelLayout(); // إعادة تكييف اللوحة
-            showToast("✅ إعادة ضبط كامل", 1500);
+            showToast("✅ إعادة ضبط كامل", 1200);
         }
 
-        // تحميل html2canvas
+        let html2canvasLoaded = false;
         function loadHtml2Canvas(){
             return new Promise((resolve)=>{
-                if(window.html2canvas){ resolve(true); return; }
-                const sources = [
-                    "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
-                    "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-                ];
-                let idx = 0;
-                function tryLoad(){
-                    if(idx >= sources.length){ resolve(false); return; }
-                    const script = document.createElement('script');
-                    script.src = sources[idx];
-                    script.onload = ()=>{ if(window.html2canvas) resolve(true); else tryLoad(); };
-                    script.onerror = ()=>{ idx++; tryLoad(); };
-                    document.head.appendChild(script);
-                }
-                tryLoad();
+                if(window.html2canvas){ html2canvasLoaded = true; resolve(true); return; }
+                const script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+                script.onload = () => { html2canvasLoaded = true; resolve(true); };
+                script.onerror = () => resolve(false);
+                document.head.appendChild(script);
             });
         }
 
@@ -642,19 +503,19 @@
             const element = document.getElementById('export-area');
             const btn = document.getElementById('saveImageBtn');
             const originalText = btn.innerHTML;
-            if(!window.html2canvas){
-                showToast("⏳ تحميل مكتبة التصوير...", 1500);
+            if(!html2canvasLoaded && !window.html2canvas){
+                showToast("⏳ تحميل مكتبة التصوير...", 1000);
                 const loaded = await loadHtml2Canvas();
-                if(!loaded){ showToast("❌ فشل التحميل", 3000); return; }
+                if(!loaded){ showToast("❌ فشل التحميل", 2000); return; }
             }
             const editables = document.querySelectorAll('[contenteditable="true"]');
             const oldBg = [];
             editables.forEach(el=>{ oldBg.push(el.style.background); el.style.background = 'transparent'; });
-            btn.innerHTML = "🖼️ جاري التصوير...";
+            btn.innerHTML = "🖼️ جاري...";
             btn.disabled = true;
             try {
                 const canvas = await window.html2canvas(element, {
-                    scale: 2.2,
+                    scale: 2,
                     backgroundColor: '#ffffff',
                     logging: false,
                     useCORS: false,
@@ -665,63 +526,50 @@
                     if(!blob) throw new Error();
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
-                    const ts = new Date().toISOString().slice(0,19).replace(/:/g, '-');
+                    const ts = Date.now();
                     link.download = `pt_slman_${ts}.png`;
                     link.href = url;
                     link.click();
                     URL.revokeObjectURL(url);
-                    btn.innerHTML = "✅ تم الحفظ!";
-                    setTimeout(()=>{ btn.innerHTML = originalText; btn.disabled = false; }, 1500);
-                    showToast("📸 حفظ البطاقة كصورة", 1800);
-                }, 'image/png', 0.96);
+                    btn.innerHTML = "✅ تم!";
+                    setTimeout(()=>{ btn.innerHTML = originalText; btn.disabled = false; }, 1200);
+                    showToast("📸 حفظ البطاقة", 1500);
+                }, 'image/png', 0.92);
             } catch(err){
                 btn.innerHTML = "❌ خطأ";
-                setTimeout(()=>{ btn.innerHTML = originalText; btn.disabled = false; }, 1500);
+                setTimeout(()=>{ btn.innerHTML = originalText; btn.disabled = false; }, 1200);
                 showToast("حدث خطأ، حاول مجدداً", 2000);
             } finally {
                 editables.forEach((el,i)=>{ el.style.background = oldBg[i]; });
             }
         }
 
-        // === ربط العناصر مع تفعيل الخوارزمية الذكية للوحة ===
+        // ربط الأحداث
         document.querySelectorAll('.color-dot').forEach(dot => {
             dot.addEventListener('click', ()=> applyTheme(dot.dataset.color));
         });
-        
-        const maxWidthSlider = document.getElementById('cardMaxWidth');
-        maxWidthSlider.addEventListener('input', (e)=>{
+        document.getElementById('cardMaxWidth').addEventListener('input', (e)=>{
             let val = e.target.value;
             document.getElementById('maxWidthVal').innerText = val + '%';
             document.getElementById('export-area').style.maxWidth = val + 'vw';
             document.documentElement.style.setProperty('--ai-card-width', val + 'vw');
-            aiAdjustPanelLayout(); // تحديث لوحة التحكم فوراً عند تغيير العرض الأقصى
         });
-        
-        const minWidthSlider = document.getElementById('cardMinWidth');
-        minWidthSlider.addEventListener('input', (e)=>{
+        document.getElementById('cardMinWidth').addEventListener('input', (e)=>{
             let val = e.target.value;
             document.getElementById('minWidthVal').innerText = val + 'px';
             document.getElementById('export-area').style.minWidth = val + 'px';
-            document.documentElement.style.setProperty('--card-min-width', val + 'px');
-            aiAdjustPanelLayout(); // تحديث اللوحة عند تغيير العرض الأدنى
         });
-        
-        const titleSlider = document.getElementById('titleSize');
-        titleSlider.addEventListener('input', (e)=>{
+        document.getElementById('titleSize').addEventListener('input', (e)=>{
             let val = e.target.value;
             document.getElementById('titleSizeVal').innerText = val;
             document.querySelector('.title').style.fontSize = val + 'px';
-            document.documentElement.style.setProperty('--title-size', val + 'px');
         });
-        const bodySlider = document.getElementById('bodySize');
-        bodySlider.addEventListener('input', (e)=>{
+        document.getElementById('bodySize').addEventListener('input', (e)=>{
             let val = e.target.value;
             document.getElementById('bodySizeVal').innerText = val;
             document.querySelector('.body-text').style.fontSize = val + 'px';
-            document.documentElement.style.setProperty('--body-size', val + 'px');
         });
-        const lhSlider = document.getElementById('lineHeight');
-        lhSlider.addEventListener('input', (e)=>{
+        document.getElementById('lineHeight').addEventListener('input', (e)=>{
             let val = e.target.value;
             document.getElementById('lineHeightVal').innerText = val;
             document.querySelector('.body-text').style.lineHeight = val;
@@ -734,12 +582,10 @@
         });
         document.getElementById('saveImageBtn').addEventListener('click', generateImage);
         document.getElementById('resetTextBtn').addEventListener('click', resetToDefault);
-        
-        const autoFitBtn = document.getElementById('autoFitBtn');
-        autoFitBtn.addEventListener('click', autoFitWidthAI);
+        document.getElementById('autoFitBtn').addEventListener('click', autoFitWidthAI);
         document.getElementById('aiEnhanceBtn').addEventListener('click', aiEnhanceText);
         
-        // إظهار/إخفاء لوحة التحكم
+        // Toggle panel
         const panel = document.getElementById('smartPanel');
         const toggleBtn = document.getElementById('togglePanelBtn');
         let panelVisible = true;
@@ -747,33 +593,147 @@
             panelVisible = !panelVisible;
             if(panelVisible){
                 panel.classList.remove('hidden');
-                toggleBtn.innerHTML = "🔽 إخفاء لوحة التحكم";
+                toggleBtn.innerHTML = "🔽 إخفاء اللوحة";
             } else {
                 panel.classList.add('hidden');
-                toggleBtn.innerHTML = "🔼 إظهار لوحة التحكم";
+                toggleBtn.innerHTML = "🔼 إظهار اللوحة";
             }
         });
         
-        // تحديث عداد الكلمات عند التحرير
-        const bodyEditable = document.querySelector('.body-text');
-        bodyEditable.addEventListener('input', updateWordCount);
-        const titleEditable = document.querySelector('.title');
-        titleEditable.addEventListener('input', updateWordCount);
+        document.querySelector('.body-text').addEventListener('input', updateWordCount);
+        document.querySelector('.title').addEventListener('input', updateWordCount);
         
-        // مراقبة تغيير حجم الشاشة لتطبيق الذكاء على اللوحة
-        window.addEventListener('resize', () => {
-            aiAdjustPanelLayout();
-        });
-        
-        window.addEventListener('load', async ()=>{
+        // ============= PWA : Service Worker + Manifest + Install Button =============
+        // 1. إنشاء أيقونات متعددة الأحجام باستخدام Canvas (حقيقية وليس اختصار)
+        function generateIcons() {
+            const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+            const icons = [];
+            for (let size of sizes) {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#3b82f6';
+                ctx.fillRect(0, 0, size, size);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${size * 0.48}px 'Cairo'`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('PT', size/2, size/2);
+                const dataURL = canvas.toDataURL('image/png');
+                icons.push({ src: dataURL, sizes: `${size}x${size}`, type: 'image/png' });
+            }
+            return icons;
+        }
+
+        // 2. إنشاء manifest ديناميكي كامل
+        function createManifest() {
+            const icons = generateIcons();
+            const manifestData = {
+                name: "PT SLMAN Pro Studio",
+                short_name: "PT SLMAN",
+                description: "بطاقات احترافية للعلاج الطبيعي مع خوارزميات ذكية",
+                start_url: ".",
+                display: "standalone",
+                theme_color: "#3b82f6",
+                background_color: "#0b1120",
+                orientation: "portrait",
+                icons: icons,
+                categories: ["design", "productivity", "health"],
+                lang: "ar",
+                dir: "rtl"
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: "application/json"});
+            const manifestURL = URL.createObjectURL(manifestBlob);
+            const manifestLink = document.getElementById('manifestLink');
+            manifestLink.href = manifestURL;
+            manifestLink.rel = 'manifest';
+        }
+
+        // 3. Service Worker كامل مع استراتيجية Cache First
+        async function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            const swCode = `
+                const CACHE_NAME = 'pt-slman-v2';
+                const urlsToCache = [
+                    './',
+                    './index.html',
+                    'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@400;500;700;800&display=swap',
+                    'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'
+                ];
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                    );
+                    self.skipWaiting();
+                });
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request).then(response => response || fetch(event.request))
+                    );
+                });
+                self.addEventListener('activate', event => {
+                    event.waitUntil(
+                        caches.keys().then(keys => Promise.all(
+                            keys.map(key => { if (key !== CACHE_NAME) return caches.delete(key); })
+                        ))
+                    );
+                    self.clients.claim();
+                });
+            `;
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            const swUrl = URL.createObjectURL(blob);
+            try {
+                const registration = await navigator.serviceWorker.register(swUrl);
+                console.log('Service Worker registered', registration);
+                setTimeout(() => URL.revokeObjectURL(swUrl), 5000);
+            } catch (err) {
+                console.error('SW registration failed:', err);
+            }
+        }
+
+        // 4. إعداد زر التثبيت (deferredPrompt)
+        let deferredPrompt = null;
+        function setupPwaInstall() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                const installBtn = document.getElementById('installPwaBtn');
+                if (installBtn) installBtn.style.display = 'inline-flex';
+                console.log('beforeinstallprompt fired');
+            });
+            const installBtn = document.getElementById('installPwaBtn');
+            if (installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            showToast('✅ تم تثبيت التطبيق بنجاح', 3000);
+                        } else {
+                            showToast('❌ تم إلغاء التثبيت', 2000);
+                        }
+                        deferredPrompt = null;
+                        installBtn.style.display = 'none';
+                    } else {
+                        showToast('⚠️ استخدم القائمة ⋮ → تثبيت التطبيق', 4000);
+                    }
+                });
+            }
+        }
+
+        // بدء كل شيء عند التحميل
+        window.addEventListener('load', async () => {
+            createManifest();          // إنشاء manifest كامل
+            await registerServiceWorker(); // تسجيل service worker
+            setupPwaInstall();         // تفعيل زر التثبيت
             applyTheme('#3b82f6');
             await loadHtml2Canvas();
             updateWordCount();
-            autoFitWidthAI();   // ضبط عرض البطاقة ذكياً
-            aiAdjustPanelLayout(); // ضبط لوحة التحكم بشكل ذكي
-            showToast("✨ PT SLMAN AI | تناسق ذكي مع شاشة الجوال", 3500);
+            autoFitWidthAI();
+            showToast("✨ PT SLMAN PWA | يمكنك تثبيت التطبيق", 3000);
         });
     })();
 </script>
 </body>
-</html>
+    </html>
