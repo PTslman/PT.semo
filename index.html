@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SP Studio | بطاقة ذكية PWA</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- ========== روابط PWA الأساسية (الجزء المفقود) ========== -->
+    <link rel="manifest" href="/PT.semo/manifest.json">
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SP Studio">
-    
-    <!-- ربط ملفات PWA -->
-    <link rel="manifest" href="/PT.semo/manifest.json">
     <link rel="apple-touch-icon" href="/PT.semo/icons/icon-192.png">
     
     <!-- 8 خطوط عربية -->
@@ -30,96 +28,6 @@
             justify-content: center;
             padding: 20px 12px;
         }
-        
-        /* ===== شاشة الترحيب (Welcome Screen) ===== */
-        .welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at 30% 40%, #0b1120, #020617);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            transition: opacity 0.5s ease;
-        }
-        .welcome-screen.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .welcome-icon {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #1e1b4b, #3b82f6, #4c1d95);
-            border-radius: 32px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .welcome-icon .big-logo {
-            font-size: 52px;
-            font-weight: 900;
-            color: white;
-        }
-        .welcome-icon .small-logo {
-            font-size: 14px;
-            font-weight: bold;
-            color: rgba(255,255,255,0.8);
-            letter-spacing: 2px;
-        }
-        .welcome-title {
-            font-size: 28px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 10px;
-        }
-        .welcome-subtitle {
-            font-size: 14px;
-            color: #a5f3fc;
-            margin-bottom: 40px;
-            max-width: 280px;
-        }
-        .welcome-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .welcome-install-btn {
-            background: linear-gradient(135deg, #1e1b4b, #4c1d95);
-            border: none;
-            color: white;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-        .welcome-install-btn:hover { transform: scale(1.02); }
-        .welcome-skip-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .welcome-skip-btn:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        /* ===== باقي الأنماط (كما هي) ===== */
         .preview-wrapper {
             border-radius: 48px;
             padding: 8px;
@@ -309,12 +217,6 @@
         }
         .word-color-picker .color-option { width: 38px; height: 38px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
         .word-color-picker input[type="color"] { width: 38px; height: 38px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
-        .app-content {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
         @media (max-width: 550px) {
             .content-wrap { padding: 22px 18px; }
             .title { font-size: 24px; }
@@ -326,134 +228,60 @@
 </head>
 <body>
 
-<!-- شاشة الترحيب (تظهر فقط لأول مرة) -->
-<div id="welcomeScreen" class="welcome-screen">
-    <div class="welcome-icon">
-        <div class="big-logo">SP</div>
-        <div class="small-logo">STUDIO</div>
-    </div>
-    <div class="welcome-title">مرحباً بك في SP Studio</div>
-    <div class="welcome-subtitle">قم بتثبيت التطبيق للحصول على تجربة كاملة</div>
-    <div class="welcome-buttons">
-        <button id="welcomeInstallBtn" class="welcome-install-btn">📲 تثبيت التطبيق</button>
-        <button id="welcomeSkipBtn" class="welcome-skip-btn">تخطي والاستخدام كموقع</button>
+<div class="preview-wrapper">
+    <div id="export-area">
+        <div class="art-bg"></div>
+        <div class="watermark-modern">SP STUDIO</div>
+        <div class="content-wrap">
+            <div class="title" contenteditable="true">الوضوح المهني</div>
+            <div class="body-text" contenteditable="true">• الوضوح في التشخيص يختصر الوقت.<br>• الوضوح في النتائج يبني الثقة.<br>• الوضوح في الخطة يضمن الالتزام.<br><br>الوضوح هو مفتاح نجاح أي خطة علاجية ناجحة.</div>
+            <div class="footer"><div><div class="dr-name" contenteditable="true">الإختصاصي سليمان</div><div class="dr-sub" contenteditable="true">أخصائي علاج فيزيائي وإعادة تأهيل</div></div><div class="logo-icon">SP</div></div>
+        </div>
     </div>
 </div>
 
-<!-- محتوى التطبيق الرئيسي (يظهر بعد التثبيت أو بعد الضغط على تخطي) -->
-<div id="appContent" class="app-content" style="display: none;">
-    <div class="preview-wrapper">
-        <div id="export-area">
-            <div class="art-bg"></div>
-            <div class="watermark-modern">SP STUDIO</div>
-            <div class="content-wrap">
-                <div class="title" contenteditable="true">الوضوح المهني</div>
-                <div class="body-text" contenteditable="true">• الوضوح في التشخيص يختصر الوقت.<br>• الوضوح في النتائج يبني الثقة.<br>• الوضوح في الخطة يضمن الالتزام.<br><br>الوضوح هو مفتاح نجاح أي خطة علاجية ناجحة.</div>
-                <div class="footer"><div><div class="dr-name" contenteditable="true">الإختصاصي سليمان</div><div class="dr-sub" contenteditable="true">أخصائي علاج فيزيائي وإعادة تأهيل</div></div><div class="logo-icon">SP</div></div>
-            </div>
-        </div>
-    </div>
+<div class="button-bar">
+    <div class="toggle-panel-btn" id="togglePanelBtn">🔽 إخفاء اللوحة</div>
+    <div class="install-btn" id="installPwaBtn" style="display:none;">📲 تثبيت SP Studio (PWA)</div>
+</div>
 
-    <div class="button-bar">
-        <div class="toggle-panel-btn" id="togglePanelBtn">🔽 إخفاء اللوحة</div>
-        <div class="install-btn" id="installPwaBtn" style="display:none;">📲 تثبيت SP Studio (PWA)</div>
+<div class="smart-panel" id="smartPanel">
+    <div class="control-section"><div class="section-label">🎨 الألوان الأساسية</div><div class="color-grid" id="colorGrid"></div></div>
+    <div class="control-section"><div class="section-label">📐 نسب الأبعاد (للمنصات)</div><div class="aspect-grid" id="aspectGrid"></div></div>
+    <div class="control-section"><div class="section-label">✍️ تحرير النصوص</div>
+        <div class="slider-group"><span class="slider-label">حجم العنوان</span><input type="range" id="titleSize" min="20" max="48" value="34"><span id="titleSizeVal" class="value-display">34</span></div>
+        <div class="slider-group"><span class="slider-label">حجم النص</span><input type="range" id="bodySize" min="14" max="28" value="18"><span id="bodySizeVal" class="value-display">18</span></div>
+        <div class="slider-group"><span class="slider-label">تباعد الأسطر</span><input type="range" id="lineHeight" min="1.2" max="2.2" value="1.8" step="0.05"><span id="lineHeightVal" class="value-display">1.8</span></div>
+        <div class="slider-group"><span class="slider-label">الخط</span><select id="fontSelect" class="font-select"><option value="Cairo">Cairo</option><option value="Tajawal">Tajawal</option><option value="Noto Kufi Arabic">Noto Kufi</option><option value="Amiri">Amiri</option><option value="Almarai">Almarai</option><option value="El Messiri">El Messiri</option><option value="Reem Kufi">Reem Kufi</option><option value="Changa">Changa</option></select></div>
+        <div class="slider-group"><span class="slider-label">رمز القائمة</span><select id="bulletSelect" class="bullet-select"><option value="•">• نقطة</option><option value="★">★ نجمة</option><option value="♡">♡ قلب</option><option value="●">● دائرة</option><option value="◆">◆ معين</option><option value="▸">▸ مثلث</option><option value="✓">✓ صح</option><option value="✗">✗ خطأ</option></select></div>
     </div>
-
-    <div class="smart-panel" id="smartPanel">
-        <div class="control-section"><div class="section-label">🎨 الألوان الأساسية</div><div class="color-grid" id="colorGrid"></div></div>
-        <div class="control-section"><div class="section-label">📐 نسب الأبعاد (للمنصات)</div><div class="aspect-grid" id="aspectGrid"></div></div>
-        <div class="control-section"><div class="section-label">✍️ تحرير النصوص</div>
-            <div class="slider-group"><span class="slider-label">حجم العنوان</span><input type="range" id="titleSize" min="20" max="48" value="34"><span id="titleSizeVal" class="value-display">34</span></div>
-            <div class="slider-group"><span class="slider-label">حجم النص</span><input type="range" id="bodySize" min="14" max="28" value="18"><span id="bodySizeVal" class="value-display">18</span></div>
-            <div class="slider-group"><span class="slider-label">تباعد الأسطر</span><input type="range" id="lineHeight" min="1.2" max="2.2" value="1.8" step="0.05"><span id="lineHeightVal" class="value-display">1.8</span></div>
-            <div class="slider-group"><span class="slider-label">الخط</span><select id="fontSelect" class="font-select"><option value="Cairo">Cairo</option><option value="Tajawal">Tajawal</option><option value="Noto Kufi Arabic">Noto Kufi</option><option value="Amiri">Amiri</option><option value="Almarai">Almarai</option><option value="El Messiri">El Messiri</option><option value="Reem Kufi">Reem Kufi</option><option value="Changa">Changa</option></select></div>
-            <div class="slider-group"><span class="slider-label">رمز القائمة</span><select id="bulletSelect" class="bullet-select"><option value="•">• نقطة</option><option value="★">★ نجمة</option><option value="♡">♡ قلب</option><option value="●">● دائرة</option><option value="◆">◆ معين</option><option value="▸">▸ مثلث</option><option value="✓">✓ صح</option><option value="✗">✗ خطأ</option></select></div>
-        </div>
-        <div class="control-section"><div class="section-label">🧠 أدوات الذكاء</div>
-            <div class="ai-tools"><div class="ai-btn" id="autoFitBtn">📏 ضبط عرض ذكي</div><div class="ai-btn" id="aiEnhanceBtn">✨ تحسين النص</div><div class="ai-btn" id="customColorizeBtn">🎨 تلوين مخصص</div><div class="ai-btn" id="resetColorsBtn">♻️ إعادة الألوان</div></div>
-            <div class="word-counter" id="wordCounter">📖 عدد الكلمات: 0</div>
-        </div>
-        <div class="action-group" style="display:flex; gap:10px; margin-top:15px;"><div class="btn btn-primary" id="saveImageBtn">📸 حفظ كصورة PNG</div><div class="btn btn-outline" id="resetTextBtn">⟳ إعادة ضبط الكل</div></div>
-        <div style="text-align:center; font-size:11px; margin-top:10px;">💡 نص قابل للتعديل | لتلوين كلمة: فعّل "تلوين مخصص" ثم انقر على الكلمة (شبكة ألوان 4×3 قابلة للسحب)</div>
+    <div class="control-section"><div class="section-label">🧠 أدوات الذكاء</div>
+        <div class="ai-tools"><div class="ai-btn" id="autoFitBtn">📏 ضبط عرض ذكي</div><div class="ai-btn" id="aiEnhanceBtn">✨ تحسين النص</div><div class="ai-btn" id="customColorizeBtn">🎨 تلوين مخصص</div><div class="ai-btn" id="resetColorsBtn">♻️ إعادة الألوان</div></div>
+        <div class="word-counter" id="wordCounter">📖 عدد الكلمات: 0</div>
     </div>
+    <div class="action-group" style="display:flex; gap:10px; margin-top:15px;"><div class="btn btn-primary" id="saveImageBtn">📸 حفظ كصورة PNG</div><div class="btn btn-outline" id="resetTextBtn">⟳ إعادة ضبط الكل</div></div>
+    <div style="text-align:center; font-size:11px; margin-top:10px;">💡 نص قابل للتعديل | لتلوين كلمة: فعّل "تلوين مخصص" ثم انقر على الكلمة (شبكة ألوان 4×3 قابلة للسحب)</div>
 </div>
 
 <script>
 (function(){
-    // ========== التحقق من حالة المستخدم (أول مرة أم لا) ==========
-    const hasSeenWelcome = localStorage.getItem('spStudio_welcomeShown');
-    const welcomeScreen = document.getElementById('welcomeScreen');
-    const appContent = document.getElementById('appContent');
-    
-    // دالة لإظهار التطبيق الرئيسي
-    function showMainApp() {
-        welcomeScreen.classList.add('hide');
-        setTimeout(() => {
-            welcomeScreen.style.display = 'none';
-            appContent.style.display = 'flex';
-        }, 500);
-        localStorage.setItem('spStudio_welcomeShown', 'true');
-    }
-    
-    // إذا كان المستخدم قد رأى الشاشة من قبل، نظهر التطبيق مباشرة
-    if (hasSeenWelcome === 'true') {
-        welcomeScreen.style.display = 'none';
-        appContent.style.display = 'flex';
-    } else {
-        // أول مرة: تظهر شاشة الترحيب
-        welcomeScreen.style.display = 'flex';
-        appContent.style.display = 'none';
-    }
-    
-    // ========== أزرار شاشة الترحيب ==========
-    const welcomeInstallBtn = document.getElementById('welcomeInstallBtn');
-    const welcomeSkipBtn = document.getElementById('welcomeSkipBtn');
-    
-    // زر التثبيت من شاشة الترحيب
-    welcomeInstallBtn.addEventListener('click', () => {
-        // نحاول تشغيل التثبيت المباشر
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                    showMainApp();
-                } else {
-                    console.log('User dismissed the install prompt');
-                    showMainApp();
-                }
-                deferredPrompt = null;
-            });
-        } else {
-            // لو ما في حدث تثبيت، نعرض التطبيق عادي
-            showMainApp();
-            showToast("⚠️ اضغط على زر التثبيت في شريط العناوين", 3000);
-        }
-    });
-    
-    // زر تخطي (استخدام كموقع ويب)
-    welcomeSkipBtn.addEventListener('click', () => {
-        showMainApp();
-        showToast("✨ يمكنك تثبيت التطبيق لاحقاً من زر التثبيت", 3000);
-    });
-    
-    // ========== باقي الكود (كما هو مع تعديل المسار لتسجيل Service Worker) ==========
+    // ========== Toast ==========
     function showToast(msg, dur=2000){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
         t.innerHTML=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',dur);
     }
     
+    // ========== Update Word Count ==========
     function updateWordCount(){
         let txt = document.querySelector('.body-text').innerText.replace(/[•★♡●◆▸✓✗]/g,' ').trim();
         let c = txt.split(/\s+/).filter(w=>w.length).length;
-        if(document.getElementById('wordCounter')) 
-            document.getElementById('wordCounter').innerHTML = `📖 عدد الكلمات: ${c} | ~${Math.ceil(c/50)} دقيقة قراءة`;
+        document.getElementById('wordCounter').innerHTML = `📖 عدد الكلمات: ${c} | ~${Math.ceil(c/50)} دقيقة قراءة`;
     }
     
+    // ========== Apply Bullet ==========
     function applyBulletToText(bullet){
         const body = document.querySelector('.body-text');
-        if(!body) return;
         let html = body.innerHTML;
         const all = ['•','★','♡','●','◆','▸','✓','✗'];
         const regex = new RegExp(`(^|<br>)\\s*([${all.join('')}])\\s*`,'gi');
@@ -468,6 +296,7 @@
         updateWordCount();
     }
     
+    // ========== Apply Theme ==========
     function applyTheme(color){
         document.documentElement.style.setProperty('--accent',color);
         document.documentElement.style.setProperty('--accent-light',`${color}20`);
@@ -480,35 +309,38 @@
         let saveBtn = document.getElementById('saveImageBtn');
         if(saveBtn) saveBtn.style.background = color;
         document.querySelectorAll('input[type="range"]').forEach(sl=>sl.style.accentColor=color);
-        let curBullet = document.getElementById('bulletSelect')?.value;
-        if(curBullet) applyBulletToText(curBullet);
-        document.getElementById('themeColorMeta')?.setAttribute('content',color);
+        let curBullet = document.getElementById('bulletSelect').value;
+        applyBulletToText(curBullet);
+        document.getElementById('themeColorMeta').setAttribute('content',color);
         saveAllSettings();
     }
     
-    // ========== تسجيل Service Worker (مع المسار الصحيح) ==========
+    // ========== Register Service Worker (المسار الصحيح) ==========
     async function registerServiceWorker() {
-        if (!('serviceWorker' in navigator)) return;
+        if (!('serviceWorker' in navigator)) {
+            console.log('Service Worker not supported');
+            return;
+        }
         try {
             const registration = await navigator.serviceWorker.register('/PT.semo/sw.js');
             console.log('Service Worker registered successfully:', registration.scope);
+            showToast('✅ التطبيق جاهز للتثبيت الكامل', 3000);
         } catch (error) {
             console.error('Service Worker registration failed:', error);
         }
     }
     
-    // ========== زر التثبيت (PWA) الموجود داخل التطبيق ==========
+    // ========== Install Button ==========
     let deferredPrompt = null;
+    const installBtn = document.getElementById('installPwaBtn');
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        const installBtn = document.getElementById('installPwaBtn');
         if(installBtn) installBtn.style.display = 'inline-flex';
+        console.log('beforeinstallprompt fired');
     });
-    
-    const installPwaBtn = document.getElementById('installPwaBtn');
-    if(installPwaBtn){
-        installPwaBtn.addEventListener('click', async () => {
+    if(installBtn){
+        installBtn.addEventListener('click', async () => {
             if(deferredPrompt){
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
@@ -518,193 +350,253 @@
                     showToast("❌ تم إلغاء التثبيت", 2000);
                 }
                 deferredPrompt = null;
-                installPwaBtn.style.display = 'none';
+                installBtn.style.display = 'none';
             } else {
                 showToast("⚠️ استخدم قائمة المتصفح (⋮) ← تثبيت التطبيق", 4000);
             }
         });
     }
     
-    // ========== باقي الدوال (تم اختصارها للحفاظ على المساحة، لكن جميع الوظائف تعمل) ==========
-    // (سيتم إضافة جميع الدوال الخاصة بتلوين الكلمات وأدوات الذكاء والحفظ والتصدير)
-    // ... (للتوفير، تم تضمين الدوال الأساسية فقط هنا، والكود الكامل موجود في ملفك الأصلي)
-    
-    // ========== دوال سريعة لواجهة التحكم ==========
-    const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
-    const colorGrid = document.getElementById('colorGrid');
-    if(colorGrid){
-        baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.setAttribute('data-color',c); dot.addEventListener('click',()=>applyTheme(c)); colorGrid.appendChild(dot); });
+    // ========== Word Coloring (Draggable 4x3) ==========
+    let colorizeActive = false, currentPicker = null, dragX = 0, dragY = 0;
+    function makeDraggable(picker){
+        let dragging = false;
+        const onMove = (e) => { if(!dragging) return; e.preventDefault(); picker.style.left = (e.clientX - dragX) + 'px'; picker.style.top = (e.clientY - dragY) + 'px'; };
+        const onUp = () => { dragging = false; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); };
+        picker.addEventListener('mousedown', (e) => {
+            if(e.target.classList.contains('color-option')) return;
+            dragging = true; let rect = picker.getBoundingClientRect(); dragX = e.clientX - rect.left; dragY = e.clientY - rect.top;
+            document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp); e.preventDefault();
+        });
+        picker.addEventListener('touchstart', (e) => {
+            if(e.target.classList.contains('color-option')) return;
+            let t = e.touches[0]; let rect = picker.getBoundingClientRect(); dragX = t.clientX - rect.left; dragY = t.clientY - rect.top;
+            const onTouchMove = (ev) => { let tc = ev.touches[0]; picker.style.left = (tc.clientX - dragX) + 'px'; picker.style.top = (tc.clientY - dragY) + 'px'; ev.preventDefault(); };
+            const onTouchEnd = () => { document.removeEventListener('touchmove',onTouchMove); document.removeEventListener('touchend',onTouchEnd); };
+            document.addEventListener('touchmove',onTouchMove); document.addEventListener('touchend',onTouchEnd); e.preventDefault();
+        });
     }
-    const aspects = [{label:'■ 1:1',val:'1/1'},{label:'▯ 4:5',val:'4/5'},{label:'▬ 1.91:1',val:'1.91/1'},{label:'▮ 9:16',val:'9/16'},{label:'🔄 تلقائي',val:'auto'}];
-    const aspectGrid = document.getElementById('aspectGrid');
-    if(aspectGrid){
-        aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.dataset.aspect=a.val; btn.addEventListener('click',()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveAllSettings(); showToast(`نسبة الأبعاد: ${a.label}`,1000); }); aspectGrid.appendChild(btn); });
+    const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#f97316','#14b8a6','#000000','#ffffff','#64748b'];
+    function createColorPickerForWord(span,curColor){
+        if(currentPicker) currentPicker.remove();
+        const picker = document.createElement('div'); picker.className = 'word-color-picker';
+        colorPalette.forEach(col => {
+            const opt = document.createElement('div'); opt.className = 'color-option'; opt.style.backgroundColor=col; opt.style.border=col==='#ffffff'?'1px solid black':'2px solid white';
+            opt.addEventListener('click',(e)=>{ e.stopPropagation(); span.style.color=col; saveAllSettings(); picker.remove(); currentPicker=null; });
+            picker.appendChild(opt);
+        });
+        const custom = document.createElement('input'); custom.type='color'; custom.value=curColor||'#000000';
+        custom.addEventListener('input',(e)=>{ span.style.color=e.target.value; saveAllSettings(); });
+        picker.appendChild(custom);
+        let rect = span.getBoundingClientRect();
+        picker.style.left = (rect.left+window.scrollX+10)+'px'; picker.style.top = (rect.bottom+window.scrollY+5)+'px';
+        document.body.appendChild(picker); currentPicker=picker; makeDraggable(picker);
+        const close = (e)=>{ if(picker && !picker.contains(e.target)){ picker.remove(); currentPicker=null; document.removeEventListener('click',close); } };
+        setTimeout(()=>document.addEventListener('click',close),10);
+    }
+    function enableWordColoring(){
+        let body = document.querySelector('.body-text');
+        if(!body) return;
+        if(colorizeActive) disableWordColoring();
+        function convert(node){
+            if(node.nodeType===Node.TEXT_NODE && node.parentNode && !node.parentNode.classList?.contains('word-colorable')){
+                let words = node.textContent.split(/(\s+)/);
+                let frag = document.createDocumentFragment();
+                for(let w of words){
+                    if(w.trim().length && !/^[•★♡●◆▸✓✗\s]+$/.test(w)){
+                        let span = document.createElement('span'); span.className='word-colorable'; span.textContent=w; span.style.color='inherit'; span.style.display='inline-block';
+                        span.addEventListener('click',(e)=>{ e.stopPropagation(); createColorPickerForWord(span,span.style.color); });
+                        frag.appendChild(span);
+                    } else frag.appendChild(document.createTextNode(w));
+                }
+                node.parentNode.replaceChild(frag,node);
+            } else if(node.nodeType===Node.ELEMENT_NODE && node.childNodes) Array.from(node.childNodes).forEach(convert);
+        }
+        convert(body); colorizeActive=true; showToast('🎨 انقر على كلمة لاختيار لونها (شبكة 4×3 قابلة للسحب)',4000); saveAllSettings();
+    }
+    function disableWordColoring(){
+        let body = document.querySelector('.body-text');
+        if(!body) return;
+        body.innerHTML = body.innerText.split('\n').join('<br>');
+        colorizeActive=false; if(currentPicker) currentPicker.remove(); currentPicker=null; saveAllSettings();
+    }
+    function resetAllColors(){
+        if(colorizeActive) disableWordColoring();
+        let body = document.querySelector('.body-text');
+        body.innerHTML = body.innerText.split('\n').join('<br>');
+        let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
+        showToast('♻️ إعادة الألوان',1000); saveAllSettings();
     }
     
+    // ========== Smart Features ==========
+    function autoFitWidthAI(){
+        let bodyElem = document.querySelector('.body-text');
+        let div = document.createElement('div');
+        let cs = getComputedStyle(bodyElem);
+        div.style.cssText = `font-size:${cs.fontSize}; font-family:${cs.fontFamily}; position:absolute; top:-9999px; white-space:nowrap;`;
+        document.body.appendChild(div);
+        let lines = bodyElem.innerText.split('\n'); let maxW=0;
+        for(let line of lines){ let clean = line.replace(/^[•★♡●◆▸✓✗]\s*/,''); div.innerText=clean; maxW = Math.max(maxW, div.getBoundingClientRect().width); }
+        document.body.removeChild(div);
+        let wrapperW = document.querySelector('.preview-wrapper').clientWidth;
+        let desired = Math.min(98, Math.max(70, (maxW+60)/wrapperW*100));
+        document.getElementById('cardMaxWidth').value = Math.round(desired);
+        document.getElementById('maxWidthVal').innerText = Math.round(desired)+'%';
+        document.getElementById('export-area').style.maxWidth = Math.round(desired)+'vw';
+        saveAllSettings(); showToast(`📏 العرض الذكي: ${Math.round(desired)}%`,1500);
+    }
+    function aiEnhanceText(){
+        let bodyElem = document.querySelector('.body-text');
+        let sentences = bodyElem.innerText.split(/[.،\n]/).filter(s=>s.trim().length);
+        let enhanced = sentences.map(s=>{
+            s=s.trim();
+            if(s.includes('الوضوح') && s.includes('التشخيص')) return '✓ الوضوح في التشخيص يختصر الوقت والجهد';
+            if(s.includes('الوضوح') && s.includes('النتائج')) return '✓ الوضوح في النتائج يبني ثقة المريض';
+            if(s.includes('الوضوح') && s.includes('الخطة')) return '✓ الوضوح في الخطة يضمن الالتزام الكامل';
+            if(s.includes('مفتاح نجاح')) return '✓ الوضوح هو المفتاح الذهبي لأي خطة علاجية ناجحة';
+            return '✓ '+s;
+        });
+        bodyElem.innerHTML = [...new Set(enhanced)].join('<br>');
+        let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
+        autoFitWidthAI(); showToast('✨ تحسين النص بالذكاء',1800); saveAllSettings();
+    }
+    
+    // ========== Save/Load Settings ==========
     function saveAllSettings(){
+        let wordColors = {};
+        if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
         let settings = {
             accentColor: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#3b82f6',
-            maxWidth: document.getElementById('cardMaxWidth')?.value || 95,
-            minWidth: document.getElementById('cardMinWidth')?.value || 280,
-            titleSize: document.getElementById('titleSize')?.value || 34,
-            bodySize: document.getElementById('bodySize')?.value || 18,
-            lineHeight: document.getElementById('lineHeight')?.value || 1.8,
-            fontFamily: document.getElementById('fontSelect')?.value || 'Cairo',
-            bullet: document.getElementById('bulletSelect')?.value || '•',
-            titleHTML: document.querySelector('.title')?.innerHTML || '',
-            bodyHTML: document.querySelector('.body-text')?.innerHTML || '',
-            drNameHTML: document.querySelector('.dr-name')?.innerHTML || '',
-            drSubHTML: document.querySelector('.dr-sub')?.innerHTML || '',
-            aspectRatio: document.getElementById('export-area')?.style.aspectRatio || 'auto'
+            maxWidth: document.getElementById('cardMaxWidth').value, minWidth: document.getElementById('cardMinWidth').value,
+            titleSize: document.getElementById('titleSize').value, bodySize: document.getElementById('bodySize').value,
+            lineHeight: document.getElementById('lineHeight').value, fontFamily: document.getElementById('fontSelect').value,
+            bullet: document.getElementById('bulletSelect').value, titleHTML: document.querySelector('.title').innerHTML,
+            bodyHTML: document.querySelector('.body-text').innerHTML, drNameHTML: document.querySelector('.dr-name').innerHTML,
+            drSubHTML: document.querySelector('.dr-sub').innerHTML, aspectRatio: document.getElementById('export-area').style.aspectRatio||'auto',
+            colorizeActive, wordColors
         };
         localStorage.setItem('spStudioSettings', JSON.stringify(settings));
     }
-    
     function loadAllSettings(){
-        let saved = localStorage.getItem('spStudioSettings');
-        if(!saved) return;
+        let saved = localStorage.getItem('spStudioSettings'); if(!saved) return;
         try{
             let s = JSON.parse(saved);
             applyTheme(s.accentColor);
-            if(document.getElementById('cardMaxWidth')) document.getElementById('cardMaxWidth').value = s.maxWidth;
-            if(document.getElementById('maxWidthVal')) document.getElementById('maxWidthVal').innerText = s.maxWidth+'%';
-            if(document.getElementById('export-area')) document.getElementById('export-area').style.maxWidth = s.maxWidth+'vw';
-            if(document.getElementById('cardMinWidth')) document.getElementById('cardMinWidth').value = s.minWidth;
-            if(document.getElementById('minWidthVal')) document.getElementById('minWidthVal').innerText = s.minWidth+'px';
-            if(document.getElementById('export-area')) document.getElementById('export-area').style.minWidth = s.minWidth+'px';
-            if(document.getElementById('titleSize')) document.getElementById('titleSize').value = s.titleSize;
-            if(document.getElementById('titleSizeVal')) document.getElementById('titleSizeVal').innerText = s.titleSize;
-            if(document.querySelector('.title')) document.querySelector('.title').style.fontSize = s.titleSize+'px';
-            if(document.getElementById('bodySize')) document.getElementById('bodySize').value = s.bodySize;
-            if(document.getElementById('bodySizeVal')) document.getElementById('bodySizeVal').innerText = s.bodySize;
-            if(document.querySelector('.body-text')) document.querySelector('.body-text').style.fontSize = s.bodySize+'px';
-            if(document.getElementById('lineHeight')) document.getElementById('lineHeight').value = s.lineHeight;
-            if(document.getElementById('lineHeightVal')) document.getElementById('lineHeightVal').innerText = s.lineHeight;
-            if(document.querySelector('.body-text')) document.querySelector('.body-text').style.lineHeight = s.lineHeight;
-            if(document.getElementById('fontSelect')) document.getElementById('fontSelect').value = s.fontFamily;
-            if(document.querySelector('#export-area')) document.querySelector('#export-area').style.fontFamily = `'${s.fontFamily}', sans-serif`;
-            if(document.getElementById('bulletSelect')) document.getElementById('bulletSelect').value = s.bullet;
-            if(s.titleHTML && document.querySelector('.title')) document.querySelector('.title').innerHTML = s.titleHTML;
-            if(s.bodyHTML && document.querySelector('.body-text')) document.querySelector('.body-text').innerHTML = s.bodyHTML;
-            if(s.drNameHTML && document.querySelector('.dr-name')) document.querySelector('.dr-name').innerHTML = s.drNameHTML;
-            if(s.drSubHTML && document.querySelector('.dr-sub')) document.querySelector('.dr-sub').innerHTML = s.drSubHTML;
-            if(s.aspectRatio && document.getElementById('export-area')) document.getElementById('export-area').style.aspectRatio = s.aspectRatio;
-            if(s.bullet) applyBulletToText(s.bullet);
+            document.getElementById('cardMaxWidth').value = s.maxWidth; document.getElementById('maxWidthVal').innerText = s.maxWidth+'%';
+            document.getElementById('export-area').style.maxWidth = s.maxWidth+'vw';
+            document.getElementById('cardMinWidth').value = s.minWidth; document.getElementById('minWidthVal').innerText = s.minWidth+'px';
+            document.getElementById('export-area').style.minWidth = s.minWidth+'px';
+            document.getElementById('titleSize').value = s.titleSize; document.getElementById('titleSizeVal').innerText = s.titleSize;
+            document.querySelector('.title').style.fontSize = s.titleSize+'px';
+            document.getElementById('bodySize').value = s.bodySize; document.getElementById('bodySizeVal').innerText = s.bodySize;
+            document.querySelector('.body-text').style.fontSize = s.bodySize+'px';
+            document.getElementById('lineHeight').value = s.lineHeight; document.getElementById('lineHeightVal').innerText = s.lineHeight;
+            document.querySelector('.body-text').style.lineHeight = s.lineHeight;
+            document.getElementById('fontSelect').value = s.fontFamily; document.querySelector('#export-area').style.fontFamily = `'${s.fontFamily}', sans-serif`;
+            document.getElementById('bulletSelect').value = s.bullet;
+            if(s.titleHTML) document.querySelector('.title').innerHTML = s.titleHTML;
+            if(s.bodyHTML) document.querySelector('.body-text').innerHTML = s.bodyHTML;
+            if(s.drNameHTML) document.querySelector('.dr-name').innerHTML = s.drNameHTML;
+            if(s.drSubHTML) document.querySelector('.dr-sub').innerHTML = s.drSubHTML;
+            if(s.aspectRatio) document.getElementById('export-area').style.aspectRatio = s.aspectRatio;
+            applyBulletToText(s.bullet);
+            if(s.colorizeActive){ enableWordColoring(); setTimeout(()=>{ let spans = document.querySelectorAll('.body-text .word-colorable'); Object.keys(s.wordColors).forEach(idx=>{ if(spans[idx]) spans[idx].style.color = s.wordColors[idx]; }); },60); }
             updateWordCount();
         }catch(e){ console.warn(e); }
     }
-    
-    // ربط الأحداث الأساسية
-    if(document.getElementById('titleSize')) document.getElementById('titleSize').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveAllSettings(); });
-    if(document.getElementById('bodySize')) document.getElementById('bodySize').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveAllSettings(); });
-    if(document.getElementById('lineHeight')) document.getElementById('lineHeight').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveAllSettings(); });
-    if(document.getElementById('fontSelect')) document.getElementById('fontSelect').addEventListener('change',e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveAllSettings(); });
-    if(document.getElementById('bulletSelect')) document.getElementById('bulletSelect').addEventListener('change',e=>{ applyBulletToText(e.target.value); saveAllSettings(); });
-    
-    // زر إعادة الضبط
-    const resetBtn = document.getElementById('resetTextBtn');
-    if(resetBtn){
-        resetBtn.addEventListener('click',()=>{
-            if(document.querySelector('.title')) document.querySelector('.title').innerHTML = "الوضوح المهني";
-            if(document.querySelector('.body-text')) document.querySelector('.body-text').innerHTML = "• الوضوح في التشخيص يختصر الوقت.<br>• الوضوح في النتائج يبني الثقة.<br>• الوضوح في الخطة يضمن الالتزام.<br><br>الوضوح هو مفتاح نجاح أي خطة علاجية ناجحة.";
-            if(document.querySelector('.dr-name')) document.querySelector('.dr-name').innerHTML = "الإختصاصي سليمان";
-            if(document.querySelector('.dr-sub')) document.querySelector('.dr-sub').innerHTML = "أخصائي علاج فيزيائي وإعادة تأهيل";
-            applyTheme('#3b82f6');
-            if(document.getElementById('cardMaxWidth')) document.getElementById('cardMaxWidth').value = 95;
-            if(document.getElementById('maxWidthVal')) document.getElementById('maxWidthVal').innerText='95%';
-            if(document.getElementById('export-area')) document.getElementById('export-area').style.maxWidth='95vw';
-            if(document.getElementById('cardMinWidth')) document.getElementById('cardMinWidth').value = 280;
-            if(document.getElementById('minWidthVal')) document.getElementById('minWidthVal').innerText='280px';
-            if(document.getElementById('export-area')) document.getElementById('export-area').style.minWidth='280px';
-            if(document.getElementById('titleSize')) document.getElementById('titleSize').value = 34;
-            if(document.getElementById('titleSizeVal')) document.getElementById('titleSizeVal').innerText='34';
-            if(document.querySelector('.title')) document.querySelector('.title').style.fontSize='34px';
-            if(document.getElementById('bodySize')) document.getElementById('bodySize').value = 18;
-            if(document.getElementById('bodySizeVal')) document.getElementById('bodySizeVal').innerText='18';
-            if(document.querySelector('.body-text')) document.querySelector('.body-text').style.fontSize='18px';
-            if(document.getElementById('lineHeight')) document.getElementById('lineHeight').value = 1.8;
-            if(document.getElementById('lineHeightVal')) document.getElementById('lineHeightVal').innerText='1.8';
-            if(document.querySelector('.body-text')) document.querySelector('.body-text').style.lineHeight=1.8;
-            if(document.getElementById('fontSelect')) document.getElementById('fontSelect').value='Cairo';
-            if(document.querySelector('#export-area')) document.querySelector('#export-area').style.fontFamily="'Cairo', sans-serif";
-            if(document.getElementById('bulletSelect')) document.getElementById('bulletSelect').value='•';
-            if(document.querySelector('.body-text')) applyBulletToText('•');
-            updateWordCount();
-            saveAllSettings();
-            showToast("✅ إعادة ضبط كامل",1500);
-        });
+    function fullReset(){
+        disableWordColoring();
+        document.querySelector('.title').innerHTML = "الوضوح المهني";
+        document.querySelector('.body-text').innerHTML = "• الوضوح في التشخيص يختصر الوقت.<br>• الوضوح في النتائج يبني الثقة.<br>• الوضوح في الخطة يضمن الالتزام.<br><br>الوضوح هو مفتاح نجاح أي خطة علاجية ناجحة.";
+        document.querySelector('.dr-name').innerHTML = "الإختصاصي سليمان";
+        document.querySelector('.dr-sub').innerHTML = "أخصائي علاج فيزيائي وإعادة تأهيل";
+        applyTheme('#3b82f6');
+        document.getElementById('cardMaxWidth').value = 95; document.getElementById('maxWidthVal').innerText='95%'; document.getElementById('export-area').style.maxWidth='95vw';
+        document.getElementById('cardMinWidth').value = 280; document.getElementById('minWidthVal').innerText='280px'; document.getElementById('export-area').style.minWidth='280px';
+        document.getElementById('titleSize').value = 34; document.getElementById('titleSizeVal').innerText='34'; document.querySelector('.title').style.fontSize='34px';
+        document.getElementById('bodySize').value = 18; document.getElementById('bodySizeVal').innerText='18'; document.querySelector('.body-text').style.fontSize='18px';
+        document.getElementById('lineHeight').value = 1.8; document.getElementById('lineHeightVal').innerText='1.8'; document.querySelector('.body-text').style.lineHeight=1.8;
+        document.getElementById('fontSelect').value='Cairo'; document.querySelector('#export-area').style.fontFamily="'Cairo', sans-serif";
+        document.getElementById('bulletSelect').value='•'; applyBulletToText('•'); updateWordCount(); saveAllSettings(); showToast("✅ إعادة ضبط كامل",1500);
     }
     
-    // زر حفظ الصورة
-    const saveImgBtn = document.getElementById('saveImageBtn');
-    if(saveImgBtn){
-        saveImgBtn.addEventListener('click', async () => {
-            const el = document.getElementById('export-area');
-            if(!el) return;
-            if(!window.html2canvas){
-                showToast("⏳ جاري تحميل مكتبة التصوير...", 800);
-                await new Promise(resolve => {
-                    const script = document.createElement('script');
-                    script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
-                    script.onload = resolve;
-                    document.head.appendChild(script);
-                });
-            }
-            const editables = document.querySelectorAll('[contenteditable="true"]');
-            const oldBg = [];
-            editables.forEach(el => { oldBg.push(el.style.background); el.style.background = 'transparent'; });
-            saveImgBtn.innerHTML = "🖼️ جاري...";
-            saveImgBtn.disabled = true;
-            try {
-                const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff', logging: false });
-                canvas.toBlob(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.download = `sp_studio_${Date.now()}.png`;
-                    a.href = url; a.click();
-                    URL.revokeObjectURL(url);
-                    saveImgBtn.innerHTML = "✅ تم الحفظ!";
-                    setTimeout(() => { saveImgBtn.innerHTML = "📸 حفظ كصورة PNG"; saveImgBtn.disabled = false; }, 1500);
-                    showToast("تم حفظ الصورة", 1500);
-                }, 'image/png', 0.95);
-            } catch(e) {
-                saveImgBtn.innerHTML = "❌ خطأ";
-                setTimeout(() => { saveImgBtn.innerHTML = "📸 حفظ كصورة PNG"; saveImgBtn.disabled = false; }, 1500);
-                showToast("خطأ في التصدير", 2000);
-            } finally {
-                editables.forEach((el, i) => { el.style.background = oldBg[i]; });
-            }
+    // ========== Export Image ==========
+    let html2canvasLoaded = false;
+    function ensureHtml2Canvas() {
+        return new Promise((resolve) => {
+            if (window.html2canvas) { html2canvasLoaded = true; resolve(true); return; }
+            const script = document.createElement('script');
+            script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+            script.onload = () => { html2canvasLoaded = true; resolve(true); };
+            script.onerror = () => { showToast("⚠️ فشل تحميل مكتبة التصوير", 2000); resolve(false); };
+            document.head.appendChild(script);
         });
     }
-    
-    // إظهار/إخفاء اللوحة
-    const toggleBtn = document.getElementById('togglePanelBtn');
-    const panel = document.getElementById('smartPanel');
-    let panelVisible = true;
-    if(toggleBtn && panel){
-        toggleBtn.addEventListener('click',()=>{
-            panelVisible = !panelVisible;
-            panel.classList.toggle('hidden', !panelVisible);
-            toggleBtn.innerHTML = panelVisible ? '🔽 إخفاء اللوحة' : '🔼 إظهار اللوحة';
-        });
+    async function exportAsImage(){
+        const el = document.getElementById('export-area');
+        const btn = document.getElementById('saveImageBtn');
+        if (!html2canvasLoaded && !window.html2canvas) {
+            showToast("⏳ جاري تحميل مكتبة التصوير...", 800);
+            const ok = await ensureHtml2Canvas();
+            if (!ok) return;
+        }
+        const editables = document.querySelectorAll('[contenteditable="true"]');
+        const oldBg = [];
+        editables.forEach(el => { oldBg.push(el.style.background); el.style.background = 'transparent'; });
+        btn.innerHTML = "🖼️ جاري..."; btn.disabled = true;
+        try {
+            const canvas = await window.html2canvas(el, { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: false });
+            canvas.toBlob(blob => {
+                if (!blob) throw new Error("فشل إنشاء الصورة");
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.download = `sp_studio_${Date.now()}.png`;
+                a.href = url; a.click();
+                URL.revokeObjectURL(url);
+                btn.innerHTML = "✅ تم الحفظ!";
+                setTimeout(() => { btn.innerHTML = "📸 حفظ كصورة PNG"; btn.disabled = false; }, 1500);
+                showToast("تم حفظ الصورة", 1500);
+            }, 'image/png', 0.95);
+        } catch(e) {
+            btn.innerHTML = "❌ خطأ";
+            setTimeout(() => { btn.innerHTML = "📸 حفظ كصورة PNG"; btn.disabled = false; }, 1500);
+            showToast("خطأ في التصدير", 2000);
+        } finally {
+            editables.forEach((el, i) => { el.style.background = oldBg[i]; });
+        }
     }
     
-    // تحديث عدد الكلمات عند تعديل النص
-    const bodyText = document.querySelector('.body-text');
-    if(bodyText) bodyText.addEventListener('input', updateWordCount);
+    // ========== UI Controls ==========
+    const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
+    const colorGrid = document.getElementById('colorGrid');
+    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.setAttribute('data-color',c); dot.addEventListener('click',()=>applyTheme(c)); colorGrid.appendChild(dot); });
+    const aspects = [{label:'■ 1:1',val:'1/1'},{label:'▯ 4:5',val:'4/5'},{label:'▬ 1.91:1',val:'1.91/1'},{label:'▮ 9:16',val:'9/16'},{label:'🔄 تلقائي',val:'auto'}];
+    const aspectGrid = document.getElementById('aspectGrid');
+    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.dataset.aspect=a.val; btn.addEventListener('click',()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveAllSettings(); showToast(`نسبة الأبعاد: ${a.label}`,1000); }); aspectGrid.appendChild(btn); });
     
-    // بدء التشغيل
+    document.getElementById('titleSize').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveAllSettings(); });
+    document.getElementById('bodySize').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveAllSettings(); });
+    document.getElementById('lineHeight').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveAllSettings(); });
+    document.getElementById('fontSelect').addEventListener('change',e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveAllSettings(); });
+    document.getElementById('bulletSelect').addEventListener('change',e=>{ applyBulletToText(e.target.value); saveAllSettings(); });
+    document.getElementById('saveImageBtn').addEventListener('click',exportAsImage);
+    document.getElementById('resetTextBtn').addEventListener('click',fullReset);
+    document.getElementById('autoFitBtn').addEventListener('click',autoFitWidthAI);
+    document.getElementById('aiEnhanceBtn').addEventListener('click',aiEnhanceText);
+    document.getElementById('customColorizeBtn').addEventListener('click',()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); });
+    document.getElementById('resetColorsBtn').addEventListener('click',resetAllColors);
+    
+    let panel = document.getElementById('smartPanel'), toggleBtn = document.getElementById('togglePanelBtn'), panelVis = true;
+    toggleBtn.addEventListener('click',()=>{ panelVis=!panelVis; panel.classList.toggle('hidden',!panelVis); toggleBtn.innerHTML=panelVis?'🔽 إخفاء اللوحة':'🔼 إظهار اللوحة'; });
+    document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>{ el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveAllSettings(); }); });
+    
+    // ========== Start App ==========
     window.addEventListener('load', async () => {
         await registerServiceWorker();
         loadAllSettings();
         updateWordCount();
-        if(!localStorage.getItem('spStudioSettings')) {
-            // تطبيق العرض الذكي الافتراضي
-            if(document.getElementById('cardMaxWidth')) document.getElementById('cardMaxWidth').value = 85;
-            if(document.getElementById('maxWidthVal')) document.getElementById('maxWidthVal').innerText = '85%';
-            if(document.getElementById('export-area')) document.getElementById('export-area').style.maxWidth = '85vw';
-        }
-        showToast("✨ SP Studio - جاهز للتثبيت", 3000);
+        if(!localStorage.getItem('spStudioSettings')) autoFitWidthAI();
+        showToast("✨ SP Studio - PWA متكامل | يمكنك تثبيته كتطبيق حقيقي", 4000);
     });
 })();
 </script>
