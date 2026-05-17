@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SP Studio | بطاقة ذكية PWA</title>
     
-    <!-- PWA Meta Tags (للتثبيت الكامل وليس اختصار) -->
+    <!-- ========== روابط PWA الأساسية (الجزء المفقود) ========== -->
+    <link rel="manifest" href="/PT.semo/manifest.json">
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SP Studio">
-    
-    <!-- ربط ملفات PWA (مع مسارات GitHub Pages) -->
-    <link rel="manifest" href="/sp-studio/manifest.json">
-    <link rel="apple-touch-icon" href="/sp-studio/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/PT.semo/icons/icon-192.png">
     
     <!-- 8 خطوط عربية -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Changa:wght@400;600;800&display=swap" rel="stylesheet">
@@ -126,7 +124,6 @@
             justify-content: center;
             border-radius: 24px;
         }
-        /* لوحة التحكم */
         .smart-panel {
             background: rgba(10, 20, 35, 0.96);
             backdrop-filter: blur(12px);
@@ -203,7 +200,6 @@
         }
         .install-btn { background: linear-gradient(135deg, #1e1b4b, #4c1d95); border: none; }
         .hidden { display: none; }
-        /* لوحة ألوان الكلمات 4x3 قابلة للسحب */
         .word-color-picker {
             position: fixed;
             background: #1e293b;
@@ -269,17 +265,21 @@
 
 <script>
 (function(){
-    // ========== عام ==========
+    // ========== Toast ==========
     function showToast(msg, dur=2000){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
         t.innerHTML=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',dur);
     }
+    
+    // ========== Update Word Count ==========
     function updateWordCount(){
         let txt = document.querySelector('.body-text').innerText.replace(/[•★♡●◆▸✓✗]/g,' ').trim();
         let c = txt.split(/\s+/).filter(w=>w.length).length;
         document.getElementById('wordCounter').innerHTML = `📖 عدد الكلمات: ${c} | ~${Math.ceil(c/50)} دقيقة قراءة`;
     }
+    
+    // ========== Apply Bullet ==========
     function applyBulletToText(bullet){
         const body = document.querySelector('.body-text');
         let html = body.innerHTML;
@@ -295,6 +295,8 @@
         body.innerHTML = lines.join('<br>');
         updateWordCount();
     }
+    
+    // ========== Apply Theme ==========
     function applyTheme(color){
         document.documentElement.style.setProperty('--accent',color);
         document.documentElement.style.setProperty('--accent-light',`${color}20`);
@@ -313,11 +315,14 @@
         saveAllSettings();
     }
     
-    // ========== تسجيل Service Worker (مع المسار الصحيح لـ GitHub Pages) ==========
+    // ========== Register Service Worker (المسار الصحيح) ==========
     async function registerServiceWorker() {
-        if (!('serviceWorker' in navigator)) return;
+        if (!('serviceWorker' in navigator)) {
+            console.log('Service Worker not supported');
+            return;
+        }
         try {
-            const registration = await navigator.serviceWorker.register('/sp-studio/sw.js');
+            const registration = await navigator.serviceWorker.register('/PT.semo/sw.js');
             console.log('Service Worker registered successfully:', registration.scope);
             showToast('✅ التطبيق جاهز للتثبيت الكامل', 3000);
         } catch (error) {
@@ -325,13 +330,14 @@
         }
     }
     
-    // ========== زر التثبيت المخصص ==========
+    // ========== Install Button ==========
     let deferredPrompt = null;
     const installBtn = document.getElementById('installPwaBtn');
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         if(installBtn) installBtn.style.display = 'inline-flex';
+        console.log('beforeinstallprompt fired');
     });
     if(installBtn){
         installBtn.addEventListener('click', async () => {
@@ -351,7 +357,7 @@
         });
     }
     
-    // ========== تلوين الكلمات (شبكة 4×3 قابلة للسحب) ==========
+    // ========== Word Coloring (Draggable 4x3) ==========
     let colorizeActive = false, currentPicker = null, dragX = 0, dragY = 0;
     function makeDraggable(picker){
         let dragging = false;
@@ -422,7 +428,7 @@
         showToast('♻️ إعادة الألوان',1000); saveAllSettings();
     }
     
-    // ========== أدوات ذكاء ==========
+    // ========== Smart Features ==========
     function autoFitWidthAI(){
         let bodyElem = document.querySelector('.body-text');
         let div = document.createElement('div');
@@ -455,7 +461,7 @@
         autoFitWidthAI(); showToast('✨ تحسين النص بالذكاء',1800); saveAllSettings();
     }
     
-    // ========== حفظ واسترجاع ==========
+    // ========== Save/Load Settings ==========
     function saveAllSettings(){
         let wordColors = {};
         if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
@@ -514,7 +520,7 @@
         document.getElementById('bulletSelect').value='•'; applyBulletToText('•'); updateWordCount(); saveAllSettings(); showToast("✅ إعادة ضبط كامل",1500);
     }
     
-    // ========== تصدير الصورة ==========
+    // ========== Export Image ==========
     let html2canvasLoaded = false;
     function ensureHtml2Canvas() {
         return new Promise((resolve) => {
@@ -560,7 +566,7 @@
         }
     }
     
-    // ========== إنشاء واجهة التحكم ==========
+    // ========== UI Controls ==========
     const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
     baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.setAttribute('data-color',c); dot.addEventListener('click',()=>applyTheme(c)); colorGrid.appendChild(dot); });
@@ -584,7 +590,7 @@
     toggleBtn.addEventListener('click',()=>{ panelVis=!panelVis; panel.classList.toggle('hidden',!panelVis); toggleBtn.innerHTML=panelVis?'🔽 إخفاء اللوحة':'🔼 إظهار اللوحة'; });
     document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>{ el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveAllSettings(); }); });
     
-    // ========== بدء التشغيل ==========
+    // ========== Start App ==========
     window.addEventListener('load', async () => {
         await registerServiceWorker();
         loadAllSettings();
