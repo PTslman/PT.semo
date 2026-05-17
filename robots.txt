@@ -1,0 +1,22 @@
+# السماح لجميع محركات البحث بالزحف
+User-agent: *
+Allow: /
+
+# خريطة الموقع
+Sitemap: https://ptslman.github.io/PT.semo/sitemap.xml
+
+# منع الزحف إلى المجلدات الداخلية
+Disallow: /icons/
+Disallow: /screenshots/
+Disallow: /settings/
+
+# الزحف إلى ملفات PWA
+Allow: /manifest.json
+Allow: /sw.js
+Allow: /offline.html
+
+# نطاق الزحف
+Host: https://ptslman.github.io/PT.semo/
+
+# وقت إعادة الزحف
+Crawl-delay: 5
