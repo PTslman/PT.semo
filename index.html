@@ -5,15 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SP Studio | بطاقة ذكية PWA</title>
     
-    <!-- ========== روابط PWA الأساسية (الجزء المفقود) ========== -->
+    <!-- ========== روابط PWA الأساسية ========== -->
     <link rel="manifest" href="/PT.semo/manifest.json">
+    <link rel="apple-touch-icon" href="/PT.semo/icons/icon-192.png">
+    <link rel="apple-touch-startup-image" href="/PT.semo/icons/icon-512.png">
+    
+    <!-- ========== ملفات PWA الإضافية ========== -->
+    <link rel="shortcut icon" href="/PT.semo/icons/icon-96.png">
+    <meta name="msapplication-TileImage" content="/PT.semo/icons/icon-144.png">
+    <meta name="msapplication-TileColor" content="#3b82f6">
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SP Studio">
-    <link rel="apple-touch-icon" href="/PT.semo/icons/icon-192.png">
+    <meta name="application-name" content="SP Studio">
+    <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- 8 خطوط عربية -->
+    <!-- ========== إعدادات الـ PWA الإضافية ========== -->
+    <link rel="browserconfig" href="/PT.semo/browserconfig.xml">
+    
+    <!-- ========== 8 خطوط عربية ========== -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Changa:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
@@ -189,7 +200,7 @@
             white-space: nowrap;
         }
         .button-bar { display: flex; justify-content: center; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-        .toggle-panel-btn, .install-btn {
+        .toggle-panel-btn, .install-btn, .help-btn {
             background: rgba(255,255,255,0.1);
             border-radius: 60px;
             padding: 8px 20px;
@@ -199,7 +210,25 @@
             cursor: pointer;
         }
         .install-btn { background: linear-gradient(135deg, #1e1b4b, #4c1d95); border: none; }
+        .help-btn { background: #10b981; border: none; }
         .hidden { display: none; }
+        .offline-detected {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            z-index: 10002;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+        .offline-detected.show {
+            transform: translateY(0);
+        }
         .word-color-picker {
             position: fixed;
             background: #1e293b;
@@ -228,6 +257,9 @@
 </head>
 <body>
 
+<!-- إشعار عدم الاتصال بالإنترنت -->
+<div id="offlineNotification" class="offline-detected">📡 أنت غير متصل بالإنترنت - بعض الميزات قد لا تعمل</div>
+
 <div class="preview-wrapper">
     <div id="export-area">
         <div class="art-bg"></div>
@@ -243,6 +275,7 @@
 <div class="button-bar">
     <div class="toggle-panel-btn" id="togglePanelBtn">🔽 إخفاء اللوحة</div>
     <div class="install-btn" id="installPwaBtn" style="display:none;">📲 تثبيت SP Studio (PWA)</div>
+    <div class="help-btn" id="helpBtn">❓ مساعدة</div>
 </div>
 
 <div class="smart-panel" id="smartPanel">
@@ -259,12 +292,29 @@
         <div class="ai-tools"><div class="ai-btn" id="autoFitBtn">📏 ضبط عرض ذكي</div><div class="ai-btn" id="aiEnhanceBtn">✨ تحسين النص</div><div class="ai-btn" id="customColorizeBtn">🎨 تلوين مخصص</div><div class="ai-btn" id="resetColorsBtn">♻️ إعادة الألوان</div></div>
         <div class="word-counter" id="wordCounter">📖 عدد الكلمات: 0</div>
     </div>
-    <div class="action-group" style="display:flex; gap:10px; margin-top:15px;"><div class="btn btn-primary" id="saveImageBtn">📸 حفظ كصورة PNG</div><div class="btn btn-outline" id="resetTextBtn">⟳ إعادة ضبط الكل</div></div>
+    <div class="action-group" style="display:flex; gap:10px; margin-top:15px;">
+        <div class="btn btn-primary" id="saveImageBtn">📸 حفظ كصورة PNG</div>
+        <div class="btn btn-outline" id="resetTextBtn">⟳ إعادة ضبط الكل</div>
+    </div>
     <div style="text-align:center; font-size:11px; margin-top:10px;">💡 نص قابل للتعديل | لتلوين كلمة: فعّل "تلوين مخصص" ثم انقر على الكلمة (شبكة ألوان 4×3 قابلة للسحب)</div>
 </div>
 
 <script>
 (function(){
+    // ========== كشف حالة الاتصال بالإنترنت ==========
+    const offlineNotification = document.getElementById('offlineNotification');
+    function updateOnlineStatus() {
+        if (!navigator.onLine) {
+            offlineNotification.classList.add('show');
+            showToast('⚠️ أنت غير متصل بالإنترنت', 3000);
+        } else {
+            offlineNotification.classList.remove('show');
+        }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+    
     // ========== Toast ==========
     function showToast(msg, dur=2000){
         let t = document.querySelector('.dynamic-toast');
@@ -315,19 +365,32 @@
         saveAllSettings();
     }
     
-    // ========== Register Service Worker (المسار الصحيح) ==========
+    // ========== Register Service Worker ==========
     async function registerServiceWorker() {
-        if (!('serviceWorker' in navigator)) {
-            console.log('Service Worker not supported');
-            return;
-        }
+        if (!('serviceWorker' in navigator)) return;
         try {
             const registration = await navigator.serviceWorker.register('/PT.semo/sw.js');
-            console.log('Service Worker registered successfully:', registration.scope);
-            showToast('✅ التطبيق جاهز للتثبيت الكامل', 3000);
+            console.log('Service Worker registered:', registration.scope);
+            
+            // التحقق من وجود تحديثات
+            checkForUpdates();
         } catch (error) {
-            console.error('Service Worker registration failed:', error);
+            console.error('SW registration failed:', error);
         }
+    }
+    
+    // ========== التحقق من التحديثات ==========
+    async function checkForUpdates() {
+        try {
+            const response = await fetch('/PT.semo/updates.json?v=' + Date.now());
+            if (response.ok) {
+                const updates = await response.json();
+                const currentVersion = '1.0.0';
+                if (updates.latestVersion !== currentVersion) {
+                    showToast(`🔄 تحديث جديد متاح: ${updates.latestVersion}`, 5000);
+                }
+            }
+        } catch(e) { console.log('Update check failed'); }
     }
     
     // ========== Install Button ==========
@@ -337,7 +400,6 @@
         e.preventDefault();
         deferredPrompt = e;
         if(installBtn) installBtn.style.display = 'inline-flex';
-        console.log('beforeinstallprompt fired');
     });
     if(installBtn){
         installBtn.addEventListener('click', async () => {
@@ -345,17 +407,20 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if(outcome === 'accepted'){
-                    showToast("✅ تم تثبيت SP Studio كتطبيق كامل", 3000);
-                } else {
-                    showToast("❌ تم إلغاء التثبيت", 2000);
+                    showToast("✅ تم تثبيت SP Studio", 3000);
                 }
                 deferredPrompt = null;
                 installBtn.style.display = 'none';
             } else {
-                showToast("⚠️ استخدم قائمة المتصفح (⋮) ← تثبيت التطبيق", 4000);
+                showToast("⚠️ استخدم قائمة المتصفح ← تثبيت التطبيق", 4000);
             }
         });
     }
+    
+    // ========== زر المساعدة ==========
+    document.getElementById('helpBtn').addEventListener('click', () => {
+        window.open('/PT.semo/help.html', '_blank');
+    });
     
     // ========== Word Coloring (Draggable 4x3) ==========
     let colorizeActive = false, currentPicker = null, dragX = 0, dragY = 0;
@@ -597,6 +662,11 @@
         updateWordCount();
         if(!localStorage.getItem('spStudioSettings')) autoFitWidthAI();
         showToast("✨ SP Studio - PWA متكامل | يمكنك تثبيته كتطبيق حقيقي", 4000);
+        
+        // تسجيل حدث التثبيت في التحليلات
+        if(typeof spAnalytics !== 'undefined') {
+            spAnalytics.sendEvent('app_start');
+        }
     });
 })();
 </script>
