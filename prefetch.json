@@ -1,0 +1,12 @@
+{
+    "resources": [
+        { "url": "/PT.semo/icons/icon-192.png", "priority": "high" },
+        { "url": "/PT.semo/icons/icon-512.png", "priority": "medium" },
+        { "url": "/PT.semo/manifest.json", "priority": "high" },
+        { "url": "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap", "priority": "medium" }
+    ],
+    "predictions": [
+        { "url": "/PT.semo/share-handler.html", "probability": 0.3 },
+        { "url": "/PT.semo/help.html", "probability": 0.2 }
+    ]
+}
