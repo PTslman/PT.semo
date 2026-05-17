@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "latestVersion": "1.0.0",
+  "updateUrl": "/PT.semo/",
+  "releaseDate": "2025-01-01",
+  "features": [
+    "شاشة ترحيب جديدة",
+    "تحسين أدوات الذكاء",
+    "إصلاح مشكلة حفظ الصورة"
+  ],
+  "forceUpdate": false,
+  "minRequiredVersion": "1.0.0"
+}
