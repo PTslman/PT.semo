@@ -24,6 +24,9 @@
     <!-- ========== إعدادات الـ PWA الإضافية ========== -->
     <link rel="browserconfig" href="/PT.semo/browserconfig.xml">
     
+    <!-- ========== Analytics (تمت الإضافة) ========== -->
+    <script src="/PT.semo/analytics.js" defer></script>
+    
     <!-- ========== 8 خطوط عربية ========== -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Changa:wght@400;600;800&display=swap" rel="stylesheet">
     
@@ -408,6 +411,10 @@
                 const { outcome } = await deferredPrompt.userChoice;
                 if(outcome === 'accepted'){
                     showToast("✅ تم تثبيت SP Studio", 3000);
+                    // تسجيل حدث التثبيت في التحليلات
+                    if(typeof spAnalytics !== 'undefined') {
+                        spAnalytics.sendEvent('app_installed');
+                    }
                 }
                 deferredPrompt = null;
                 installBtn.style.display = 'none';
@@ -420,6 +427,9 @@
     // ========== زر المساعدة ==========
     document.getElementById('helpBtn').addEventListener('click', () => {
         window.open('/PT.semo/help.html', '_blank');
+        if(typeof spAnalytics !== 'undefined') {
+            spAnalytics.sendEvent('help_opened');
+        }
     });
     
     // ========== Word Coloring (Draggable 4x3) ==========
@@ -663,7 +673,7 @@
         if(!localStorage.getItem('spStudioSettings')) autoFitWidthAI();
         showToast("✨ SP Studio - PWA متكامل | يمكنك تثبيته كتطبيق حقيقي", 4000);
         
-        // تسجيل حدث التثبيت في التحليلات
+        // تسجيل بدء التطبيق في التحليلات
         if(typeof spAnalytics !== 'undefined') {
             spAnalytics.sendEvent('app_start');
         }
