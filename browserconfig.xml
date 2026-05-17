@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square150x150logo src="/PT.semo/icons/icon-150x150.png"/>
+            <square70x70logo src="/PT.semo/icons/icon-70x70.png"/>
+            <TileColor>#3b82f6</TileColor>
+            <TileImage src="/PT.semo/icons/icon-150x150.png"/>
+            <badge>sp-badge.png</badge>
+        </tile>
+        <notification>
+            <polling-uri>/PT.semo/notifications.xml</polling-uri>
+            <polling-interval>3600</polling-interval>
+        </notification>
+    </msapplication>
+</browserconfig>
