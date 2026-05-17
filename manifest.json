@@ -1,53 +1,147 @@
 {
-  "name": "SP Studio",
+  "name": "SP Studio - Professional Card Designer",
   "short_name": "SP Studio",
-  "description": "بطاقة ذكية احترافية للعلاج الطبيعي - تصميم أنيق وتلوين مخصص",
+  "description": "تطبيق متكامل لتصميم بطاقات ذكية احترافية للعلاج الطبيعي مع أدوات الذكاء الاصطناعي وتلوين مخصص لكل كلمة",
+  "categories": ["design", "productivity", "health", "medical", "creativity"],
+  "lang": "ar",
+  "dir": "rtl",
   "start_url": "/PT.semo/",
   "scope": "/PT.semo/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait",
   "theme_color": "#3b82f6",
   "background_color": "#0b1120",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "/PT.semo/icons/icon-72.png",
       "sizes": "72x72",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/PT.semo/icons/icon-96.png",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/PT.semo/icons/icon-128.png",
       "sizes": "128x128",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/PT.semo/icons/icon-144.png",
       "sizes": "144x144",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/PT.semo/icons/icon-152.png",
       "sizes": "152x152",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/PT.semo/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/PT.semo/icons/icon-384.png",
       "sizes": "384x384",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/PT.semo/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "بطاقة جديدة",
+      "short_name": "جديد",
+      "description": "إنشاء بطاقة جديدة فارغة",
+      "url": "/PT.semo/",
+      "icons": [
+        {
+          "src": "/PT.semo/icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "إعادة ضبط",
+      "short_name": "إعادة",
+      "description": "إعادة ضبط البطاقة إلى الإعدادات الافتراضية",
+      "url": "/PT.semo/?reset=true",
+      "icons": [
+        {
+          "src": "/PT.semo/icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "المساعدة",
+      "short_name": "مساعدة",
+      "description": "دليل استخدام التطبيق",
+      "url": "/PT.semo/help.html",
+      "icons": [
+        {
+          "src": "/PT.semo/icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/PT.semo/screenshots/mobile-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "شاشة البطاقة الرئيسية"
+    },
+    {
+      "src": "/PT.semo/screenshots/mobile-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "لوحة التحكم وخيارات التخصيص"
+    },
+    {
+      "src": "/PT.semo/screenshots/desktop-1.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "واجهة التطبيق على الحاسوب"
+    }
+  ],
+  "share_target": {
+    "action": "/PT.semo/share-handler",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "note_taking": {
+    "new_note_url": "/PT.semo/?note=true"
+  }
 }
