@@ -6,10 +6,11 @@
     <title>SP Studio Pro | تجربة سلسة فائقة</title>
     
     <!-- ========== ربط جميع ملفات PWA الخارجية ========== -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <link rel="shortcut icon" href="/icons/icon-96.png">
-    <link rel="browserconfig" href="/browserconfig.xml">
+    <!-- تعديل المسارات لتتناسب مع GitHub Pages (المسار الأساسي PT.semo) -->
+    <link rel="manifest" href="/PT.semo/manifest.json">
+    <link rel="apple-touch-icon" href="/PT.semo/icons/icon-192.png">
+    <link rel="shortcut icon" href="/PT.semo/icons/icon-96.png">
+    <link rel="browserconfig" href="/PT.semo/browserconfig.xml">
     
     <!-- ميتاتاغات PWA -->
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
@@ -20,8 +21,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     
     <!-- ربط ملفات التحليلات والأداء (موجودة في المستودع) -->
-    <script src="/analytics.js" defer></script>
-    <script src="/performance.js" defer></script>
+    <script src="/PT.semo/analytics.js" defer></script>
+    <script src="/PT.semo/performance.js" defer></script>
     
     <!-- تحسينات الأداء -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -898,22 +899,24 @@
     window.addEventListener('offline', updateOnline);
     updateOnline();
     
-    // تسجيل Service Worker
+    // تسجيل Service Worker (باستخدام المسار الصحيح)
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered:', reg.scope)).catch(err => console.error('SW failed:', err));
+            navigator.serviceWorker.register('/PT.semo/sw.js')
+                .then(reg => console.log('SW registered:', reg.scope))
+                .catch(err => console.error('SW failed:', err));
         });
     }
     
     // الروابط الخارجية
-    document.getElementById('helpBtn').onclick = () => window.open('/help.html', '_blank');
+    document.getElementById('helpBtn').onclick = () => window.open('/PT.semo/help.html', '_blank');
     document.getElementById('shareBtn').onclick = () => {
         if (navigator.share) navigator.share({ title: 'SP Studio Pro', text: 'تطبيق ذكي لتصميم بطاقات العلاج الطبيعي', url: window.location.href }).catch(()=>{});
-        else window.open('/share-handler.html', '_blank');
+        else window.open('/PT.semo/share-handler.html', '_blank');
     };
     document.getElementById('checkUpdatesBtn').onclick = async () => {
         try {
-            const res = await fetch('/updates.json?t=' + Date.now());
+            const res = await fetch('/PT.semo/updates.json?t=' + Date.now());
             if (res.ok) { const data = await res.json(); if (data.latestVersion !== '1.0.0') toast(`🔄 تحديث جديد: ${data.latestVersion}`, 5000); else toast(`✅ أحدث إصدار`, 3000); }
             else toast('⚠️ تعذر التحقق', 3000);
         } catch(e) { toast('⚠️ خطأ في التحقق', 3000); }
