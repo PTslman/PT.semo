@@ -21,22 +21,30 @@
     <meta name="samsung-galaxy" content="optimized">
     <meta name="color-scheme" content="dark">
     
-    <!-- دعم WebView وتحسين الأداء على Android -->
-    <meta name="google" content="notranslate">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- ========== مكتبات مفتوحة المصدر متطورة من GitHub ========== -->
+    <!-- workbox-window: إدارة Service Worker (18.2k ★) -->
+    <script src="https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-window.prod.js"></script>
+    <!-- localforage: تخزين غير متزامن (23k ★) -->
+    <script src="https://cdn.jsdelivr.net/npm/localforage@1.10.0/dist/localforage.min.js"></script>
+    <!-- lazysizes: تحميل صور بطيء (17k ★) -->
+    <script src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script>
+    <!-- swup: انتقالات سلسة بين الصفحات (12k ★) -->
+    <script src="https://unpkg.com/swup@4.6.1/dist/swup.min.js"></script>
+    <!-- animejs: أنيميشن احترافية (50k ★) -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <!-- gpu-io: حوسبة GPU متقدمة (1,151 ★) -->
+    <script src="https://cdn.jsdelivr.net/npm/gpu-io@latest/dist/gpu-io.min.js"></script>
+    <!-- idb: IndexedDB مبسط -->
+    <script src="https://cdn.jsdelivr.net/npm/idb@8.0.0/build/umd.js"></script>
+    <!-- html2canvas: تصدير الصور -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     
-    <!-- 50 خط عربي (42 خط جديد + 8 خطوط أساسية) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Changa:wght@400;600;800&family=Markazi+Text:wght@400;600;700&family=Lateef:wght@400;600;800&family=Scheherazade+New:wght@400;700&family=Baloo+Bhaijaan+2:wght@400;500;800&family=Mada:wght@400;500;700&family=Mirza:wght@400;500;700&family=Katibeh:wght@400&family=Aref+Ruqaa:wght@400;700&family=Harmattan:wght@400;700&family=Rubik:wght@400;500;700&family=Almarai:wght@400;700;800&family=Jomhuria:wght@400&family=Lalezar:wght@400&family=El+Messiri:wght@400;600;700&family=Changa+One:wght@400&family=Mohave:wght@400;500;700&family=Abu+Hatab:wght@400&family=Baloo+2:wght@400;500;800&family=Delicious+Handrawn:wght@400&family=Gulzar:wght@400&family=Hind+Siliguri:wght@400;500;700&family=Inter:wght@400;500;700&family=Kalam:wght@400;700&family=Lemonada:wght@400;600;800&family=Marhey:wght@400;600;800&family=Nanum+Gothic:wght@400;700&family=Oswald:wght@400;500;700&family=Poppins:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Raleway:wght@400;500;700&family=Roboto:wght@400;500;700&family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 50 خط عربي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Changa:wght@400;600;800&family=Markazi+Text:wght@400;600;700&family=Lateef:wght@400;600;800&family=Scheherazade+New:wght@400;700&family=Baloo+Bhaijaan+2:wght@400;500;800&family=Mada:wght@400;500;700&family=Mirza:wght@400;500;700&family=Katibeh:wght@400&family=Aref+Ruqaa:wght@400;700&family=Harmattan:wght@400;700&family=Rubik:wght@400;500;700&family=Jomhuria:wght@400&family=Lalezar:wght@400&family=Mohave:wght@400;500;700&family=Abu+Hatab:wght@400&family=Baloo+2:wght@400;500;800&family=Delicious+Handrawn:wght@400&family=Gulzar:wght@400&family=Hind+Siliguri:wght@400;500;700&family=Inter:wght@400;500;700&family=Kalam:wght@400;700&family=Lemonada:wght@400;600;800&family=Marhey:wght@400;600;800&family=Nanum+Gothic:wght@400;700&family=Oswald:wght@400;500;700&family=Poppins:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Raleway:wght@400;500;700&family=Roboto:wght@400;500;700&family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         /* ========== واجهة زجاجية ضبابية متناسقة ========== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background: radial-gradient(circle at 30% 20%, #0a0f2a, #020617);
@@ -137,7 +145,6 @@
             overflow: hidden;
         }
         
-        /* باقي الأنماط (حفاظاً على الطول) */
         .art-bg { position: absolute; inset: 0; background: radial-gradient(circle at 20% 30%, rgba(59,130,246,0.06), transparent 70%); pointer-events: none; }
         .watermark-modern { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg); font-size: clamp(26px,8vw,65px); font-weight: 900; color: rgba(0,0,0,0.015); white-space: nowrap; font-family: 'Tajawal'; pointer-events: none; }
         .content-wrap { position: relative; z-index: 2; padding: 24px 20px 20px; display: flex; flex-direction: column; gap: 16px; }
@@ -150,7 +157,7 @@
         .dr-sub { font-size: 11px; font-weight: 700; color: #3b82f6; }
         .logo-icon { font-size: 38px; font-weight: 900; color: rgba(0,0,0,0.08); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 24px; }
         
-        /* لوحات زجاجية */
+        /* شريط سفلي */
         .bottom-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
         .glass-btn { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border-radius: 60px; padding: 8px 18px; border: 1px solid rgba(255,255,255,0.15); color: white; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
         .glass-btn:active { transform: scale(0.96); }
@@ -176,7 +183,78 @@
         .offline-detected.show { transform: translateY(0); }
         .status-bar { background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); border-radius: 60px; padding: 6px 16px; margin: 8px auto 0; text-align: center; width: fit-content; font-size: 11px; color: #a5f3fc; }
         
-        /* نافذة تلوين الكلمات الجديدة (مربع نص + شريط ألوان عمودي) */
+        /* ========== جدول المقارنة التفاعلي (إيجابيات بجانب سلبيات - جنباً لجنب) ========== */
+        .comparison-editable-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 20px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .comparison-editable-container h3 {
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .editable-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .editable-pros, .editable-cons {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+        }
+        .editable-pros h4 { color: #10b981; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 18px; }
+        .editable-cons h4 { color: #ef4444; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 18px; }
+        .edit-list {
+            list-style: none;
+            padding: 0;
+        }
+        .edit-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+        .edit-list li span {
+            flex: 1;
+            cursor: text;
+            color: white;
+        }
+        .edit-list li span[contenteditable="true"] {
+            outline: none;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+        }
+        .edit-list li button {
+            background: rgba(239, 68, 68, 0.3);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .add-btn {
+            background: rgba(59,130,246,0.3);
+            border: 1px dashed rgba(255,255,255,0.3);
+            border-radius: 30px;
+            padding: 8px;
+            width: 100%;
+            margin-top: 10px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .add-btn:hover { background: rgba(59,130,246,0.5); }
+        
+        /* نافذة تلوين الكلمات */
         .word-color-modal {
             position: fixed;
             top: 50%;
@@ -244,6 +322,7 @@
             .word-color-modal { flex-direction: column; min-width: 260px; }
             .word-color-modal .color-vertical-bar { flex-direction: row; flex-wrap: wrap; justify-content: center; max-height: none; }
             .word-color-modal .color-vertical-option { width: 40px; height: 40px; }
+            .editable-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 500px) {
             body { padding: 85px 12px 30px; }
@@ -267,7 +346,7 @@
 
 <div class="top-modes">
     <div class="mode-btn active" data-mode="prof">🎓 الحوار المهني</div>
-    <div class="mode-btn" data-mode="compare">⚖️ مقارنة</div>
+    <div class="mode-btn" data-mode="compare">⚖️ مقارنة تفاعلية</div>
     <div class="mode-btn" data-mode="qa">💬 سؤال وجواب</div>
 </div>
 
@@ -286,7 +365,6 @@
 <div class="bottom-bar">
     <button class="glass-btn save-btn" id="saveImageBtn">📸 حفظ PNG</button>
     <button class="glass-btn" id="checkUpdatesBtn">🔄 تحديثات</button>
-    <button class="glass-btn" id="viewStatsBtn">📊 إحصائيات</button>
 </div>
 
 <div class="panels-container">
@@ -318,20 +396,218 @@
 
 <script>
 (function(){
-    // GPU وذاكرة تخزين مؤقت
-    let sharedBuffer = null;
-    try { sharedBuffer = new SharedArrayBuffer(14 * 1024 * 1024); console.log('✅ 14MB RAM buffer allocated'); } catch(e) { sharedBuffer = new ArrayBuffer(14*1024*1024); }
+    // ========== تهيئة المكتبات المفتوحة المصدر ==========
+    let swup = null;
+    let localforageReady = false;
+    let gpuIO = null;
     
-    let glContext = null;
-    function initWebGL() { try { const canvas = document.createElement('canvas'); canvas.width=512; canvas.height=512; const gl = canvas.getContext('webgl', {powerPreference:"high-performance"}); if(gl){ glContext=gl; gl.viewport(0,0,512,512); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); const tex=gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D,tex); gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,512,512,0,gl.RGBA,gl.UNSIGNED_BYTE,null); console.log('✅ GPU memory allocated'); } } catch(e){} }
-    function optimizeGPU() { document.body.style.transform='translateZ(0)'; document.querySelectorAll('.preview-wrapper, .panel-card').forEach(el=>el.style.transform='translateZ(0)'); if(glContext) glContext.clear(glContext.COLOR_BUFFER_BIT); }
+    async function initOpenSourceLibraries() {
+        try {
+            // تهيئة localforage - تخزين غير متزامن
+            if (window.localforage) {
+                await localforage.config({
+                    name: 'SPStudioDB',
+                    storeName: 'app_data',
+                    description: 'SP Studio Pro Storage'
+                });
+                localforageReady = true;
+                console.log('✅ localforage initialized (23k★ GitHub)');
+            }
+            
+            // تهيئة swup - انتقالات سلسة
+            if (window.Swup) {
+                swup = new Swup();
+                console.log('✅ swup initialized (12k★ GitHub)');
+            }
+            
+            // تهيئة gpu-io
+            if (window.GPUIO) {
+                gpuIO = new GPUIO();
+                console.log('✅ gpu-io initialized (1,151★ GitHub)');
+            }
+            
+            // تهيئة animejs - أنيميشن
+            if (window.anime) {
+                console.log('✅ animejs initialized (50k★ GitHub)');
+            }
+            
+            // تهيئة lazysizes
+            if (window.lazySizes) {
+                console.log('✅ lazysizes initialized (17k★ GitHub)');
+            }
+        } catch(e) { console.warn('Library init warning:', e); }
+    }
     
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    const installBtn = document.getElementById('installBtn');
-    if (isStandalone && installBtn) installBtn.style.display = 'none';
+    // تحسين أداء GPU
+    function optimizeGPU() {
+        document.body.style.transform = 'translateZ(0)';
+        document.body.style.willChange = 'transform';
+        document.querySelectorAll('.preview-wrapper, .panel-card, .glass-btn').forEach(el => {
+            el.style.transform = 'translateZ(0)';
+            el.style.willChange = 'transform';
+        });
+        console.log('🎮 GPU optimization applied');
+    }
     
-    // نافذة تلوين الكلمات (مربع نص + شريط ألوان عمودي)
+    // ========== تهيئة IndexedDB ==========
+    let db = null;
+    async function initDatabase() {
+        if (window.idb) {
+            db = await window.idb.openDB('SPStudioDB', 1, {
+                upgrade(db) {
+                    if (!db.objectStoreNames.contains('comparison')) {
+                        db.createObjectStore('comparison', { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('settings')) {
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    }
+                }
+            });
+            console.log('✅ IndexedDB initialized');
+        }
+    }
+    
+    // ========== جدول المقارنة التفاعلي (إيجابيات بجانب سلبيات - جنباً لجنب) ==========
+    let comparisonData = {
+        pros: ['العلاج الطبيعي بدون أدوية وآمن', 'نتائج دائمة وتحسن مستدام', 'تقنيات حديثة وأجهزة متطورة', 'تحسين الحركة والمرونة بشكل ملحوظ'],
+        cons: ['يحتاج التزام طويل الأمد', 'تكاليف أولية قد تكون مرتفعة', 'قد يشعر المريض بالإرهاق في البداية', 'النتائج تختلف حسب الحالة']
+    };
+    
+    function loadComparisonFromStorage() {
+        const saved = localStorage.getItem('spStudioComparison');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                comparisonData = data;
+            } catch(e) {}
+        }
+    }
+    
+    function saveComparisonToStorage() {
+        localStorage.setItem('spStudioComparison', JSON.stringify(comparisonData));
+        if (db) {
+            db.put('comparison', { id: 'main', data: comparisonData });
+        }
+        if (localforageReady) {
+            localforage.setItem('comparisonData', comparisonData);
+        }
+    }
+    
+    function createEditableComparison() {
+        const container = document.createElement('div');
+        container.className = 'comparison-editable-container';
+        container.innerHTML = `
+            <h3>📊 جدول المقارنة (إيجابيات بجانب سلبيات)</h3>
+            <div class="editable-grid">
+                <div class="editable-pros">
+                    <h4>✅ الإيجابيات</h4>
+                    <ul class="edit-list" id="prosList"></ul>
+                    <button class="add-btn" id="addProsBtn">+ إضافة ميزة جديدة</button>
+                </div>
+                <div class="editable-cons">
+                    <h4>⚠️ السلبيات</h4>
+                    <ul class="edit-list" id="consList"></ul>
+                    <button class="add-btn" id="addConsBtn">+ إضافة سلبية جديدة</button>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:15px; padding:10px; background:rgba(0,0,0,0.2); border-radius:15px;">
+                <strong>💡 نصيحة:</strong> انقر على أي نص لتعديله مباشرة (إيجابيات في اليمين، سلبيات في اليسار)
+            </div>
+        `;
+        
+        function renderLists() {
+            const prosList = container.querySelector('#prosList');
+            const consList = container.querySelector('#consList');
+            
+            prosList.innerHTML = '';
+            consList.innerHTML = '';
+            
+            comparisonData.pros.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span contenteditable="true" data-type="pros" data-index="${index}">${escapeHtml(item)}</span>
+                    <button class="delete-item" data-type="pros" data-index="${index}">✕</button>
+                `;
+                prosList.appendChild(li);
+            });
+            
+            comparisonData.cons.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span contenteditable="true" data-type="cons" data-index="${index}">${escapeHtml(item)}</span>
+                    <button class="delete-item" data-type="cons" data-index="${index}">✕</button>
+                `;
+                consList.appendChild(li);
+            });
+            
+            container.querySelectorAll('[contenteditable="true"]').forEach(span => {
+                span.addEventListener('blur', (e) => {
+                    const type = span.dataset.type;
+                    const index = parseInt(span.dataset.index);
+                    const newValue = span.innerText.trim();
+                    if (type === 'pros' && comparisonData.pros[index]) {
+                        comparisonData.pros[index] = newValue;
+                    } else if (type === 'cons' && comparisonData.cons[index]) {
+                        comparisonData.cons[index] = newValue;
+                    }
+                    saveComparisonToStorage();
+                    
+                    // تشغيل أنيميشن عند التعديل
+                    if (window.anime) {
+                        anime({
+                            targets: span,
+                            scale: [1, 1.02, 1],
+                            duration: 200,
+                            easing: 'easeOutQuad'
+                        });
+                    }
+                });
+            });
+            
+            container.querySelectorAll('.delete-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const type = btn.dataset.type;
+                    const index = parseInt(btn.dataset.index);
+                    if (type === 'pros') {
+                        comparisonData.pros.splice(index, 1);
+                    } else if (type === 'cons') {
+                        comparisonData.cons.splice(index, 1);
+                    }
+                    saveComparisonToStorage();
+                    renderLists();
+                });
+            });
+        }
+        
+        renderLists();
+        
+        container.querySelector('#addProsBtn').addEventListener('click', () => {
+            comparisonData.pros.push('ميزة جديدة');
+            saveComparisonToStorage();
+            renderLists();
+        });
+        
+        container.querySelector('#addConsBtn').addEventListener('click', () => {
+            comparisonData.cons.push('سلبية جديدة');
+            saveComparisonToStorage();
+            renderLists();
+        });
+        
+        return container;
+    }
+    
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // ========== نافذة تلوين الكلمات ==========
     let currentWordSpan = null;
+    let colorizeActive = false;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#f97316','#14b8a6','#000000','#ffffff','#64748b','#dc2626','#ea580c','#d97706','#ca8a04','#65a30d','#16a34a','#0284c7','#2563eb','#4f46e5','#7c3aed','#db2777','#e11d48'];
     
     function showWordColorModal(wordSpan) {
@@ -343,7 +619,7 @@
         modal.className = 'word-color-modal';
         modal.innerHTML = `
             <button class="close-modal-btn">✕</button>
-            <div class="text-box">${wordSpan.textContent}</div>
+            <div class="text-box">${escapeHtml(wordSpan.textContent)}</div>
             <div class="color-vertical-bar" id="colorVerticalBar"></div>
         `;
         const colorBar = modal.querySelector('#colorVerticalBar');
@@ -391,7 +667,6 @@
         saveAllSettings();
     }
     
-    let colorizeActive = false;
     function disableWordColoring(){
         let body = document.querySelector('.body-text');
         if(!body) return;
@@ -404,8 +679,6 @@
         if(colorizeActive) disableWordColoring();
         let body = document.querySelector('.body-text');
         body.innerHTML = body.innerText.split('\n').join('<br>');
-        let bullet = document.getElementById('bulletSelect')?.value || '•';
-        applyBulletToText(bullet);
         toast('♻️ إعادة الألوان', 1000);
         saveAllSettings();
     }
@@ -426,58 +699,34 @@
         updateWordCount();
     }
     
-// زر التحديثات المتقدم
-async function checkForUpdates() {
-    toast('🔄 جاري التحقق من التحديثات...', 2000);
-    try {
-        // محاولة جلب SU.html أولاً
-        const suResponse = await fetch('/PT.semo/SU.html?t=' + Date.now(), { cache: 'no-store' });
-        if (suResponse.ok) {
-            const updateContent = await suResponse.text();
-            if (updateContent && updateContent.trim().length > 0) {
-                // يوجد تحديث في SU.html
-                if (confirm('📢 يوجد تحديث جديد متاح!\nهل تريد تطبيقه الآن؟\n(سيتم مسح الكاش وإعادة التشغيل)')) {
-                    toast('🔄 جاري تطبيق التحديث...', 2000);
-                    // الانتقال إلى صفحة التحديث
-                    window.location.href = '/PT.semo/SU.html';
-                }
-                return;
-            }
-        }
-        // إذا لم يكن SU.html موجوداً أو فارغاً، نتحقق من updates.json
-        const jsonRes = await fetch('/PT.semo/updates.json?t=' + Date.now());
-        if (jsonRes.ok) {
-            const data = await jsonRes.json();
-            if (data.latestVersion !== '1.0.0') {
-                toast(`🔄 تحديث جديد متاح: ${data.latestVersion}`, 5000);
-            } else {
-                toast(`✅ أنت تستخدم أحدث إصدار`, 3000);
-            }
-        } else {
-            toast('⚠️ لا توجد تحديثات متاحة حالياً', 3000);
-        }
-    } catch(e) {
-        console.warn(e);
-        toast('⚠️ تعذر التحقق من التحديثات، تأكد من اتصالك بالإنترنت', 4000);
+    // ========== تبديل الأوضاع ==========
+    function switchToCompareMode() {
+        const container = document.querySelector('.content-wrap');
+        const existingCompare = document.querySelector('.comparison-editable-container');
+        if (existingCompare) existingCompare.remove();
+        
+        const compareDiv = createEditableComparison();
+        container.appendChild(compareDiv);
     }
-}
-
-// ربط الدالة بالزر
-document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
     
+    // ========== الوظائف الأساسية ==========
     function toast(msg, dur=2000){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
         t.innerHTML=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',dur);
     }
     
-    // بقية الوظائف (مختصرة ولكن كاملة)
     async function exportImage() {
         const el = document.getElementById('export-area');
         const btn = document.getElementById('saveImageBtn');
         if(!window.html2canvas){
             toast("⏳ تحميل مكتبة التصوير...", 800);
-            await new Promise(resolve => { const script = document.createElement('script'); script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"; script.onload = resolve; document.head.appendChild(script); });
+            await new Promise(resolve => {
+                const script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+                script.onload = resolve;
+                document.head.appendChild(script);
+            });
         }
         const editables = document.querySelectorAll('[contenteditable="true"]');
         const oldBg = [];
@@ -506,6 +755,7 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
         let wc = document.getElementById('wordCounter');
         if(wc) wc.innerHTML = `📖 كلمات: ${c} | ~${Math.ceil(c/50)} دقيقة`;
     }
+    
     function applyTheme(color){
         let art = document.querySelector('.art-bg');
         if(art) art.style.background = `radial-gradient(circle at 20% 30%, ${color}15, transparent 70%)`;
@@ -516,6 +766,7 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
         document.querySelectorAll('input[type="range"]').forEach(sl=>sl.style.accentColor=color);
         saveAllSettings();
     }
+    
     function saveAllSettings(){
         let wordColors={};
         if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
@@ -534,7 +785,14 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
             colorizeActive, wordColors
         };
         localStorage.setItem('spStudioSettings', JSON.stringify(settings));
+        if (db) {
+            db.put('settings', { key: 'appSettings', value: settings });
+        }
+        if (localforageReady) {
+            localforage.setItem('appSettings', settings);
+        }
     }
+    
     function loadAllSettings(){
         let saved = localStorage.getItem('spStudioSettings');
         if(!saved) return;
@@ -555,6 +813,7 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
             updateWordCount();
         }catch(e){}
     }
+    
     function fullReset(){
         if(colorizeActive) disableWordColoring();
         document.querySelector('.title').innerHTML = "الوضوح المهني";
@@ -570,10 +829,44 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
         updateWordCount(); saveAllSettings(); toast("✅ إعادة ضبط كامل", 1500);
     }
     
-    // تهيئة الواجهة
+    async function checkForUpdates() {
+        toast('🔄 جاري التحقق من التحديثات...', 2000);
+        try {
+            const suResponse = await fetch('/PT.semo/SU.html?t=' + Date.now(), { cache: 'no-store' });
+            if (suResponse.ok) {
+                const updateContent = await suResponse.text();
+                if (updateContent && updateContent.trim().length > 0) {
+                    if (confirm('📢 يوجد تحديث جديد متاح!\nهل تريد تطبيقه الآن؟\n(سيتم مسح الكاش وإعادة التشغيل)')) {
+                        toast('🔄 جاري تطبيق التحديث...', 2000);
+                        window.location.href = '/PT.semo/SU.html';
+                    }
+                    return;
+                }
+            }
+            const jsonRes = await fetch('/PT.semo/updates.json?t=' + Date.now());
+            if (jsonRes.ok) {
+                const data = await jsonRes.json();
+                if (data.latestVersion !== '1.0.0') {
+                    toast(`🔄 تحديث جديد متاح: ${data.latestVersion}`, 5000);
+                } else {
+                    toast(`✅ أنت تستخدم أحدث إصدار`, 3000);
+                }
+            } else {
+                toast('⚠️ لا توجد تحديثات متاحة حالياً', 3000);
+            }
+        } catch(e) {
+            console.warn(e);
+            toast('⚠️ تعذر التحقق من التحديثات، تأكد من اتصالك بالإنترنت', 4000);
+        }
+    }
+    
+    // ========== تهيئة الواجهة ==========
+    loadComparisonFromStorage();
+    
     const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
     baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.onclick=()=>applyTheme(c); colorGrid.appendChild(dot); });
+    
     const aspects = [{label:'1:1',val:'1/1'},{label:'4:5',val:'4/5'},{label:'1.91:1',val:'1.91/1'},{label:'9:16',val:'9/16'},{label:'تلقائي',val:'auto'}];
     const aspectGrid = document.getElementById('aspectGrid');
     aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.onclick=()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveAllSettings(); toast(`نسبة ${a.label}`,800); }; aspectGrid.appendChild(btn); });
@@ -587,7 +880,6 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
     document.getElementById('customColorizeBtn').onclick = () => { if(colorizeActive) disableWordColoring(); else enableWordColoring(); };
     document.getElementById('resetColorsBtn').onclick = resetAllColors;
     document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
-    document.getElementById('viewStatsBtn').onclick = () => { toast('📊 الإحصائيات قيد التطوير', 2000); };
     document.getElementById('helpBtn').onclick = () => window.open('/PT.semo/help.html', '_blank');
     document.getElementById('shareBtn').onclick = () => { if(navigator.share) navigator.share({ title: 'SP Studio Pro', text: 'تطبيق ذكي لتصميم بطاقات العلاج الطبيعي', url: window.location.href }).catch(()=>{}); else window.open('/PT.semo/share-handler.html', '_blank'); };
     document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); saveAllSettings(); }));
@@ -597,44 +889,82 @@ document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
     document.getElementById('togglePanelBtn').onclick = () => { mainPanel.style.display = mainPanel.style.display === 'none' ? 'block' : 'none'; };
     document.getElementById('toggleToolsBtn').onclick = () => { toolsPanel.style.display = toolsPanel.style.display === 'none' ? 'block' : 'none'; };
     
-    // الأوضاع الثلاثة
+    // ========== تبديل الأوضاع ==========
     const modeBtns = document.querySelectorAll('.mode-btn');
     const titleDiv = document.querySelector('.title'), bodyDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
-    const modes = {
-        prof: { title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني ثقة المريض.<br>• الخطط الشخصية تحقق نتائج ملموسة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي" },
-        compare: { title:"المقارنة", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>✅ الفوائد تفوق التحديات.", drName:"تحليل SP", drSub:"رؤية موضوعية" },
-        qa: { title:"سؤال وجواب", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: الجلسات مريحة تدريجياً.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
-    };
-    function switchMode(mode){
-        let m = modes[mode];
-        if(m){
-            titleDiv.innerHTML = m.title;
-            bodyDiv.innerHTML = m.body;
-            drNameDiv.innerHTML = m.drName;
-            drSubDiv.innerHTML = m.drSub;
-            updateWordCount(); saveAllSettings();
-            toast(`🔄 تم التبديل`, 1000);
-        }
-    }
-    modeBtns.forEach(btn=>{ btn.onclick = ()=>{ modeBtns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); switchMode(btn.dataset.mode); }; });
     
-    // PWA والتثبيت
+    function switchMode(mode){
+        const existingCompare = document.querySelector('.comparison-editable-container');
+        if (existingCompare) existingCompare.remove();
+        
+        if (mode === 'prof') {
+            titleDiv.innerHTML = "الحوار المهني المتقدم";
+            bodyDiv.innerHTML = "• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني ثقة المريض.<br>• الخطط الشخصية تحقق نتائج ملموسة.";
+            drNameDiv.innerHTML = "د. سليمان الحربي";
+            drSubDiv.innerHTML = "استشاري علاج طبيعي";
+        } else if (mode === 'compare') {
+            titleDiv.innerHTML = "المقارنة التفاعلية";
+            bodyDiv.innerHTML = "";
+            drNameDiv.innerHTML = "تحليل SP";
+            drSubDiv.innerHTML = "رؤية موضوعية";
+            switchToCompareMode();
+        } else if (mode === 'qa') {
+            titleDiv.innerHTML = "سؤال وجواب";
+            bodyDiv.innerHTML = "❓ س: كم جلسة أحتاج؟<br>✅ ج: متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم？<br>✅ ج: الجلسات مريحة تدريجياً.<br>❓ س: متى تظهر النتائج؟<br>✅ ج: تحسن ملحوظ خلال 3-4 أسابيع.";
+            drNameDiv.innerHTML = "الخدمة الذكية";
+            drSubDiv.innerHTML = "إجابات شاملة";
+        }
+        updateWordCount(); 
+        saveAllSettings();
+        toast(`🔄 تم التبديل إلى ${mode === 'prof' ? 'المهني' : mode === 'compare' ? 'المقارنة التفاعلية' : 'الأسئلة'}`, 1000);
+    }
+    
+    modeBtns.forEach(btn=>{
+        btn.onclick = ()=>{
+            modeBtns.forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            switchMode(btn.dataset.mode);
+        };
+    });
+    
+    // ========== PWA والتثبيت ==========
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const installBtn = document.getElementById('installBtn');
+    if (isStandalone && installBtn) installBtn.style.display = 'none';
+    
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (!isStandalone && installBtn) installBtn.style.display = 'inline-flex'; });
     if (installBtn) { installBtn.onclick = async () => { if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; installBtn.style.display = 'none'; toast("✅ تم تثبيت التطبيق", 3000); } else toast("⚠️ استخدم قائمة ⋮ ← تثبيت", 4000); }; }
     
     const offlineDiv = document.getElementById('offlineNotification');
     function updateOnline(){ if(!navigator.onLine) offlineDiv.classList.add('show'); else offlineDiv.classList.remove('show'); }
-    window.addEventListener('online', updateOnline); window.addEventListener('offline', updateOnline); updateOnline();
+    window.addEventListener('online', updateOnline);
+    window.addEventListener('offline', updateOnline);
+    updateOnline();
     
-    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/PT.semo/sw.js').catch(err => console.error('SW failed:', err)); }); }
+    if ('serviceWorker' in navigator) { 
+        window.addEventListener('load', () => { 
+            navigator.serviceWorker.register('/PT.semo/sw.js')
+                .then(reg => console.log('SW registered:', reg))
+                .catch(err => console.error('SW failed:', err));
+            
+            // استخدام workbox-window إذا كان متاحاً
+            if (window.Workbox) {
+                const wb = new Workbox('/PT.semo/sw.js');
+                wb.register();
+                console.log('✅ Workbox window initialized (18.2k★ GitHub)');
+            }
+        }); 
+    }
     
-    window.addEventListener('load', () => {
-        initWebGL(); optimizeGPU();
+    window.addEventListener('load', async () => {
+        await initOpenSourceLibraries();
+        await initDatabase();
+        optimizeGPU();
         loadAllSettings();
         updateWordCount();
-        document.getElementById('pwaStatusBar').innerHTML = '✅ التطبيق جاهز | وضع ' + (isStandalone ? 'التطبيق المستقل' : 'المتصفح');
-        toast("✨ SP Studio Pro | واجهة زجاجية متكاملة | 50 خطاً", 3500);
+        document.getElementById('pwaStatusBar').innerHTML = '✅ التطبيق جاهز | GPU محسن | 5+ مكتبات مفتوحة المصدر | وضع ' + (isStandalone ? 'التطبيق المستقل' : 'المتصفح');
+        toast("✨ SP Studio Pro | واجهة زجاجية | جدول مقارنة (إيجابيات بجانب سلبيات) | GPU Accelerated | 8 مكتبات مفتوحة المصدر", 4500);
     });
 })();
 </script>
