@@ -426,43 +426,44 @@
         updateWordCount();
     }
     
-    // التحديثات المتقدمة (SU.html أولاً ثم updates.json)
-    async function checkForUpdates() {
-        toast('🔄 جاري التحقق من التحديثات...', 2000);
-        try {
-            // محاولة جلب SU.html أولاً
-            const suResponse = await fetch('/PT.semo/SU.html?t=' + Date.now(), { cache: 'no-store' });
-            if (suResponse.ok) {
-                const updateContent = await suResponse.text();
-                if (updateContent && updateContent.trim().length > 0) {
-                    // يوجد تحديث في SU.html
-                    toast('🔄 تحديث جديد متاح! جاري التطبيق...', 3000);
-                    // تطبيق التحديث (هنا يمكن تعديل index.html، لكن عملياً نعرض رسالة ونعيد التحميل)
-                    if (confirm('تم العثور على تحديث جديد. هل تريد تطبيقه الآن؟')) {
-                        localStorage.setItem('pendingUpdate', updateContent);
-                        toast('✅ سيتم تطبيق التحديث بعد إعادة التحميل', 2500);
-                        setTimeout(() => window.location.reload(), 2000);
-                    }
-                    return;
+// زر التحديثات المتقدم
+async function checkForUpdates() {
+    toast('🔄 جاري التحقق من التحديثات...', 2000);
+    try {
+        // محاولة جلب SU.html أولاً
+        const suResponse = await fetch('/PT.semo/SU.html?t=' + Date.now(), { cache: 'no-store' });
+        if (suResponse.ok) {
+            const updateContent = await suResponse.text();
+            if (updateContent && updateContent.trim().length > 0) {
+                // يوجد تحديث في SU.html
+                if (confirm('📢 يوجد تحديث جديد متاح!\nهل تريد تطبيقه الآن؟\n(سيتم مسح الكاش وإعادة التشغيل)')) {
+                    toast('🔄 جاري تطبيق التحديث...', 2000);
+                    // الانتقال إلى صفحة التحديث
+                    window.location.href = '/PT.semo/SU.html';
                 }
+                return;
             }
-            // إذا لم يكن SU.html موجوداً أو فارغاً، نتحقق من updates.json
-            const jsonRes = await fetch('/PT.semo/updates.json?t=' + Date.now());
-            if (jsonRes.ok) {
-                const data = await jsonRes.json();
-                if (data.latestVersion !== '1.0.0') {
-                    toast(`🔄 تحديث جديد متاح: ${data.latestVersion}`, 5000);
-                } else {
-                    toast(`✅ أنت تستخدم أحدث إصدار`, 3000);
-                }
-            } else {
-                toast('⚠️ لا توجد تحديثات متاحة', 3000);
-            }
-        } catch(e) {
-            console.warn(e);
-            toast('⚠️ تعذر التحقق من التحديثات', 3000);
         }
+        // إذا لم يكن SU.html موجوداً أو فارغاً، نتحقق من updates.json
+        const jsonRes = await fetch('/PT.semo/updates.json?t=' + Date.now());
+        if (jsonRes.ok) {
+            const data = await jsonRes.json();
+            if (data.latestVersion !== '1.0.0') {
+                toast(`🔄 تحديث جديد متاح: ${data.latestVersion}`, 5000);
+            } else {
+                toast(`✅ أنت تستخدم أحدث إصدار`, 3000);
+            }
+        } else {
+            toast('⚠️ لا توجد تحديثات متاحة حالياً', 3000);
+        }
+    } catch(e) {
+        console.warn(e);
+        toast('⚠️ تعذر التحقق من التحديثات، تأكد من اتصالك بالإنترنت', 4000);
     }
+}
+
+// ربط الدالة بالزر
+document.getElementById('checkUpdatesBtn').onclick = checkForUpdates;
     
     function toast(msg, dur=2000){
         let t = document.querySelector('.dynamic-toast');
