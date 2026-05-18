@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sp-studio-pro-v2';
+const CACHE_NAME = 'sp-studio-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -6,6 +6,8 @@ const urlsToCache = [
   '/offline.html',
   '/help.html',
   '/share-handler.html',
+  '/analytics.js',
+  '/performance.js',
   '/icons/icon-72.png',
   '/icons/icon-96.png',
   '/icons/icon-128.png',
