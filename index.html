@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>SP Studio Pro | تجربة فائقة السلاسة</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- ========== ربط جميع ملفات PWA الخارجية ========== -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="shortcut icon" href="/icons/icon-96.png">
+    <link rel="browserconfig" href="/browserconfig.xml">
+    
+    <!-- ميتاتاغات PWA -->
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,16 +19,19 @@
     <meta name="application-name" content="SP Studio Pro">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- Manifest ديناميكي -->
-    <link rel="manifest" id="dynamicManifest">
-    <link rel="apple-touch-icon" href="#" id="appleTouchIcon">
-    <link rel="shortcut icon" href="#" id="faviconIcon">
+    <!-- ربط ملفات التحليلات والأداء (موجودة في المستودع) -->
+    <script src="/analytics.js" defer></script>
+    <script src="/performance.js" defer></script>
     
+    <!-- تحسينات الأداء -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* ========== أنماط متطورة مع أنيميشن سلس ========== */
         * {
             margin: 0;
             padding: 0;
@@ -38,7 +47,14 @@
             overflow-x: hidden;
         }
 
-        /* ========== شريط الأزرار العلوي العائم والمحسن ========== */
+        /* تحسينات الأداء والسلاسة */
+        .floating-navbar, .top-modes, .preview-wrapper, .bottom-bar, .panels-container, .panel-card {
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* شريط الأزرار العلوي العائم */
         .floating-navbar {
             position: fixed;
             top: 16px;
@@ -56,14 +72,13 @@
             padding: 6px 16px;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             width: auto;
             min-width: 280px;
             max-width: 600px;
             margin: 0 auto;
             left: 50%;
             transform: translateX(-50%);
-            right: auto;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
         
         .navbar-btn {
@@ -85,11 +100,7 @@
         
         .navbar-btn:active {
             transform: scale(0.96);
-        }
-        
-        .navbar-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
-            transform: translateY(-2px);
+            transition: transform 0.05s;
         }
         
         .navbar-btn.primary {
@@ -97,42 +108,26 @@
             box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
         }
         
-        .navbar-btn.success {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        
-        .navbar-btn.warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-        
         .navbar-btn.purple {
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
         }
         
-        .install-spinner {
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top: 2px solid #10b981;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 10px;
+        .navbar-btn.success {
+            background: linear-gradient(135deg, #10b981, #059669);
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .navbar-btn.hide-install {
+            display: none !important;
         }
         
-        /* ========== أزرار الوضع العلوية ========== */
+        /* أزرار الوضع */
         .top-modes {
             display: flex;
             justify-content: center;
             gap: 12px;
             margin-bottom: 28px;
             flex-wrap: wrap;
-            position: relative;
-            z-index: 20;
+            animation: fadeInUp 0.5s ease-out;
         }
         
         .mode-btn {
@@ -157,13 +152,14 @@
             box-shadow: 0 8px 18px rgba(59, 130, 246, 0.3);
         }
         
-        /* ========== حاوية البطاقة ========== */
+        /* حاوية البطاقة */
         .preview-wrapper {
             border-radius: 48px;
             padding: 8px;
             background: rgba(255, 255, 255, 0.02);
             margin-bottom: 28px;
             transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease-out 0.1s both;
         }
         
         #export-area {
@@ -237,10 +233,6 @@
             transition: all 0.1s ease;
         }
         
-        .body-text span.word-colorable:active {
-            transform: scale(0.98);
-        }
-        
         .footer {
             display: flex;
             justify-content: space-between;
@@ -274,13 +266,14 @@
             border-radius: 24px;
         }
         
-        /* ========== شريط الأزرار السفلي ========== */
+        /* شريط سفلي */
         .bottom-bar {
             display: flex;
             justify-content: center;
             gap: 16px;
             margin-bottom: 28px;
             flex-wrap: wrap;
+            animation: fadeInUp 0.5s ease-out 0.2s both;
         }
         
         .glass-btn {
@@ -309,7 +302,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
         
-        /* ========== اللوحات ========== */
+        /* اللوحات */
         .panels-container {
             display: flex;
             flex-wrap: wrap;
@@ -330,6 +323,7 @@
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             color: white;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
         }
         
         .panel-card:hover {
@@ -441,9 +435,8 @@
             padding: 10px 18px;
             border-radius: 60px;
             font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
             color: white;
+            cursor: pointer;
             text-align: center;
             transition: all 0.15s;
         }
@@ -459,7 +452,6 @@
             text-align: center;
             margin-top: 12px;
             font-size: 12px;
-            font-weight: 500;
             backdrop-filter: blur(4px);
         }
         
@@ -489,10 +481,6 @@
             transition: transform 0.1s;
         }
         
-        .word-color-picker .color-option:active {
-            transform: scale(0.92);
-        }
-        
         .word-color-picker input[type="color"] {
             width: 38px;
             height: 38px;
@@ -517,7 +505,7 @@
             white-space: nowrap;
             pointer-events: none;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            font-weight: 500;
+            animation: fadeInUp 0.3s ease;
         }
         
         .offline-detected {
@@ -549,22 +537,26 @@
             width: fit-content;
             font-size: 12px;
             color: #a5f3fc;
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @media (max-width: 650px) {
             body {
                 padding: 100px 16px 30px;
             }
-            .floating-navbar {
-                gap: 6px;
-                padding: 6px 12px;
-            }
             .navbar-btn {
                 padding: 5px 10px;
-                font-size: 11px;
-            }
-            .mode-btn {
-                padding: 7px 16px;
                 font-size: 11px;
             }
             .panel-card {
@@ -582,24 +574,23 @@
 
 <div id="offlineNotification" class="offline-detected">📡 وضع غير متصل - بعض الميزات محدودة</div>
 
-<!-- شريط الأزرار العلوي العائم والمتطور -->
 <div class="floating-navbar">
     <button class="navbar-btn primary" id="togglePanelBtn">🎛️ لوحة الأبعاد</button>
     <button class="navbar-btn purple" id="toggleToolsBtn">🧰 الأدوات الذكية</button>
+    <button class="navbar-btn" id="helpBtn">❓ مساعدة</button>
+    <button class="navbar-btn" id="shareBtn">📤 مشاركة</button>
     <div id="installContainer" style="display: inline-flex; align-items: center;">
-        <div id="installSpinner" class="install-spinner"></div>
-        <button id="installReadyBtn" class="navbar-btn success" style="display: none;">📲 تثبيت</button>
+        <div id="installSpinner" class="install-spinner" style="display: none;"></div>
+        <button id="installBtn" class="navbar-btn success">📲 تثبيت التطبيق</button>
     </div>
 </div>
 
-<!-- أزرار الوضع -->
 <div class="top-modes">
     <div class="mode-btn active" data-mode="prof">🎓 الحوار المهني</div>
     <div class="mode-btn" data-mode="compare">⚖️ مقارنة</div>
     <div class="mode-btn" data-mode="qa">💬 سؤال وجواب</div>
 </div>
 
-<!-- البطاقة -->
 <div class="preview-wrapper">
     <div id="export-area">
         <div class="art-bg"></div>
@@ -612,12 +603,12 @@
     </div>
 </div>
 
-<!-- شريط سفلي -->
 <div class="bottom-bar">
     <button class="glass-btn save-btn" id="saveImageBtn">📸 حفظ الصورة PNG</button>
+    <button class="glass-btn" id="checkUpdatesBtn">🔄 تحديثات</button>
+    <button class="glass-btn" id="viewStatsBtn">📊 إحصائيات</button>
 </div>
 
-<!-- اللوحات -->
 <div class="panels-container">
     <div class="panel-card" id="smartPanel">
         <div class="section-label">📐 نسب الأبعاد</div>
@@ -630,7 +621,6 @@
         <div class="slider-group"><span class="slider-label">رمز القائمة</span><select id="bulletSelect" class="bullet-select"><option value="•">• نقطة</option><option value="★">★ نجمة</option><option value="●">● دائرة</option><option value="✓">✓ صح</option></select></div>
         <div style="text-align:center; font-size:11px; margin-top:8px; opacity:0.6;">💡 انقر "الأدوات الذكية" للتلوين</div>
     </div>
-
     <div class="panel-card" id="toolsPanel" style="display: none;">
         <div class="section-label">🎨 الألوان</div>
         <div class="color-grid" id="colorGrid"></div>
@@ -647,97 +637,108 @@
     </div>
 </div>
 
-<div class="status-bar" id="pwaStatusBar">🔄 تجهيز الأيقونات وتهيئة PWA...</div>
+<div class="status-bar" id="pwaStatusBar">🔄 تهيئة التطبيق...</div>
 
 <script>
 (function(){
-    // ========== توليد الأيقونات ديناميكياً ==========
-    const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512];
-    let generatedIcons = [];
+    // ========== 1. تحديد إذا كان التطبيق مثبتاً كـ PWA ==========
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const installBtn = document.getElementById('installBtn');
+    const installContainer = document.getElementById('installContainer');
     
-    function generateIconBlob(size) {
-        return new Promise((resolve) => {
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
-            const grad = ctx.createLinearGradient(0, 0, size, size);
-            grad.addColorStop(0, '#1e1b4b');
-            grad.addColorStop(0.5, '#3b82f6');
-            grad.addColorStop(1, '#8b5cf6');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, size, size);
-            ctx.beginPath();
-            ctx.arc(size/2, size/2, size * 0.38, 0, 2 * Math.PI);
-            ctx.fillStyle = '#ffffff20';
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.font = `bold ${size * 0.42}px 'Cairo'`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('SP', size/2, size/2 - size*0.05);
-            ctx.font = `${size * 0.12}px 'Cairo'`;
-            ctx.fillStyle = '#ffffffee';
-            ctx.fillText('STUDIO', size/2, size/2 + size*0.28);
-            canvas.toBlob(resolve, 'image/png');
+    // إذا كان التطبيق مثبتاً كـ PWA، نخفي زر التثبيت نهائياً
+    if (isStandalone) {
+        installContainer.style.display = 'none';
+    }
+    
+    // ========== 2. حفظ الصورة (فتح نافذة Save As) ==========
+    async function exportImage() {
+        const element = document.getElementById('export-area');
+        const btn = document.getElementById('saveImageBtn');
+        
+        if (!window.html2canvas) {
+            toast("⏳ تحميل مكتبة التصوير...", 800);
+            await new Promise(resolve => {
+                const script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+                script.onload = resolve;
+                document.head.appendChild(script);
+            });
+        }
+        
+        const editables = document.querySelectorAll('[contenteditable="true"]');
+        const oldBg = [];
+        editables.forEach(el => {
+            oldBg.push(el.style.background);
+            el.style.background = 'transparent';
         });
-    }
-    
-    async function generateAllIcons() {
-        const pwaStatus = document.getElementById('pwaStatusBar');
-        pwaStatus.innerHTML = '🎨 توليد الأيقونات...';
-        const icons = [];
-        for (const size of iconSizes) {
-            const blob = await generateIconBlob(size);
-            const url = URL.createObjectURL(blob);
-            icons.push({ size, url });
-        }
-        generatedIcons = icons;
-        return icons;
-    }
-    
-    async function createManifestWithIcons() {
-        const manifest = {
-            name: "SP Studio Pro",
-            short_name: "SP Studio",
-            start_url: "/",
-            scope: "/",
-            display: "standalone",
-            theme_color: "#3b82f6",
-            background_color: "#0b1120",
-            orientation: "portrait",
-            icons: generatedIcons.map(icon => ({ src: icon.url, sizes: `${icon.size}x${icon.size}`, type: "image/png" })),
-            categories: ["design", "productivity"],
-            lang: "ar",
-            dir: "rtl"
-        };
-        const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        document.getElementById('dynamicManifest').href = url;
-        const appleIcon = generatedIcons.find(i=>i.size===192) || generatedIcons[0];
-        if(appleIcon) {
-            document.getElementById('appleTouchIcon').href = appleIcon.url;
-            document.getElementById('faviconIcon').href = generatedIcons.find(i=>i.size===96)?.url || appleIcon.url;
-        }
-        document.getElementById('pwaStatusBar').innerHTML = '✅ أيقونات ومانيفست جاهزان - اضغط تثبيت';
-    }
-    
-    async function registerSW() {
-        if (!('serviceWorker' in navigator)) return;
-        const swCode = `const CACHE='sp-studio-v4'; self.addEventListener('install',e=>{self.skipWaiting()}); self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request))}); self.addEventListener('activate',e=>{self.clients.claim()});`;
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        const url = URL.createObjectURL(blob);
+        
+        btn.innerHTML = "🖼️ جاري...";
+        btn.disabled = true;
+        
         try {
-            await navigator.serviceWorker.register(url);
-            setTimeout(() => URL.revokeObjectURL(url), 5000);
-        } catch(e) { console.warn(e); }
+            const canvas = await window.html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: false
+            });
+            
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            
+            // استخدام showSaveFilePicker (مدير الملفات) إذا كان متاحاً
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: `SP_Studio_${Date.now()}.png`,
+                        types: [{
+                            description: 'PNG Image',
+                            accept: { 'image/png': ['.png'] }
+                        }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(blob);
+                    await writable.close();
+                    toast("✅ تم حفظ الصورة في الموقع الذي اخترته", 2000);
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        fallbackDownload(blob);
+                    }
+                }
+            } else {
+                fallbackDownload(blob);
+            }
+            
+        } catch (e) {
+            toast("❌ فشل حفظ الصورة", 2000);
+        } finally {
+            btn.innerHTML = "📸 حفظ الصورة PNG";
+            btn.disabled = false;
+            editables.forEach((el, i) => { el.style.background = oldBg[i]; });
+        }
+        
+        function fallbackDownload(blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SP_Studio_${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast("📸 تم حفظ الصورة", 1500);
+        }
     }
     
-    // ========== UI ==========
-    function toast(msg, dur=2000){
+    // ========== 3. باقي الوظائف (مدمجة بالكامل) ==========
+    function toast(msg, dur = 2000) {
         let t = document.querySelector('.dynamic-toast');
-        if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
-        t.innerHTML=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',dur);
+        if (!t) {
+            t = document.createElement('div');
+            t.className = 'dynamic-toast';
+            document.body.appendChild(t);
+        }
+        t.innerHTML = msg;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', dur);
     }
     
     // إظهار/إخفاء اللوحات
@@ -746,6 +747,7 @@
     document.getElementById('togglePanelBtn').onclick = () => {
         if (mainPanel.style.display === 'none') {
             mainPanel.style.display = 'block';
+            mainPanel.style.animation = 'fadeInUp 0.3s ease';
         } else {
             mainPanel.style.display = 'none';
         }
@@ -753,138 +755,214 @@
     document.getElementById('toggleToolsBtn').onclick = () => {
         if (toolsPanel.style.display === 'none') {
             toolsPanel.style.display = 'block';
+            toolsPanel.style.animation = 'fadeInUp 0.3s ease';
             if (mainPanel.style.display === 'none') mainPanel.style.display = 'block';
         } else {
             toolsPanel.style.display = 'none';
         }
     };
     
-    // ========== وظائف البطاقة ==========
+    // ========== 4. بقية الدوال الأساسية (تلوين الكلمات، ضبط عرض، إلخ) ==========
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
     
-    function makeDraggable(picker){
-        let drag={active:false, sx:0,sy:0, l:0,t:0};
+    function makeDraggable(picker) {
+        let drag = { active: false, sx: 0, sy: 0, l: 0, t: 0 };
         picker.addEventListener('mousedown', (e) => {
-            if(e.target.classList.contains('color-option') || e.target.type==='color') return;
-            drag.active=true; drag.sx=e.clientX; drag.sy=e.clientY;
-            let rect=picker.getBoundingClientRect(); drag.l=rect.left; drag.t=rect.top;
-            document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp); e.preventDefault();
+            if (e.target.classList.contains('color-option') || e.target.type === 'color') return;
+            drag.active = true;
+            drag.sx = e.clientX;
+            drag.sy = e.clientY;
+            let rect = picker.getBoundingClientRect();
+            drag.l = rect.left;
+            drag.t = rect.top;
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+            e.preventDefault();
         });
-        function onMove(e){ if(!drag.active) return; picker.style.left=(drag.l + e.clientX - drag.sx)+'px'; picker.style.top=(drag.t + e.clientY - drag.sy)+'px'; }
-        function onUp(){ drag.active=false; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); }
+        function onMove(e) { if (!drag.active) return; picker.style.left = (drag.l + e.clientX - drag.sx) + 'px'; picker.style.top = (drag.t + e.clientY - drag.sy) + 'px'; }
+        function onUp() { drag.active = false; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); }
     }
     
-    function createPickerForWord(span,curColor){
-        if(currentPicker) currentPicker.remove();
-        const picker = document.createElement('div'); picker.className = 'word-color-picker';
+    function createPickerForWord(span, curColor) {
+        if (currentPicker) currentPicker.remove();
+        const picker = document.createElement('div');
+        picker.className = 'word-color-picker';
         colorPalette.forEach(col => {
-            const opt = document.createElement('div'); opt.className='color-option'; opt.style.backgroundColor=col;
-            opt.style.border = col==='#ffffff'?'1px solid #333':'2px solid white';
-            opt.onclick = (e) => { e.stopPropagation(); span.style.color=col; saveSettings(); picker.remove(); currentPicker=null; };
+            const opt = document.createElement('div');
+            opt.className = 'color-option';
+            opt.style.backgroundColor = col;
+            opt.style.border = col === '#ffffff' ? '1px solid #333' : '2px solid white';
+            opt.onclick = (e) => {
+                e.stopPropagation();
+                span.style.color = col;
+                saveSettings();
+                picker.remove();
+                currentPicker = null;
+            };
             picker.appendChild(opt);
         });
-        const custom = document.createElement('input'); custom.type='color'; custom.value=curColor||'#000000';
-        custom.oninput = (e) => { span.style.color=e.target.value; saveSettings(); };
+        const custom = document.createElement('input');
+        custom.type = 'color';
+        custom.value = curColor || '#000000';
+        custom.oninput = (e) => {
+            span.style.color = e.target.value;
+            saveSettings();
+        };
         picker.appendChild(custom);
         let rect = span.getBoundingClientRect();
-        picker.style.left = (rect.left+window.scrollX+10)+'px';
-        picker.style.top = (rect.bottom+window.scrollY+8)+'px';
-        document.body.appendChild(picker); currentPicker=picker; makeDraggable(picker);
-        const close=(e)=>{ if(picker && !picker.contains(e.target)){ picker.remove(); currentPicker=null; document.removeEventListener('click',close); } };
-        setTimeout(()=>document.addEventListener('click',close),10);
+        picker.style.left = (rect.left + window.scrollX + 10) + 'px';
+        picker.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+        document.body.appendChild(picker);
+        currentPicker = picker;
+        makeDraggable(picker);
+        const close = (e) => {
+            if (picker && !picker.contains(e.target)) {
+                picker.remove();
+                currentPicker = null;
+                document.removeEventListener('click', close);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', close), 10);
     }
     
-    function enableWordColoring(){
-        if(colorizeActive) disableWordColoring();
+    function enableWordColoring() {
+        if (colorizeActive) disableWordColoring();
         let body = document.querySelector('.body-text');
-        function convert(node){
-            if(node.nodeType===Node.TEXT_NODE && node.parentNode && !node.parentNode.classList?.contains('word-colorable')){
+        function convert(node) {
+            if (node.nodeType === Node.TEXT_NODE && node.parentNode && !node.parentNode.classList?.contains('word-colorable')) {
                 let words = node.textContent.split(/(\s+)/);
                 let frag = document.createDocumentFragment();
-                for(let w of words){
-                    if(w.trim().length && !/^[•★●✓\s]+$/.test(w)){
-                        let span = document.createElement('span'); span.className='word-colorable'; span.textContent=w; span.style.color='inherit';
-                        span.onclick = (e) => { e.stopPropagation(); createPickerForWord(span,span.style.color); };
+                for (let w of words) {
+                    if (w.trim().length && !/^[•★●✓\s]+$/.test(w)) {
+                        let span = document.createElement('span');
+                        span.className = 'word-colorable';
+                        span.textContent = w;
+                        span.style.color = 'inherit';
+                        span.onclick = (e) => {
+                            e.stopPropagation();
+                            createPickerForWord(span, span.style.color);
+                        };
                         frag.appendChild(span);
-                    } else frag.appendChild(document.createTextNode(w));
+                    } else {
+                        frag.appendChild(document.createTextNode(w));
+                    }
                 }
-                node.parentNode.replaceChild(frag,node);
-            } else if(node.nodeType===Node.ELEMENT_NODE && node.childNodes) Array.from(node.childNodes).forEach(convert);
+                node.parentNode.replaceChild(frag, node);
+            } else if (node.nodeType === Node.ELEMENT_NODE && node.childNodes) {
+                Array.from(node.childNodes).forEach(convert);
+            }
         }
-        convert(body); colorizeActive=true; toast('🎨 انقر كلمة لتلوينها (اسحب اللوحة)',2800); saveSettings();
+        convert(body);
+        colorizeActive = true;
+        toast('🎨 انقر كلمة لتلوينها (اسحب اللوحة)', 2800);
+        saveSettings();
     }
-    function disableWordColoring(){
+    
+    function disableWordColoring() {
         let body = document.querySelector('.body-text');
-        if(!body) return;
+        if (!body) return;
         body.innerHTML = body.innerText.split('\n').join('<br>');
-        colorizeActive=false; if(currentPicker) currentPicker.remove(); currentPicker=null; saveSettings();
+        colorizeActive = false;
+        if (currentPicker) currentPicker.remove();
+        currentPicker = null;
+        saveSettings();
     }
-    function resetAllColors(){
-        if(colorizeActive) disableWordColoring();
+    
+    function resetAllColors() {
+        if (colorizeActive) disableWordColoring();
         let body = document.querySelector('.body-text');
         body.innerHTML = body.innerText.split('\n').join('<br>');
-        let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
-        toast('♻️ إعادة الألوان',1000); saveSettings();
+        let bullet = document.getElementById('bulletSelect').value;
+        applyBulletToText(bullet);
+        toast('♻️ إعادة الألوان', 1000);
+        saveSettings();
     }
-    function applyBulletToText(bullet){
+    
+    function applyBulletToText(bullet) {
         const body = document.querySelector('.body-text');
         let html = body.innerHTML;
-        const all = ['•','★','●','✓'];
-        const regex = new RegExp(`(^|<br>)\\s*([${all.join('')}])\\s*`,'gi');
+        const all = ['•', '★', '●', '✓'];
+        const regex = new RegExp(`(^|<br>)\\s*([${all.join('')}])\\s*`, 'gi');
         html = html.replace(regex, `$1 ${bullet} `);
         let lines = html.split('<br>');
-        for(let i=0;i<lines.length;i++){
+        for (let i = 0; i < lines.length; i++) {
             let tr = lines[i].trim();
-            if(tr.length && !all.some(b=>tr.startsWith(b)) && !tr.startsWith(bullet))
+            if (tr.length && !all.some(b => tr.startsWith(b)) && !tr.startsWith(bullet)) {
                 lines[i] = bullet + ' ' + lines[i];
+            }
         }
         body.innerHTML = lines.join('<br>');
         updateWordCount();
     }
-    function updateWordCount(){
-        let txt = document.querySelector('.body-text').innerText.replace(/[•★●✓]/g,' ');
-        let c = txt.split(/\s+/).filter(w=>w.length).length;
+    
+    function updateWordCount() {
+        let txt = document.querySelector('.body-text').innerText.replace(/[•★●✓]/g, ' ');
+        let c = txt.split(/\s+/).filter(w => w.length).length;
         let wc = document.getElementById('wordCounter');
-        if(wc) wc.innerHTML = `📖 عدد الكلمات: ${c} | ~${Math.ceil(c/50)} دقيقة`;
+        if (wc) wc.innerHTML = `📖 عدد الكلمات: ${c} | ~${Math.ceil(c / 50)} دقيقة`;
     }
-    function applyTheme(color){
+    
+    function applyTheme(color) {
         let art = document.querySelector('.art-bg');
-        if(art) art.style.background = `radial-gradient(circle at 20% 30%, ${color}15, transparent 70%)`;
+        if (art) art.style.background = `radial-gradient(circle at 20% 30%, ${color}15, transparent 70%)`;
         let title = document.querySelector('.title');
-        if(title){ title.style.color = color; title.style.borderRightColor = color; }
+        if (title) {
+            title.style.color = color;
+            title.style.borderRightColor = color;
+        }
         let sub = document.querySelector('.dr-sub');
-        if(sub) sub.style.color = color;
-        document.querySelectorAll('input[type="range"]').forEach(sl=>sl.style.accentColor=color);
+        if (sub) sub.style.color = color;
+        document.querySelectorAll('input[type="range"]').forEach(sl => sl.style.accentColor = color);
         saveSettings();
     }
-    function autoFitWidthAI(){
+    
+    function autoFitWidthAI() {
         let bodyElem = document.querySelector('.body-text');
         let div = document.createElement('div');
         let cs = getComputedStyle(bodyElem);
         div.style.cssText = `font-size:${cs.fontSize}; font-family:${cs.fontFamily}; position:absolute; top:-9999px; white-space:nowrap;`;
         document.body.appendChild(div);
-        let lines = bodyElem.innerText.split('\n'); let maxW=0;
-        for(let line of lines){ let clean = line.replace(/^[•★●✓]\s*/,''); div.innerText=clean; maxW = Math.max(maxW, div.getBoundingClientRect().width); }
+        let lines = bodyElem.innerText.split('\n');
+        let maxW = 0;
+        for (let line of lines) {
+            let clean = line.replace(/^[•★●✓]\s*/, '');
+            div.innerText = clean;
+            maxW = Math.max(maxW, div.getBoundingClientRect().width);
+        }
         document.body.removeChild(div);
         let wrapperW = document.querySelector('.preview-wrapper').clientWidth;
-        let desired = Math.min(96, Math.max(70, (maxW+40)/wrapperW*100));
-        document.getElementById('export-area').style.maxWidth = Math.round(desired)+'vw';
-        saveSettings(); toast(`📏 العرض الذكي: ${Math.round(desired)}%`,1500);
+        let desired = Math.min(96, Math.max(70, (maxW + 40) / wrapperW * 100));
+        document.getElementById('export-area').style.maxWidth = Math.round(desired) + 'vw';
+        saveSettings();
+        toast(`📏 العرض الذكي: ${Math.round(desired)}%`, 1500);
     }
-    function aiEnhanceText(){
+    
+    function aiEnhanceText() {
         let bodyElem = document.querySelector('.body-text');
-        let sentences = bodyElem.innerText.split(/[.،\n]/).filter(s=>s.trim().length);
-        let enhanced = sentences.map(s=>{ s=s.trim(); if(s.includes('وضوح')) return '✓ الوضوح أساس النجاح'; return '✨ '+s; });
+        let sentences = bodyElem.innerText.split(/[.،\n]/).filter(s => s.trim().length);
+        let enhanced = sentences.map(s => {
+            s = s.trim();
+            if (s.includes('وضوح')) return '✓ الوضوح أساس النجاح';
+            return '✨ ' + s;
+        });
         bodyElem.innerHTML = [...new Set(enhanced)].join('<br>');
-        let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
-        autoFitWidthAI(); toast('✨ تحسين النص',1800); saveSettings();
+        let bullet = document.getElementById('bulletSelect').value;
+        applyBulletToText(bullet);
+        autoFitWidthAI();
+        toast('✨ تحسين النص', 1800);
+        saveSettings();
     }
-    function saveSettings(){
-        let wordColors={};
-        if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
+    
+    function saveSettings() {
+        let wordColors = {};
+        if (colorizeActive) {
+            document.querySelectorAll('.body-text .word-colorable').forEach((sp, i) => {
+                if (sp.style.color) wordColors[i] = sp.style.color;
+            });
+        }
         let settings = {
-            accentColor: getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim()||'#3b82f6',
+            accentColor: getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim() || '#3b82f6',
             maxWidth: document.getElementById('export-area').style.maxWidth,
             titleSize: document.getElementById('titleSize').value,
             bodySize: document.getElementById('bodySize').value,
@@ -895,155 +973,230 @@
             bodyHTML: document.querySelector('.body-text').innerHTML,
             drNameHTML: document.querySelector('.dr-name').innerHTML,
             drSubHTML: document.querySelector('.dr-sub').innerHTML,
-            aspectRatio: document.getElementById('export-area').style.aspectRatio||'auto',
-            colorizeActive, wordColors
+            aspectRatio: document.getElementById('export-area').style.aspectRatio || 'auto',
+            colorizeActive,
+            wordColors
         };
         localStorage.setItem('spStudioSettings', JSON.stringify(settings));
     }
-    function loadSettings(){
-        let saved = localStorage.getItem('spStudioSettings'); if(!saved) return;
-        try{
+    
+    function loadSettings() {
+        let saved = localStorage.getItem('spStudioSettings');
+        if (!saved) return;
+        try {
             let s = JSON.parse(saved);
             applyTheme(s.accentColor);
-            if(s.maxWidth) document.getElementById('export-area').style.maxWidth = s.maxWidth;
-            document.getElementById('titleSize').value = s.titleSize; document.getElementById('titleSizeVal').innerText=s.titleSize; document.querySelector('.title').style.fontSize=s.titleSize+'px';
-            document.getElementById('bodySize').value = s.bodySize; document.getElementById('bodySizeVal').innerText=s.bodySize; document.querySelector('.body-text').style.fontSize=s.bodySize+'px';
-            document.getElementById('lineHeight').value = s.lineHeight; document.getElementById('lineHeightVal').innerText=s.lineHeight; document.querySelector('.body-text').style.lineHeight=s.lineHeight;
-            document.getElementById('fontSelect').value = s.fontFamily; document.querySelector('#export-area').style.fontFamily=`'${s.fontFamily}', sans-serif`;
+            if (s.maxWidth) document.getElementById('export-area').style.maxWidth = s.maxWidth;
+            document.getElementById('titleSize').value = s.titleSize;
+            document.getElementById('titleSizeVal').innerText = s.titleSize;
+            document.querySelector('.title').style.fontSize = s.titleSize + 'px';
+            document.getElementById('bodySize').value = s.bodySize;
+            document.getElementById('bodySizeVal').innerText = s.bodySize;
+            document.querySelector('.body-text').style.fontSize = s.bodySize + 'px';
+            document.getElementById('lineHeight').value = s.lineHeight;
+            document.getElementById('lineHeightVal').innerText = s.lineHeight;
+            document.querySelector('.body-text').style.lineHeight = s.lineHeight;
+            document.getElementById('fontSelect').value = s.fontFamily;
+            document.querySelector('#export-area').style.fontFamily = `'${s.fontFamily}', sans-serif`;
             document.getElementById('bulletSelect').value = s.bullet;
-            if(s.titleHTML) document.querySelector('.title').innerHTML = s.titleHTML;
-            if(s.bodyHTML) document.querySelector('.body-text').innerHTML = s.bodyHTML;
-            if(s.drNameHTML) document.querySelector('.dr-name').innerHTML = s.drNameHTML;
-            if(s.drSubHTML) document.querySelector('.dr-sub').innerHTML = s.drSubHTML;
-            if(s.aspectRatio) document.getElementById('export-area').style.aspectRatio = s.aspectRatio;
+            if (s.titleHTML) document.querySelector('.title').innerHTML = s.titleHTML;
+            if (s.bodyHTML) document.querySelector('.body-text').innerHTML = s.bodyHTML;
+            if (s.drNameHTML) document.querySelector('.dr-name').innerHTML = s.drNameHTML;
+            if (s.drSubHTML) document.querySelector('.dr-sub').innerHTML = s.drSubHTML;
+            if (s.aspectRatio) document.getElementById('export-area').style.aspectRatio = s.aspectRatio;
             applyBulletToText(s.bullet);
-            if(s.colorizeActive){ enableWordColoring(); setTimeout(()=>{ let spans = document.querySelectorAll('.body-text .word-colorable'); Object.keys(s.wordColors).forEach(idx=>{ if(spans[idx]) spans[idx].style.color = s.wordColors[idx]; }); },60); }
+            if (s.colorizeActive) {
+                enableWordColoring();
+                setTimeout(() => {
+                    let spans = document.querySelectorAll('.body-text .word-colorable');
+                    Object.keys(s.wordColors).forEach(idx => {
+                        if (spans[idx]) spans[idx].style.color = s.wordColors[idx];
+                    });
+                }, 60);
+            }
             updateWordCount();
-        }catch(e){}
+        } catch (e) {}
     }
-    function fullReset(){
+    
+    function fullReset() {
         disableWordColoring();
         document.querySelector('.title').innerHTML = "الوضوح المهني";
         document.querySelector('.body-text').innerHTML = "• الوضوح في التشخيص يختصر الوقت.<br>• الوضوح في النتائج يبني الثقة.<br>• الوضوح في الخطة يضمن الالتزام.<br><br>الوضوح هو مفتاح نجاح أي خطة علاجية ناجحة.";
         document.querySelector('.dr-name').innerHTML = "الإختصاصي سليمان";
         document.querySelector('.dr-sub').innerHTML = "أخصائي علاج فيزيائي وإعادة تأهيل";
         applyTheme('#3b82f6');
-        document.getElementById('export-area').style.maxWidth='95vw';
-        document.getElementById('titleSize').value=30; document.getElementById('titleSizeVal').innerText=30; document.querySelector('.title').style.fontSize='30px';
-        document.getElementById('bodySize').value=16; document.getElementById('bodySizeVal').innerText=16; document.querySelector('.body-text').style.fontSize='16px';
-        document.getElementById('lineHeight').value=1.75; document.getElementById('lineHeightVal').innerText=1.75; document.querySelector('.body-text').style.lineHeight=1.75;
-        document.getElementById('fontSelect').value='Cairo'; document.querySelector('#export-area').style.fontFamily="'Cairo', sans-serif";
-        document.getElementById('bulletSelect').value='•'; applyBulletToText('•');
-        updateWordCount(); saveSettings(); toast("✅ إعادة ضبط كامل",1500);
-    }
-    async function exportImage() {
-        const el = document.getElementById('export-area');
-        const btn = document.getElementById('saveImageBtn');
-        if(!window.html2canvas){
-            toast("⏳ تحميل مكتبة التصوير...",800);
-            await new Promise(res=>{ let s=document.createElement('script'); s.src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"; s.onload=res; document.head.appendChild(s); });
-        }
-        const editables = document.querySelectorAll('[contenteditable="true"]');
-        const oldBg = []; editables.forEach(el=>{ oldBg.push(el.style.background); el.style.background='transparent'; });
-        btn.innerHTML="🖼️ جاري..."; btn.disabled=true;
-        try{
-            const canvas = await window.html2canvas(el,{scale:2, backgroundColor:'#ffffff', logging:false});
-            canvas.toBlob(blob=>{
-                const url=URL.createObjectURL(blob);
-                const a=document.createElement('a'); a.href=url; a.download=`SP_Studio_${Date.now()}.png`; a.click();
-                URL.revokeObjectURL(url);
-                toast("📸 تم حفظ الصورة",1500);
-            },'image/png');
-        } catch(e){ toast("❌ فشل حفظ الصورة",2000); }
-        finally{ btn.innerHTML="📸 حفظ الصورة PNG"; btn.disabled=false; editables.forEach((el,i)=>{ el.style.background=oldBg[i]; }); }
+        document.getElementById('export-area').style.maxWidth = '95vw';
+        document.getElementById('titleSize').value = 30;
+        document.getElementById('titleSizeVal').innerText = 30;
+        document.querySelector('.title').style.fontSize = '30px';
+        document.getElementById('bodySize').value = 16;
+        document.getElementById('bodySizeVal').innerText = 16;
+        document.querySelector('.body-text').style.fontSize = '16px';
+        document.getElementById('lineHeight').value = 1.75;
+        document.getElementById('lineHeightVal').innerText = 1.75;
+        document.querySelector('.body-text').style.lineHeight = 1.75;
+        document.getElementById('fontSelect').value = 'Cairo';
+        document.querySelector('#export-area').style.fontFamily = "'Cairo', sans-serif";
+        document.getElementById('bulletSelect').value = '•';
+        applyBulletToText('•');
+        updateWordCount();
+        saveSettings();
+        toast("✅ إعادة ضبط كامل", 1500);
     }
     
-    // تهيئة الواجهة
-    const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
+    // ========== 5. ربط الأحداث الأساسية ==========
+    const baseColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec489a', '#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
-    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.onclick=()=>applyTheme(c); colorGrid.appendChild(dot); });
-    const aspects = [{label:'1:1',val:'1/1'},{label:'4:5',val:'4/5'},{label:'1.91:1',val:'1.91/1'},{label:'9:16',val:'9/16'},{label:'تلقائي',val:'auto'}];
-    const aspectGrid = document.getElementById('aspectGrid');
-    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.onclick=()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveSettings(); toast(`نسبة ${a.label}`,800); }; aspectGrid.appendChild(btn); });
+    baseColors.forEach(c => {
+        let dot = document.createElement('div');
+        dot.className = 'color-dot';
+        dot.style.backgroundColor = c;
+        dot.onclick = () => applyTheme(c);
+        colorGrid.appendChild(dot);
+    });
     
-    document.getElementById('titleSize').oninput = e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveSettings(); };
-    document.getElementById('bodySize').oninput = e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveSettings(); };
-    document.getElementById('lineHeight').oninput = e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveSettings(); };
-    document.getElementById('fontSelect').onchange = e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveSettings(); };
-    document.getElementById('bulletSelect').onchange = e=>{ applyBulletToText(e.target.value); saveSettings(); };
+    const aspects = [{ label: '1:1', val: '1/1' }, { label: '4:5', val: '4/5' }, { label: '1.91:1', val: '1.91/1' }, { label: '9:16', val: '9/16' }, { label: 'تلقائي', val: 'auto' }];
+    const aspectGrid = document.getElementById('aspectGrid');
+    aspects.forEach(a => {
+        let btn = document.createElement('div');
+        btn.className = 'aspect-btn';
+        btn.innerText = a.label;
+        btn.onclick = () => {
+            document.getElementById('export-area').style.aspectRatio = a.val;
+            saveSettings();
+            toast(`نسبة ${a.label}`, 800);
+        };
+        aspectGrid.appendChild(btn);
+    });
+    
+    document.getElementById('titleSize').oninput = e => { let v = e.target.value; document.getElementById('titleSizeVal').innerText = v; document.querySelector('.title').style.fontSize = v + 'px'; saveSettings(); };
+    document.getElementById('bodySize').oninput = e => { let v = e.target.value; document.getElementById('bodySizeVal').innerText = v; document.querySelector('.body-text').style.fontSize = v + 'px'; saveSettings(); };
+    document.getElementById('lineHeight').oninput = e => { let v = e.target.value; document.getElementById('lineHeightVal').innerText = v; document.querySelector('.body-text').style.lineHeight = v; saveSettings(); };
+    document.getElementById('fontSelect').onchange = e => { document.querySelector('#export-area').style.fontFamily = `'${e.target.value}', sans-serif`; saveSettings(); };
+    document.getElementById('bulletSelect').onchange = e => { applyBulletToText(e.target.value); saveSettings(); };
     document.getElementById('saveImageBtn').onclick = exportImage;
     document.getElementById('resetTextBtn').onclick = fullReset;
     document.getElementById('autoFitBtn').onclick = autoFitWidthAI;
     document.getElementById('aiEnhanceBtn').onclick = aiEnhanceText;
-    document.getElementById('customColorizeBtn').onclick = ()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); };
+    document.getElementById('customColorizeBtn').onclick = () => { if (colorizeActive) disableWordColoring(); else enableWordColoring(); };
     document.getElementById('resetColorsBtn').onclick = resetAllColors;
-    document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveSettings(); }));
+    document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el => el.addEventListener('input', () => { updateWordCount(); if (colorizeActive) disableWordColoring(); saveSettings(); }));
     
-    // الأوضاع
+    // الأوضاع الثلاثة
     const modeBtns = document.querySelectorAll('.mode-btn');
     const titleDiv = document.querySelector('.title'), bodyDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
     const modes = {
-        prof: { title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني ثقة المريض.<br>• الخطط الشخصية تحقق نتائج ملموسة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي" },
-        compare: { title:"المقارنة", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>✅ الفوائد تفوق التحديات.", drName:"تحليل SP", drSub:"رؤية موضوعية" },
-        qa: { title:"سؤال وجواب", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: الجلسات مريحة تدريجياً.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
+        prof: { title: "الحوار المهني المتقدم", body: "• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني ثقة المريض.<br>• الخطط الشخصية تحقق نتائج ملموسة.", drName: "د. سليمان الحربي", drSub: "استشاري علاج طبيعي" },
+        compare: { title: "المقارنة", body: "✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>✅ الفوائد تفوق التحديات.", drName: "تحليل SP", drSub: "رؤية موضوعية" },
+        qa: { title: "سؤال وجواب", body: "❓ س: كم جلسة أحتاج؟<br>✅ ج: متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: الجلسات مريحة تدريجياً.", drName: "الخدمة الذكية", drSub: "إجابات شاملة" }
     };
-    function switchMode(mode){
+    function switchMode(mode) {
         let m = modes[mode];
-        if(m){
+        if (m) {
             titleDiv.innerHTML = m.title;
             bodyDiv.innerHTML = m.body;
             drNameDiv.innerHTML = m.drName;
             drSubDiv.innerHTML = m.drSub;
             applyBulletToText(document.getElementById('bulletSelect').value);
-            updateWordCount(); saveSettings();
+            updateWordCount();
+            saveSettings();
             toast(`🔄 تم التبديل`, 1000);
         }
     }
-    modeBtns.forEach(btn=>{
-        btn.onclick = ()=>{
-            modeBtns.forEach(b=>b.classList.remove('active'));
+    modeBtns.forEach(btn => {
+        btn.onclick = () => {
+            modeBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             switchMode(btn.dataset.mode);
         };
     });
     
-    // PWA
+    // ========== 6. PWA والتثبيت ==========
     let deferredPrompt = null;
-    const spinner = document.getElementById('installSpinner');
-    const installBtnReady = document.getElementById('installReadyBtn');
+    
+    // الاستماع لحدث beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        spinner.style.display = 'none';
-        installBtnReady.style.display = 'inline-flex';
+        // إذا لم يكن التطبيق مثبتاً بعد، نعرض الزر
+        if (!isStandalone && installBtn) {
+            installBtn.style.display = 'inline-flex';
+        }
     });
-    installBtnReady.onclick = async () => {
-        if(deferredPrompt){
+    
+    // زر التثبيت
+    installBtn.onclick = async () => {
+        if (deferredPrompt) {
             deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                toast("✅ تم تثبيت التطبيق", 3000);
+                // بعد التثبيت، نخفي الزر
+                installBtn.style.display = 'none';
+            }
             deferredPrompt = null;
-            installBtnReady.style.display = 'none';
-            toast("✅ تم التثبيت", 2000);
         } else {
-            toast("⚠️ استخدم قائمة ⋮ ← تثبيت", 3000);
+            toast("⚠️ استخدم قائمة المتصفح ← تثبيت التطبيق", 4000);
         }
     };
     
-    // حالة الانترنت
+    // كشف حالة الانترنت
     const offlineDiv = document.getElementById('offlineNotification');
-    function updateOnline(){ if(!navigator.onLine) offlineDiv.classList.add('show'); else offlineDiv.classList.remove('show'); }
+    function updateOnline() {
+        if (!navigator.onLine) offlineDiv.classList.add('show');
+        else offlineDiv.classList.remove('show');
+    }
     window.addEventListener('online', updateOnline);
     window.addEventListener('offline', updateOnline);
     updateOnline();
     
-    // بدء التشغيل
+    // تسجيل Service Worker (من الملف الخارجي)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered:', reg.scope)).catch(err => console.error('SW failed:', err));
+        });
+    }
+    
+    // زر المساعدة (يربط بـ help.html)
+    document.getElementById('helpBtn').onclick = () => window.open('/help.html', '_blank');
+    
+    // زر المشاركة (يربط بـ share-handler.html)
+    document.getElementById('shareBtn').onclick = () => {
+        if (navigator.share) {
+            navigator.share({ title: 'SP Studio Pro', text: 'تطبيق ذكي لتصميم بطاقات العلاج الطبيعي', url: window.location.href }).catch(() => {});
+        } else {
+            window.open('/share-handler.html', '_blank');
+        }
+    };
+    
+    // التحقق من التحديثات (يربط بـ updates.json)
+    document.getElementById('checkUpdatesBtn').onclick = async () => {
+        try {
+            const res = await fetch('/updates.json?t=' + Date.now());
+            if (res.ok) {
+                const data = await res.json();
+                if (data.latestVersion !== '1.0.0') toast(`🔄 تحديث جديد: ${data.latestVersion}`, 5000);
+                else toast(`✅ أنت على أحدث إصدار`, 3000);
+            } else toast('⚠️ تعذر التحقق', 3000);
+        } catch (e) { toast('⚠️ خطأ في التحقق', 3000); }
+    };
+    
+    // عرض الإحصائيات (يعتمد على analytics.js)
+    document.getElementById('viewStatsBtn').onclick = () => {
+        if (typeof spAnalytics !== 'undefined') {
+            const stats = spAnalytics.getStats();
+            toast(`📊 عدد الأحداث المسجلة: ${stats.length}`, 3000);
+        } else {
+            toast('📊 الإحصائيات غير متاحة حالياً', 2000);
+        }
+    };
+    
+    // بدء التطبيق
     window.addEventListener('load', async () => {
-        await generateAllIcons();
-        await createManifestWithIcons();
-        await registerSW();
         loadSettings();
         updateWordCount();
         autoFitWidthAI();
+        document.getElementById('pwaStatusBar').innerHTML = '✅ التطبيق جاهز | ' + (isStandalone ? 'وضع التطبيق المستقل' : 'وضع المتصفح');
         toast("✨ SP Studio Pro | تجربة سلسة فائقة", 3500);
     });
 })();
