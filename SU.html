@@ -1,12 +1,11 @@
-<!-- SU.html - ملف التحديث الذاتي المتكامل (نسخة مصححة) -->
-<!-- يقوم هذا الملف بحذف زر الإحصائيات بشكل جذري، ويعرض واجهة تحديث، ويمسح الكاش، ويعيد التشغيل -->
-
+<!-- SU.html - ملف التحديث النهائي مع التوكن المضمن -->
+<!-- يقوم هذا الملف بحذف زر الإحصائيات بشكل دائم من ملف index.html على GitHub -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تحديث SP Studio Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>تحديث جذري - حذف زر الإحصائيات</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -42,6 +41,7 @@
         .step { color: #94a3b8; font-size: 12px; margin: 8px 0; text-align: right; padding-right: 20px; }
         .step.completed { color: #10b981; }
         .step.active { color: #3b82f6; font-weight: bold; }
+        .step.error { color: #ef4444; }
         .restart-btn {
             background: linear-gradient(135deg, #10b981, #059669);
             border: none;
@@ -64,7 +64,7 @@
             font-size: 11px;
             color: #94a3b8;
             text-align: left;
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
             font-family: monospace;
         }
@@ -75,27 +75,34 @@
 </head>
 <body>
 <div class="update-container">
-    <div class="update-icon">🔄</div>
-    <h2>تحديث التطبيق</h2>
+    <div class="update-icon">🔧</div>
+    <h2>تحديث جذري للتطبيق</h2>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="status-text" id="statusText">جاري تجهيز التحديث...</div>
+    <div class="status-text" id="statusText">جاري تجهيز التحديث التلقائي...</div>
     <div id="stepsContainer">
-        <div class="step" id="step1">🔍 1. التحقق من التحديثات</div>
-        <div class="step" id="step2">🗑️ 2. حذف زر الإحصائيات وجذوره</div>
-        <div class="step" id="step3">🧹 3. مسح ذاكرة التخزين المؤقت</div>
-        <div class="step" id="step4">💾 4. حفظ التغييرات بشكل دائم</div>
+        <div class="step" id="step1">🔍 1. جلب ملف index.html من المستودع</div>
+        <div class="step" id="step2">✏️ 2. تعديل الملف - حذف زر الإحصائيات</div>
+        <div class="step" id="step3">💾 3. حفظ الملف المعدل في المستودع</div>
+        <div class="step" id="step4">🧹 4. مسح ذاكرة التخزين المؤقت</div>
         <div class="step" id="step5">🔄 5. إعادة تشغيل التطبيق</div>
     </div>
     <div class="log" id="logContainer"></div>
-    <button class="restart-btn" id="restartBtn">🚀 إعادة تشغيل التطبيق</button>
+    <button class="restart-btn" id="restartBtn" style="display: none;">🚀 إعادة تشغيل التطبيق</button>
 </div>
 
 <script>
-    (async function() {
+    (function() {
         const progressFill = document.getElementById('progressFill');
         const statusText = document.getElementById('statusText');
         const restartBtn = document.getElementById('restartBtn');
         const logContainer = document.getElementById('logContainer');
+        
+        // التوكن المضمن (تم وضعه مباشرة)
+        const GITHUB_TOKEN = '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';
+        const REPO_OWNER = 'PTslman';
+        const REPO_NAME = 'PT.semo';
+        const FILE_PATH = 'index.html';
+        const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
         
         function addLog(message, type = 'info') {
             const logEntry = document.createElement('div');
@@ -108,9 +115,10 @@
         
         function updateStep(stepId, status) {
             const step = document.getElementById(stepId);
-            step.classList.remove('active', 'completed');
+            step.classList.remove('active', 'completed', 'error');
             if (status === 'active') step.classList.add('active');
             else if (status === 'completed') step.classList.add('completed');
+            else if (status === 'error') step.classList.add('error');
         }
         
         function updateProgress(percent, text) {
@@ -118,116 +126,153 @@
             if (text) statusText.textContent = text;
         }
         
-        // تخزين علامة أن التحديث بدأ
-        sessionStorage.setItem('updateInProgress', 'true');
+        function modifyIndexHtml(content) {
+            let modified = content;
+            
+            // إزالة زر viewStatsBtn بالكامل من HTML
+            const statsBtnRegex = /<button[^>]*id=["']viewStatsBtn["'][^>]*>[\s\S]*?<\/button>\s*\n?/gi;
+            modified = modified.replace(statsBtnRegex, '');
+            
+            // إزالة الكود الخاص بـ viewStatsBtn في الجافاسكريبت
+            const jsRegex = /document\.getElementById\(['"]viewStatsBtn['"]\)\.onclick\s*=\s*async\s*\(\)\s*=>\s*\{[\s\S]*?\n\s*\};?\n?/gi;
+            modified = modified.replace(jsRegex, '');
+            
+            // إزالة أي إشارة أخرى إلى viewStatsBtn
+            const anyRefRegex = /viewStatsBtn/g;
+            modified = modified.replace(anyRefRegex, '');
+            
+            // إزالة سطر إحصائيات من شريط الأزرار السفلي (بديل)
+            const statsLineRegex = /<button class="glass-btn"[^>]*id="viewStatsBtn"[^>]*>[\s\S]*?<\/button>\s*\n?/gi;
+            modified = modified.replace(statsLineRegex, '');
+            
+            return modified;
+        }
         
-        // ========== الخطوة 1: التحقق ==========
-        updateStep('step1', 'active');
-        updateProgress(5, 'جاري التحقق...');
-        addLog('بدء عملية تحديث SP Studio Pro');
-        await new Promise(r => setTimeout(r, 300));
-        updateStep('step1', 'completed');
-        addLog('✅ تم التحقق بنجاح', 'success');
+        async function updateFileOnGithub(content, sha) {
+            const response = await fetch(API_URL, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'حذف زر الإحصائيات نهائياً (تحديث تلقائي)',
+                    content: btoa(unescape(encodeURIComponent(content))),
+                    sha: sha,
+                    branch: 'main'
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'فشل حفظ الملف');
+            }
+            return await response.json();
+        }
         
-        // ========== الخطوة 2: حذف زر الإحصائيات ==========
-        updateStep('step2', 'active');
-        updateProgress(20, 'جاري حذف زر الإحصائيات...');
-        
-        // البحث عن زر الإحصائيات في الصفحة التي فتحت SU.html (وهي صفحة التحديث نفسها لا تحتوي على الزر)
-        // بدلاً من ذلك، سنقوم بتعديل localStorage لمنع ظهور الإحصائيات مستقبلاً
-        localStorage.setItem('spStudio_hideStats', 'true');
-        localStorage.setItem('spStudio_statsRemoved', new Date().toISOString());
-        
-        addLog('✅ تم تعيين علامة حذف الإحصائيات في التخزين المحلي', 'success');
-        updateStep('step2', 'completed');
-        
-        // ========== الخطوة 3: مسح ذاكرة التخزين المؤقت ==========
-        updateStep('step3', 'active');
-        updateProgress(50, 'جاري مسح ذاكرة التخزين المؤقت...');
-        
-        // مسح Cache Storage
-        if ('caches' in window) {
+        async function startUpdate() {
             try {
-                const cacheKeys = await caches.keys();
-                for (const key of cacheKeys) {
-                    await caches.delete(key);
-                    addLog(`✅ تم حذف الكاش: ${key}`, 'success');
+                // ========== الخطوة 1: جلب الملف ==========
+                updateStep('step1', 'active');
+                updateProgress(10, 'جاري جلب ملف index.html من المستودع...');
+                addLog('🔄 جاري الاتصال بـ GitHub API...');
+                
+                const fileResponse = await fetch(API_URL, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                
+                if (!fileResponse.ok) {
+                    throw new Error(`فشل جلب الملف: ${fileResponse.status}`);
                 }
-                addLog('✅ تم مسح جميع ملفات Cache Storage', 'success');
-            } catch(e) {
-                addLog(`⚠️ فشل مسح Cache: ${e.message}`, 'warning');
-            }
-        } else {
-            addLog('⚠️ Cache API غير مدعوم', 'warning');
-        }
-        
-        // مسح localStorage للإحصائيات
-        localStorage.removeItem('spStudio_analytics');
-        localStorage.removeItem('spStudio_stats');
-        localStorage.removeItem('spStudio_session');
-        addLog('✅ تم مسح بيانات الإحصائيات من localStorage', 'success');
-        
-        // إلغاء Service Worker
-        if ('serviceWorker' in navigator) {
-            try {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const registration of registrations) {
-                    await registration.unregister();
-                    addLog('✅ تم إلغاء تسجيل Service Worker', 'success');
+                
+                const fileData = await fileResponse.json();
+                const originalContent = decodeURIComponent(escape(atob(fileData.content)));
+                addLog('✅ تم جلب الملف بنجاح', 'success');
+                updateStep('step1', 'completed');
+                
+                // ========== الخطوة 2: تعديل الملف ==========
+                updateStep('step2', 'active');
+                updateProgress(40, 'جاري تعديل الملف - حذف زر الإحصائيات...');
+                
+                const modifiedContent = modifyIndexHtml(originalContent);
+                
+                // التحقق مما إذا كان هناك تغيير فعلي
+                if (originalContent === modifiedContent) {
+                    addLog('⚠️ لم يتم العثور على زر الإحصائيات في الملف (ربما محذوف مسبقاً)', 'warning');
+                } else {
+                    addLog('✅ تم حذف زر الإحصائيات بنجاح', 'success');
                 }
-            } catch(e) {
-                addLog(`⚠️ فشل إلغاء Service Worker: ${e.message}`, 'warning');
+                
+                updateStep('step2', 'completed');
+                
+                // ========== الخطوة 3: حفظ الملف ==========
+                updateStep('step3', 'active');
+                updateProgress(70, 'جاري حفظ الملف المعدل في المستودع...');
+                
+                await updateFileOnGithub(modifiedContent, fileData.sha);
+                addLog('✅ تم حفظ الملف المعدل في المستودع', 'success');
+                updateStep('step3', 'completed');
+                
+                // ========== الخطوة 4: مسح الكاش ==========
+                updateStep('step4', 'active');
+                updateProgress(85, 'جاري مسح ذاكرة التخزين المؤقت...');
+                
+                if ('caches' in window) {
+                    const cacheKeys = await caches.keys();
+                    for (const key of cacheKeys) {
+                        await caches.delete(key);
+                        addLog(`✅ تم حذف الكاش: ${key}`, 'success');
+                    }
+                }
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                        addLog('✅ تم إلغاء تسجيل Service Worker', 'success');
+                    }
+                }
+                
+                localStorage.removeItem('spStudio_analytics');
+                localStorage.removeItem('spStudio_stats');
+                addLog('✅ تم تنظيف التخزين المحلي', 'success');
+                updateStep('step4', 'completed');
+                
+                // ========== الخطوة 5: إعادة التشغيل ==========
+                updateStep('step5', 'active');
+                updateProgress(100, '✅ اكتمل التحديث بنجاح!');
+                addLog('✨ تم حذف زر الإحصائيات بشكل دائم من المشروع', 'success');
+                updateStep('step5', 'completed');
+                
+                // إظهار زر إعادة التشغيل
+                restartBtn.style.display = 'block';
+                
+                let countdown = 3;
+                restartBtn.textContent = `🚀 إعادة التشغيل (${countdown})`;
+                const timer = setInterval(() => {
+                    countdown--;
+                    restartBtn.textContent = `🚀 إعادة التشغيل (${countdown})`;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        window.location.href = '/PT.semo/?update=' + Date.now();
+                    }
+                }, 1000);
+                
+                restartBtn.onclick = () => {
+                    clearInterval(timer);
+                    window.location.href = '/PT.semo/?update=' + Date.now();
+                };
+                
+            } catch (error) {
+                console.error(error);
+                addLog(`❌ فشل التحديث: ${error.message}`, 'error');
+                updateProgress(0, 'فشل التحديث');
+                statusText.textContent = '❌ فشل التحديث. يرجى المحاولة مرة أخرى لاحقاً';
             }
         }
         
-        updateStep('step3', 'completed');
-        
-        // ========== الخطوة 4: حفظ التغييرات بشكل دائم ==========
-        updateStep('step4', 'active');
-        updateProgress(75, 'جاري حفظ التغييرات...');
-        
-        // حفظ ملف update marker في localStorage
-        const updateRecord = {
-            version: '2.0.0',
-            timestamp: new Date().toISOString(),
-            changes: ['إزالة زر الإحصائيات', 'تحسين الأداء', 'تنظيف الكاش']
-        };
-        localStorage.setItem('spStudio_lastUpdate', JSON.stringify(updateRecord));
-        
-        addLog('✅ تم حفظ سجل التحديث', 'success');
-        updateStep('step4', 'completed');
-        
-        // ========== الخطوة 5: إعادة التشغيل ==========
-        updateStep('step5', 'active');
-        updateProgress(95, 'اكتمل التحديث!');
-        
-        addLog('✨ تحديث SP Studio Pro اكتمل بنجاح!', 'success');
-        updateStep('step5', 'completed');
-        updateProgress(100, '✅ التحديث جاهز!');
-        
-        // إظهار زر إعادة التشغيل
-        restartBtn.style.display = 'block';
-        
-        // عد تنازلي 3 ثوانٍ
-        let countdown = 3;
-        const timerInterval = setInterval(() => {
-            countdown--;
-            restartBtn.textContent = `🚀 إعادة التشغيل (${countdown})`;
-            if (countdown <= 0) {
-                clearInterval(timerInterval);
-                performRestart();
-            }
-        }, 1000);
-        
-        function performRestart() {
-            addLog('🔄 جاري إعادة تشغيل التطبيق...', 'info');
-            // تنظيف إضافي قبل إعادة التحميل
-            sessionStorage.removeItem('updateInProgress');
-            // إعادة التحميل مع منع التخزين المؤقت
-            window.location.href = '/PT.semo/?update=' + Date.now();
-        }
-        
-        restartBtn.onclick = performRestart;
+        // بدء التحديث تلقائياً فور تحميل الصفحة
+        startUpdate();
     })();
 </script>
 </body>
