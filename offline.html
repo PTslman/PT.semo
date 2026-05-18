@@ -5,52 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>غير متصل | SP Studio</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: linear-gradient(135deg, #0b1120, #020617);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-        .offline-container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 60px;
-            backdrop-filter: blur(10px);
-            max-width: 400px;
-            margin: 20px;
-        }
-        .offline-icon { font-size: 80px; margin-bottom: 20px; }
-        h1 { font-size: 28px; margin-bottom: 15px; }
-        p { color: #a5f3fc; margin-bottom: 30px; line-height: 1.6; }
-        button {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border: none;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 60px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        button:hover { transform: scale(1.02); }
-        .retry-btn { margin-left: 10px; background: #10b981; }
+        body { background: linear-gradient(135deg, #0b1120, #020617); color: white; font-family: 'Cairo', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        .container { background: rgba(255,255,255,0.05); border-radius: 48px; padding: 40px; max-width: 400px; }
+        button { background: #3b82f6; border: none; padding: 10px 24px; border-radius: 60px; cursor: pointer; color: white; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="offline-container">
-        <div class="offline-icon">📡</div>
-        <h1>أنت غير متصل بالإنترنت</h1>
-        <p>يرجى التحقق من اتصالك بالشبكة<br>والمحاولة مرة أخرى.</p>
-        <div>
-            <button onclick="location.reload()">🔄 إعادة المحاولة</button>
-            <button class="retry-btn" onclick="location.href='/PT.semo/'">🏠 العودة للرئيسية</button>
-        </div>
+    <div class="container">
+        <h1>📡 أنت غير متصل بالإنترنت</h1>
+        <p>يرجى التحقق من اتصالك بالشبكة والمحاولة مرة أخرى.</p>
+        <button onclick="location.reload()">🔄 إعادة المحاولة</button>
     </div>
 </body>
 </html>
