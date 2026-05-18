@@ -15,22 +15,23 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link rel="shortcut icon" href="/icons/icon-96.png">
+    <link rel="browserconfig" href="/browserconfig.xml">
     
     <!-- تحسينات الأداء -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
+    <!-- ملفات JavaScript التحليلية وتحسين الأداء -->
+    <script src="/analytics.js" defer></script>
+    <script src="/performance.js" defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- تحسينات الأداء والتسارع --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* --- RESET و تحسينات الأداء --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background: radial-gradient(circle at 20% 30%, #0a0f2a, #020617);
@@ -42,14 +43,14 @@
             backface-visibility: hidden;
         }
 
-        /* تسريع العناصر */
+        /* تسريع العناصر المتحركة */
         .floating-buttons, .top-modes, .preview-wrapper, .button-bar, .panels-container, .panel-card {
             will-change: transform;
             transform: translateZ(0);
             backface-visibility: hidden;
         }
 
-        /* الأزرار العائمة (بما فيها زر التثبيت) */
+        /* الأزرار العائمة العلوية (بما فيها زر التثبيت) */
         .floating-buttons {
             position: fixed;
             top: 16px;
@@ -63,7 +64,7 @@
         }
         .float-btn {
             pointer-events: auto;
-            background: rgba(12, 20, 35, 0.7);
+            background: rgba(12, 20, 35, 0.75);
             backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 60px;
@@ -79,7 +80,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
         .float-btn:active { transform: scale(0.96); transition: transform 0.05s; }
-        .float-btn:hover { background: rgba(30, 41, 59, 0.85); transform: translateY(-2px); }
+        .float-btn:hover { background: rgba(30, 41, 59, 0.9); transform: translateY(-2px); }
         .tools-btn { background: linear-gradient(135deg, rgba(124,58,237,0.8), rgba(139,92,246,0.8)); border: none; }
         .install-float-btn {
             background: linear-gradient(135deg, #10b981, #059669);
@@ -96,7 +97,7 @@
             flex-wrap: wrap;
         }
         .mode-btn {
-            background: rgba(15, 25, 45, 0.6);
+            background: rgba(15, 25, 45, 0.65);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 60px;
@@ -235,7 +236,7 @@
         .glass-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
         .save-image-btn { background: linear-gradient(135deg, #10b981, #059669); border: none; }
         
-        /* اللوحات الثابتة */
+        /* اللوحات الثابتة – جميع النصوص بيضاء */
         .panels-container {
             display: flex;
             flex-wrap: wrap;
@@ -255,6 +256,7 @@
             box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
             transition: transform 0.2s cubic-bezier(0.2,0.9,0.4,1.1), box-shadow 0.2s;
             animation: fadeSlideUp 0.4s ease-out;
+            color: white; /* النصوص الأساسية في اللوحة بيضاء */
         }
         .panel-card:hover { transform: translateY(-3px); box-shadow: 0 25px 40px -15px rgba(0,0,0,0.5); }
         .panel-card .section-label {
@@ -263,6 +265,7 @@
             margin: 8px 0 12px;
             border-right: 4px solid #3b82f6;
             padding-right: 12px;
+            color: #ffffff; /* أبيض */
         }
         .slider-group, .aspect-grid, .ai-tools {
             background: rgba(0,0,0,0.3);
@@ -275,10 +278,23 @@
             gap: 10px;
         }
         .slider-group:hover { background: rgba(0,0,0,0.45); }
-        .slider-label { font-size: 12px; font-weight: 600; min-width: 70px; color: #f1f5f9; }
+        .slider-label {
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 70px;
+            color: #f1f5f9; /* أبيض فاتح */
+        }
         input[type="range"] { flex: 1; height: 4px; background: #334155; border-radius: 10px; -webkit-appearance: none; }
         input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; cursor: pointer; box-shadow: 0 0 6px #3b82f6; }
-        .value-display { background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 30px; font-size: 11px; min-width: 38px; text-align: center; }
+        .value-display {
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 11px;
+            min-width: 38px;
+            text-align: center;
+            color: white;
+        }
         .aspect-btn, .ai-btn, .font-select, .bullet-select {
             background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.2);
@@ -322,6 +338,7 @@
             font-size: 12px;
             font-weight: 500;
             backdrop-filter: blur(4px);
+            color: white;
         }
         .word-color-picker {
             position: fixed;
@@ -383,6 +400,7 @@
 
 <div id="offlineNotification" class="offline-detected">📡 وضع غير متصل - بعض الميزات محدودة</div>
 
+<!-- الأزرار العائمة العلوية: إخفاء اللوحة، أدوات ذكية، وزر التثبيت -->
 <div class="floating-buttons">
     <div class="float-btn hide-panel-btn" id="togglePanelBtn">🎛️ إخفاء اللوحة</div>
     <div class="float-btn tools-btn" id="toggleToolsBtn">🧰 الأدوات الذكية</div>
@@ -412,6 +430,7 @@
 </div>
 
 <div class="panels-container">
+    <!-- اللوحة الرئيسية (نسب الأبعاد وتحرير النصوص) -->
     <div class="panel-card" id="smartPanel">
         <div class="section-label">📐 نسب الأبعاد</div>
         <div class="aspect-grid" id="aspectGrid"></div>
@@ -424,6 +443,7 @@
         <div style="text-align:center; font-size:11px; margin-top:10px; opacity:0.7;">💡 انقر "الأدوات الذكية" للتلوين والذكاء</div>
     </div>
 
+    <!-- لوحة الأدوات الذكية (تظهر عند الضغط على زر الأدوات) -->
     <div class="panel-card" id="toolsPanel" style="display: none;">
         <div class="section-label">🎨 الألوان الأساسية</div>
         <div class="color-grid" id="colorGrid"></div>
@@ -442,7 +462,7 @@
 
 <script>
 (function(){
-    // ========== وظائف أساسية ==========
+    // ========== وظائف مساعدة ==========
     function toast(msg, dur=2200){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
@@ -474,7 +494,7 @@
         }
     };
     
-    // ========== تلوين الكلمات ==========
+    // ========== تلوين الكلمات (شبكة 4×3 قابلة للسحب) ==========
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
     function makeDraggable(picker){
@@ -483,7 +503,7 @@
         function onMove(e){ if(!drag.active) return; picker.style.left=(drag.l + e.clientX - drag.sx)+'px'; picker.style.top=(drag.t + e.clientY - drag.sy)+'px'; }
         function onUp(){ drag.active=false; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); }
     }
-    function createPickerForWord(span,curColor){
+    function createColorPickerForWord(span,curColor){
         if(currentPicker) currentPicker.remove();
         const picker = document.createElement('div'); picker.className = 'word-color-picker';
         colorPalette.forEach(col => {
@@ -512,14 +532,14 @@
                 for(let w of words){
                     if(w.trim().length && !/^[•★●✓❓⚠️✅❌\s]+$/.test(w)){
                         let span = document.createElement('span'); span.className='word-colorable'; span.textContent=w; span.style.color='inherit';
-                        span.onclick = (e) => { e.stopPropagation(); createPickerForWord(span,span.style.color); };
+                        span.onclick = (e) => { e.stopPropagation(); createColorPickerForWord(span,span.style.color); };
                         frag.appendChild(span);
                     } else frag.appendChild(document.createTextNode(w));
                 }
                 node.parentNode.replaceChild(frag,node);
             } else if(node.nodeType===Node.ELEMENT_NODE && node.childNodes) Array.from(node.childNodes).forEach(convert);
         }
-        convert(body); colorizeActive=true; toast('🎨 انقر على كلمة لتلوينها',2800); saveSettings();
+        convert(body); colorizeActive=true; toast('🎨 انقر على كلمة لتلوينها (لوحة عائمة)',2800); saveSettings();
     }
     function disableWordColoring(){
         let body = document.querySelector('.body-text');
@@ -532,7 +552,7 @@
         let body = document.querySelector('.body-text');
         body.innerHTML = body.innerText.split('\n').join('<br>');
         let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
-        toast('♻️ تم إعادة الألوان',1000); saveSettings();
+        toast('♻️ تم إعادة ألوان الكلمات',1000); saveSettings();
     }
     
     // ========== وظائف النصوص الأساسية ==========
@@ -590,6 +610,7 @@
         autoFitWidthAI(); toast('✨ تحسين النص بالذكاء',1800); saveSettings();
     }
     
+    // حفظ واسترجاع الإعدادات
     function saveSettings(){
         let wordColors={};
         if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
@@ -647,7 +668,7 @@
         updateWordCount(); saveSettings(); toast("✅ إعادة ضبط كامل",1500);
     }
     
-    // ========== حفظ الصورة (باستخدام showSaveFilePicker للمستخدم في PWA) ==========
+    // حفظ الصورة (مع دعم showSaveFilePicker)
     async function exportImage() {
         const el = document.getElementById('export-area');
         const btn = document.getElementById('saveImageBtn');
@@ -696,13 +717,13 @@
     document.getElementById('resetColorsBtn').onclick = resetAllColors;
     document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveSettings(); }));
     
-    // ثلاث أوضاع
+    // ثلاث أوضاع علوية
     const modeBtns = document.querySelectorAll('.mode-btn');
     const titleDiv = document.querySelector('.title'), bodyDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
     const modes = {
-        prof: { title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني جسر ثقة مع المريض.<br>• الخطط العلاجية الشخصية تحقق نتائج ملموسة.<br><br>الاحترافية ليست مهارة فقط، بل منهج حياة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي" },
-        compare: { title:"المقارنة: ميزات وسلبيات", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>⚠️ السلبيات: تكاليف أولية مرتفعة.<br><br>الخلاصة: الفوائد تفوق التحديات.", drName:"تحليل SP", drSub:"رؤية موضوعية" },
-        qa: { title:"سؤال وجواب", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: الجلسات مريحة تدريجياً.<br>❓ س: متى تظهر النتائج؟<br>✅ ج: خلال 3-4 أسابيع.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
+        prof: { title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني جسر ثقة مع المريض.<br>• الخطط العلاجية الشخصية تحقق نتائج ملموسة.<br><br>الاحترافية ليست مهارة فقط، بل منهج حياة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي وتأهيل حركي" },
+        compare: { title:"المقارنة: ميزات وسلبيات", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>✅ الميزات: متابعة دورية - دعم نفسي.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>⚠️ السلبيات: تكاليف أولية مرتفعة نسبياً.<br><br>الخلاصة: الفوائد تفوق التحديات مع الإرادة.", drName:"تحليل SP", drSub:"رؤية موضوعية للعلاج" },
+        qa: { title:"سؤال وجواب (FAQ)", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: يختلف حسب الحالة لكن متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: هدفنا تقليل الألم، الجلسات مريحة تدريجياً.<br>❓ س: متى تظهر النتائج؟<br>✅ ج: تحسن ملحوظ خلال 3-4 أسابيع.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
     };
     function switchMode(mode){
         let m = modes[mode];
@@ -725,7 +746,7 @@
         };
     });
     
-    // ========== PWA: تسجيل Service Worker (ربط بالملف الخارجي) ==========
+    // ========== تسجيل Service Worker ==========
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered:', reg.scope)).catch(err => console.error('SW failed:', err));
@@ -754,7 +775,7 @@
         };
     }
     
-    // حالة الانترنت
+    // كشف حالة الانترنت
     const offlineDiv = document.getElementById('offlineNotification');
     function updateOnline(){
         if(!navigator.onLine) offlineDiv.classList.add('show');
@@ -773,4 +794,4 @@
 })();
 </script>
 </body>
-</html>
+                                      </html>
