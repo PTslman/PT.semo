@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SP Studio Pro | تجربة سلسة | PWA كامل</title>
+    <title>SP Studio Pro | PWA مع تحقق تلقائي</title>
     
     <!-- ربط ملفات PWA الخارجية -->
     <link rel="manifest" href="/manifest.json">
@@ -23,14 +23,14 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     
-    <!-- ملفات JavaScript التحليلية وتحسين الأداء -->
+    <!-- ملفات JavaScript التحليلية وتحسين الأداء (اختيارية، لكنها ستعمل إن وجدت) -->
     <script src="/analytics.js" defer></script>
     <script src="/performance.js" defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET و تحسينات الأداء --- */
+        /* --- RESET وتحسين الأداء --- */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -50,7 +50,7 @@
             backface-visibility: hidden;
         }
 
-        /* الأزرار العائمة العلوية (بما فيها زر التثبيت) */
+        /* الأزرار العائمة العلوية */
         .floating-buttons {
             position: fixed;
             top: 16px;
@@ -82,11 +82,33 @@
         .float-btn:active { transform: scale(0.96); transition: transform 0.05s; }
         .float-btn:hover { background: rgba(30, 41, 59, 0.9); transform: translateY(-2px); }
         .tools-btn { background: linear-gradient(135deg, rgba(124,58,237,0.8), rgba(139,92,246,0.8)); border: none; }
-        .install-float-btn {
+        
+        /* عنصر التثبيت (دائرة تحميل أو زر أخضر) */
+        .install-container {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .install-ready-btn {
             background: linear-gradient(135deg, #10b981, #059669);
             border: none;
             box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
         }
+        .install-ready-btn:hover { transform: translateY(-2px); }
+        .hidden-install { display: none !important; }
 
         /* الأوضاع العلوية */
         .top-modes {
@@ -256,7 +278,7 @@
             box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
             transition: transform 0.2s cubic-bezier(0.2,0.9,0.4,1.1), box-shadow 0.2s;
             animation: fadeSlideUp 0.4s ease-out;
-            color: white; /* النصوص الأساسية في اللوحة بيضاء */
+            color: white;
         }
         .panel-card:hover { transform: translateY(-3px); box-shadow: 0 25px 40px -15px rgba(0,0,0,0.5); }
         .panel-card .section-label {
@@ -265,7 +287,7 @@
             margin: 8px 0 12px;
             border-right: 4px solid #3b82f6;
             padding-right: 12px;
-            color: #ffffff; /* أبيض */
+            color: #ffffff;
         }
         .slider-group, .aspect-grid, .ai-tools {
             background: rgba(0,0,0,0.3);
@@ -282,7 +304,7 @@
             font-size: 12px;
             font-weight: 600;
             min-width: 70px;
-            color: #f1f5f9; /* أبيض فاتح */
+            color: #f1f5f9;
         }
         input[type="range"] { flex: 1; height: 4px; background: #334155; border-radius: 10px; -webkit-appearance: none; }
         input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; cursor: pointer; box-shadow: 0 0 6px #3b82f6; }
@@ -393,6 +415,7 @@
             .panel-card { min-width: 100%; max-width: 100%; }
             .color-dot { width: 36px; height: 36px; }
             .float-btn { padding: 6px 14px; font-size: 11px; }
+            .install-container { min-width: 100px; }
         }
     </style>
 </head>
@@ -400,11 +423,13 @@
 
 <div id="offlineNotification" class="offline-detected">📡 وضع غير متصل - بعض الميزات محدودة</div>
 
-<!-- الأزرار العائمة العلوية: إخفاء اللوحة، أدوات ذكية، وزر التثبيت -->
 <div class="floating-buttons">
     <div class="float-btn hide-panel-btn" id="togglePanelBtn">🎛️ إخفاء اللوحة</div>
     <div class="float-btn tools-btn" id="toggleToolsBtn">🧰 الأدوات الذكية</div>
-    <div class="float-btn install-float-btn" id="installFloatingBtn" style="display:none;">📲 تثبيت التطبيق</div>
+    <div class="install-container" id="installContainer">
+        <div class="spinner" id="installSpinner"></div>
+        <button id="installReadyBtn" class="float-btn install-ready-btn" style="display: none;">📲 تثبيت التطبيق</button>
+    </div>
 </div>
 
 <div class="top-modes">
@@ -430,7 +455,6 @@
 </div>
 
 <div class="panels-container">
-    <!-- اللوحة الرئيسية (نسب الأبعاد وتحرير النصوص) -->
     <div class="panel-card" id="smartPanel">
         <div class="section-label">📐 نسب الأبعاد</div>
         <div class="aspect-grid" id="aspectGrid"></div>
@@ -443,7 +467,6 @@
         <div style="text-align:center; font-size:11px; margin-top:10px; opacity:0.7;">💡 انقر "الأدوات الذكية" للتلوين والذكاء</div>
     </div>
 
-    <!-- لوحة الأدوات الذكية (تظهر عند الضغط على زر الأدوات) -->
     <div class="panel-card" id="toolsPanel" style="display: none;">
         <div class="section-label">🎨 الألوان الأساسية</div>
         <div class="color-grid" id="colorGrid"></div>
@@ -462,7 +485,83 @@
 
 <script>
 (function(){
-    // ========== وظائف مساعدة ==========
+    // ========== 1. التحقق التلقائي من متطلبات PWA ==========
+    const requiredFiles = [
+        '/manifest.json',
+        '/sw.js',
+        '/icons/icon-72.png',
+        '/icons/icon-96.png',
+        '/icons/icon-128.png',
+        '/icons/icon-144.png',
+        '/icons/icon-152.png',
+        '/icons/icon-192.png',
+        '/icons/icon-384.png',
+        '/icons/icon-512.png'
+    ];
+    
+    async function fileExists(url) {
+        try {
+            const response = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+            return response.ok;
+        } catch { return false; }
+    }
+    
+    async function checkPWARequirements() {
+        const results = await Promise.all(requiredFiles.map(file => fileExists(file)));
+        const allExist = results.every(exists => exists === true);
+        const missingFiles = requiredFiles.filter((_, idx) => !results[idx]);
+        if (missingFiles.length) console.warn('⚠️ الملفات المفقودة:', missingFiles);
+        return allExist;
+    }
+    
+    // ========== 2. عناصر واجهة التثبيت ==========
+    const spinner = document.getElementById('installSpinner');
+    const installBtnReady = document.getElementById('installReadyBtn');
+    const installContainer = document.getElementById('installContainer');
+    let deferredPrompt = null;
+    
+    async function updateInstallButton() {
+        const isReady = await checkPWARequirements();
+        if (isReady) {
+            // إخفاء السبينر وإظهار الزر الأخضر
+            spinner.style.display = 'none';
+            installBtnReady.style.display = 'inline-flex';
+        } else {
+            // إخفاء العنصر بالكامل (لا زر ولا سبينر)
+            installContainer.style.display = 'none';
+        }
+    }
+    
+    // تسجيل Service Worker (بغض النظر عن التحقق، نحاول دائماً)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW registration failed:', err));
+        });
+    }
+    
+    // حدث beforeinstallprompt لاستخدام الزر المخصص
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // بعد ظهور الحدث، نحرص على أن يكون الزر جاهزاً (إذا لم يظهر من قبل)
+        updateInstallButton();
+    });
+    
+    installBtnReady.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                toast("✅ تم تثبيت SP Studio Pro", 3000);
+            }
+            deferredPrompt = null;
+            installBtnReady.style.display = 'none';
+        } else {
+            toast("⚠️ المتصفح لا يدعم التثبيت الآن. استخدم القائمة ⋮", 4000);
+        }
+    });
+    
+    // ========== 3. الوظائف الأساسية للتطبيق ==========
     function toast(msg, dur=2200){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
@@ -494,7 +593,7 @@
         }
     };
     
-    // ========== تلوين الكلمات (شبكة 4×3 قابلة للسحب) ==========
+    // تلوين الكلمات
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
     function makeDraggable(picker){
@@ -554,8 +653,6 @@
         let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
         toast('♻️ تم إعادة ألوان الكلمات',1000); saveSettings();
     }
-    
-    // ========== وظائف النصوص الأساسية ==========
     function applyBulletToText(bullet){
         const body = document.querySelector('.body-text');
         let html = body.innerHTML;
@@ -668,7 +765,7 @@
         updateWordCount(); saveSettings(); toast("✅ إعادة ضبط كامل",1500);
     }
     
-    // حفظ الصورة (مع دعم showSaveFilePicker)
+    // حفظ الصورة (مع showSaveFilePicker)
     async function exportImage() {
         const el = document.getElementById('export-area');
         const btn = document.getElementById('saveImageBtn');
@@ -696,7 +793,7 @@
         function fallbackDownload(blob){ let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=`SP_Studio_${Date.now()}.png`; a.click(); URL.revokeObjectURL(url); toast("📸 تم حفظ الصورة",1500); }
     }
     
-    // ========== تهيئة واجهة التحكم ==========
+    // ========== 4. تهيئة واجهة التحكم ==========
     const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
     baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.onclick=()=>applyTheme(c); colorGrid.appendChild(dot); });
@@ -746,35 +843,6 @@
         };
     });
     
-    // ========== تسجيل Service Worker ==========
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered:', reg.scope)).catch(err => console.error('SW failed:', err));
-        });
-    }
-    
-    // زر التثبيت العائم
-    let deferredPrompt = null;
-    const installFloatingBtn = document.getElementById('installFloatingBtn');
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        if(installFloatingBtn) installFloatingBtn.style.display = 'inline-flex';
-    });
-    if(installFloatingBtn){
-        installFloatingBtn.onclick = async () => {
-            if(deferredPrompt){
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if(outcome === 'accepted') toast("✅ تم تثبيت SP Studio Pro", 3000);
-                deferredPrompt = null;
-                installFloatingBtn.style.display = 'none';
-            } else {
-                toast("⚠️ استخدم قائمة المتصفح ← تثبيت التطبيق", 4000);
-            }
-        };
-    }
-    
     // كشف حالة الانترنت
     const offlineDiv = document.getElementById('offlineNotification');
     function updateOnline(){
@@ -785,13 +853,15 @@
     window.addEventListener('offline', updateOnline);
     updateOnline();
     
-    window.addEventListener('load', () => {
+    // بدء التطبيق بعد التحقق من الملفات وتحديث الزر
+    window.addEventListener('load', async () => {
+        await updateInstallButton();       // التحقق من الملفات وإظهار الزر الأخضر إذا أمكن
         loadSettings();
         updateWordCount();
         autoFitWidthAI();
-        toast("✨ SP Studio Pro | جاهز للتثبيت الكامل", 3500);
+        toast("✨ SP Studio Pro | نظام تحقق تلقائي من PWA", 3500);
     });
 })();
 </script>
 </body>
-                                      </html>
+</html>
