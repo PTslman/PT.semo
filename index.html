@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SP Studio Pro | PWA مع تحقق تلقائي</title>
+    <title>SP Studio Pro | نظام تحقق متكامل PWA</title>
     
     <!-- ربط ملفات PWA الخارجية -->
     <link rel="manifest" href="/manifest.json">
@@ -22,15 +22,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://api.github.com">
     
-    <!-- ملفات JavaScript التحليلية وتحسين الأداء (اختيارية، لكنها ستعمل إن وجدت) -->
+    <!-- ملفات JavaScript (إن وجدت) -->
     <script src="/analytics.js" defer></script>
     <script src="/performance.js" defer></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET وتحسين الأداء --- */
+        /* --- RESET وتحسينات الأداء --- */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -83,7 +84,7 @@
         .float-btn:hover { background: rgba(30, 41, 59, 0.9); transform: translateY(-2px); }
         .tools-btn { background: linear-gradient(135deg, rgba(124,58,237,0.8), rgba(139,92,246,0.8)); border: none; }
         
-        /* عنصر التثبيت (دائرة تحميل أو زر أخضر) */
+        /* عنصر التثبيت (دائرة تحميل / زر أخضر) */
         .install-container {
             pointer-events: auto;
             display: inline-flex;
@@ -109,8 +110,23 @@
         }
         .install-ready-btn:hover { transform: translateY(-2px); }
         .hidden-install { display: none !important; }
-
-        /* الأوضاع العلوية */
+        
+        /* شريط PWA السفلي */
+        .pwa-status-bar {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 8px 20px;
+            margin: 15px auto 0;
+            text-align: center;
+            width: fit-content;
+            font-size: 12px;
+            color: #a5f3fc;
+            font-weight: 500;
+        }
+        .pwa-status-bar span { color: #fbbf24; }
+        
+        /* باقي الأنماط (لوحات، أزرار، كلمات) كما هي */
         .top-modes {
             display: flex;
             justify-content: center;
@@ -139,7 +155,6 @@
             box-shadow: 0 8px 20px rgba(59,130,246,0.4);
         }
         
-        /* حاوية البطاقة */
         .preview-wrapper {
             border-radius: 44px;
             padding: 8px;
@@ -232,7 +247,6 @@
             border-radius: 24px;
         }
         
-        /* شريط الأزرار السفلي */
         .button-bar {
             display: flex;
             justify-content: center;
@@ -258,7 +272,6 @@
         .glass-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
         .save-image-btn { background: linear-gradient(135deg, #10b981, #059669); border: none; }
         
-        /* اللوحات الثابتة – جميع النصوص بيضاء */
         .panels-container {
             display: flex;
             flex-wrap: wrap;
@@ -280,7 +293,6 @@
             animation: fadeSlideUp 0.4s ease-out;
             color: white;
         }
-        .panel-card:hover { transform: translateY(-3px); box-shadow: 0 25px 40px -15px rgba(0,0,0,0.5); }
         .panel-card .section-label {
             font-weight: 800;
             font-size: 15px;
@@ -483,77 +495,130 @@
     </div>
 </div>
 
+<div class="pwa-status-bar" id="pwaStatusBar">🔄 جاري التحقق من مستودع GitHub وملفات PWA...</div>
+
 <script>
 (function(){
-    // ========== 1. التحقق التلقائي من متطلبات PWA ==========
-    const requiredFiles = [
-        '/manifest.json',
-        '/sw.js',
-        '/icons/icon-72.png',
-        '/icons/icon-96.png',
-        '/icons/icon-128.png',
-        '/icons/icon-144.png',
-        '/icons/icon-152.png',
-        '/icons/icon-192.png',
-        '/icons/icon-384.png',
-        '/icons/icon-512.png'
+    // ========== 1. نظام ربط الأحداث المبسط (Event Binding Library) ==========
+    const EventManager = {
+        events: new Map(),
+        on(element, event, handler) {
+            if (!element) return;
+            const key = `${element}_${event}`;
+            if (!this.events.has(key)) this.events.set(key, []);
+            this.events.get(key).push(handler);
+            element.addEventListener(event, handler);
+        },
+        off(element, event, handler) {
+            if (!element) return;
+            const key = `${element}_${event}`;
+            const handlers = this.events.get(key);
+            if (handlers) {
+                const index = handlers.indexOf(handler);
+                if (index !== -1) {
+                    handlers.splice(index, 1);
+                    element.removeEventListener(event, handler);
+                }
+            }
+        },
+        trigger(element, event, detail = {}) {
+            const customEvent = new CustomEvent(event, { detail, bubbles: true });
+            element.dispatchEvent(customEvent);
+        }
+    };
+    
+    // ========== 2. قسم تحليل واستضافة PWA (جلب من GitHub) ==========
+    const GITHUB_REPO = 'https://api.github.com/repos/PTslman/PT.semo/contents';
+    const REQUIRED_FILES = [
+        'manifest.json', 'sw.js', 'index.html',
+        'icons/icon-72.png', 'icons/icon-96.png', 'icons/icon-128.png', 'icons/icon-144.png',
+        'icons/icon-152.png', 'icons/icon-192.png', 'icons/icon-384.png', 'icons/icon-512.png'
     ];
     
-    async function fileExists(url) {
+    async function fetchGitHubFileList() {
         try {
-            const response = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-            return response.ok;
-        } catch { return false; }
+            const response = await fetch(GITHUB_REPO, { cache: 'no-store' });
+            if (!response.ok) throw new Error('GitHub API error');
+            const files = await response.json();
+            const filePaths = files.map(f => f.path);
+            return filePaths;
+        } catch (err) {
+            console.warn('GitHub fetch failed:', err);
+            return [];
+        }
     }
     
-    async function checkPWARequirements() {
-        const results = await Promise.all(requiredFiles.map(file => fileExists(file)));
-        const allExist = results.every(exists => exists === true);
-        const missingFiles = requiredFiles.filter((_, idx) => !results[idx]);
-        if (missingFiles.length) console.warn('⚠️ الملفات المفقودة:', missingFiles);
-        return allExist;
+    async function validateAllFiles() {
+        const existingPaths = await fetchGitHubFileList();
+        const missing = REQUIRED_FILES.filter(file => !existingPaths.includes(file));
+        const present = REQUIRED_FILES.filter(file => existingPaths.includes(file));
+        return { present, missing, total: REQUIRED_FILES.length };
     }
     
-    // ========== 2. عناصر واجهة التثبيت ==========
+    // تحديث شريط الحالة
+    const pwaStatusDiv = document.getElementById('pwaStatusBar');
+    async function updatePWAStatusBar() {
+        pwaStatusDiv.innerHTML = '🔄 جاري فحص ملفات PWA في المستودع...';
+        const { present, missing, total } = await validateAllFiles();
+        if (missing.length === 0) {
+            pwaStatusDiv.innerHTML = `✅ ✅ جميع ملفات PWA موجودة (${total}/${total}) - التطبيق جاهز للتثبيت الكامل`;
+            pwaStatusDiv.style.color = '#a5f3fc';
+        } else {
+            pwaStatusDiv.innerHTML = `⚠️ ⚠️ مفقود ${missing.length} ملف: ${missing.slice(0,3).join(', ')}${missing.length>3 ? '...' : ''} - تأكد من رفعها`;
+            pwaStatusDiv.style.color = '#fbbf24';
+        }
+    }
+    
+    // ========== 3. نظام التحقق التلقائي والتهيئة (Code Sanity) ==========
+    async function checkPWAFilesAccessibility() {
+        const testUrls = [
+            '/manifest.json', '/sw.js', '/icons/icon-192.png'
+        ];
+        const results = await Promise.all(testUrls.map(async url => {
+            try {
+                const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+                return { url, ok: res.ok };
+            } catch { return { url, ok: false }; }
+        }));
+        return results.every(r => r.ok);
+    }
+    
+    // عناصر التثبيت
     const spinner = document.getElementById('installSpinner');
     const installBtnReady = document.getElementById('installReadyBtn');
     const installContainer = document.getElementById('installContainer');
     let deferredPrompt = null;
     
     async function updateInstallButton() {
-        const isReady = await checkPWARequirements();
-        if (isReady) {
-            // إخفاء السبينر وإظهار الزر الأخضر
+        const filesAccessible = await checkPWAFilesAccessibility();
+        if (filesAccessible) {
             spinner.style.display = 'none';
             installBtnReady.style.display = 'inline-flex';
         } else {
-            // إخفاء العنصر بالكامل (لا زر ولا سبينر)
             installContainer.style.display = 'none';
+            console.warn('⚠️ بعض ملفات PWA لا يمكن الوصول إليها، تم إخفاء زر التثبيت.');
         }
     }
     
-    // تسجيل Service Worker (بغض النظر عن التحقق، نحاول دائماً)
+    // تسجيل Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW registration failed:', err));
         });
     }
     
-    // حدث beforeinstallprompt لاستخدام الزر المخصص
+    // حدث beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        // بعد ظهور الحدث، نحرص على أن يكون الزر جاهزاً (إذا لم يظهر من قبل)
-        updateInstallButton();
+        updateInstallButton(); // بعد ظهور الحدث نعيد التحقق
     });
     
-    installBtnReady.addEventListener('click', async () => {
+    EventManager.on(installBtnReady, 'click', async () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                toast("✅ تم تثبيت SP Studio Pro", 3000);
-            }
+            if (outcome === 'accepted') toast("✅ تم تثبيت SP Studio Pro", 3000);
             deferredPrompt = null;
             installBtnReady.style.display = 'none';
         } else {
@@ -561,7 +626,7 @@
         }
     });
     
-    // ========== 3. الوظائف الأساسية للتطبيق ==========
+    // ========== 4. الوظائف الأساسية للتطبيق (بطاقة ذكية) ==========
     function toast(msg, dur=2200){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
@@ -571,29 +636,27 @@
     // إظهار/إخفاء اللوحات
     const mainPanel = document.getElementById('smartPanel');
     const toolsPanel = document.getElementById('toolsPanel');
-    const togglePanelBtn = document.getElementById('togglePanelBtn');
-    const toggleToolsBtn = document.getElementById('toggleToolsBtn');
-    togglePanelBtn.onclick = () => {
+    EventManager.on(document.getElementById('togglePanelBtn'), 'click', () => {
         if (mainPanel.style.display === 'none') {
             mainPanel.style.display = 'block';
-            togglePanelBtn.innerHTML = '🎛️ إخفاء اللوحة';
+            document.getElementById('togglePanelBtn').innerHTML = '🎛️ إخفاء اللوحة';
         } else {
             mainPanel.style.display = 'none';
-            togglePanelBtn.innerHTML = '🎛️ إظهار اللوحة';
+            document.getElementById('togglePanelBtn').innerHTML = '🎛️ إظهار اللوحة';
         }
-    };
-    toggleToolsBtn.onclick = () => {
+    });
+    EventManager.on(document.getElementById('toggleToolsBtn'), 'click', () => {
         if (toolsPanel.style.display === 'none' || toolsPanel.style.display === '') {
             toolsPanel.style.display = 'block';
-            toggleToolsBtn.innerHTML = '🧰 إغلاق الأدوات';
+            document.getElementById('toggleToolsBtn').innerHTML = '🧰 إغلاق الأدوات';
             if (mainPanel.style.display === 'none') mainPanel.style.display = 'block';
         } else {
             toolsPanel.style.display = 'none';
-            toggleToolsBtn.innerHTML = '🧰 الأدوات الذكية';
+            document.getElementById('toggleToolsBtn').innerHTML = '🧰 الأدوات الذكية';
         }
-    };
+    });
     
-    // تلوين الكلمات
+    // تلوين الكلمات (باختصار للحفاظ على الطول لكنه موجود كاملاً)
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
     function makeDraggable(picker){
@@ -651,7 +714,7 @@
         let body = document.querySelector('.body-text');
         body.innerHTML = body.innerText.split('\n').join('<br>');
         let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
-        toast('♻️ تم إعادة ألوان الكلمات',1000); saveSettings();
+        toast('♻️ إعادة الألوان',1000); saveSettings();
     }
     function applyBulletToText(bullet){
         const body = document.querySelector('.body-text');
@@ -707,7 +770,6 @@
         autoFitWidthAI(); toast('✨ تحسين النص بالذكاء',1800); saveSettings();
     }
     
-    // حفظ واسترجاع الإعدادات
     function saveSettings(){
         let wordColors={};
         if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
@@ -765,7 +827,6 @@
         updateWordCount(); saveSettings(); toast("✅ إعادة ضبط كامل",1500);
     }
     
-    // حفظ الصورة (مع showSaveFilePicker)
     async function exportImage() {
         const el = document.getElementById('export-area');
         const btn = document.getElementById('saveImageBtn');
@@ -793,28 +854,28 @@
         function fallbackDownload(blob){ let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=`SP_Studio_${Date.now()}.png`; a.click(); URL.revokeObjectURL(url); toast("📸 تم حفظ الصورة",1500); }
     }
     
-    // ========== 4. تهيئة واجهة التحكم ==========
+    // ========== تهيئة الواجهة ==========
     const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
-    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.onclick=()=>applyTheme(c); colorGrid.appendChild(dot); });
+    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; EventManager.on(dot, 'click', ()=>applyTheme(c)); colorGrid.appendChild(dot); });
     const aspects = [{label:'1:1',val:'1/1'},{label:'4:5',val:'4/5'},{label:'1.91:1',val:'1.91/1'},{label:'9:16',val:'9/16'},{label:'تلقائي',val:'auto'}];
     const aspectGrid = document.getElementById('aspectGrid');
-    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.onclick=()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveSettings(); toast(`نسبة ${a.label}`,800); }; aspectGrid.appendChild(btn); });
+    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; EventManager.on(btn, 'click', ()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveSettings(); toast(`نسبة ${a.label}`,800); }); aspectGrid.appendChild(btn); });
     
-    document.getElementById('titleSize').oninput = e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveSettings(); };
-    document.getElementById('bodySize').oninput = e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveSettings(); };
-    document.getElementById('lineHeight').oninput = e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveSettings(); };
-    document.getElementById('fontSelect').onchange = e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveSettings(); };
-    document.getElementById('bulletSelect').onchange = e=>{ applyBulletToText(e.target.value); saveSettings(); };
-    document.getElementById('saveImageBtn').onclick = exportImage;
-    document.getElementById('resetTextBtn').onclick = fullReset;
-    document.getElementById('autoFitBtn').onclick = autoFitWidthAI;
-    document.getElementById('aiEnhanceBtn').onclick = aiEnhanceText;
-    document.getElementById('customColorizeBtn').onclick = ()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); };
-    document.getElementById('resetColorsBtn').onclick = resetAllColors;
+    EventManager.on(document.getElementById('titleSize'), 'input', e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveSettings(); });
+    EventManager.on(document.getElementById('bodySize'), 'input', e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveSettings(); });
+    EventManager.on(document.getElementById('lineHeight'), 'input', e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveSettings(); });
+    EventManager.on(document.getElementById('fontSelect'), 'change', e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveSettings(); });
+    EventManager.on(document.getElementById('bulletSelect'), 'change', e=>{ applyBulletToText(e.target.value); saveSettings(); });
+    EventManager.on(document.getElementById('saveImageBtn'), 'click', exportImage);
+    EventManager.on(document.getElementById('resetTextBtn'), 'click', fullReset);
+    EventManager.on(document.getElementById('autoFitBtn'), 'click', autoFitWidthAI);
+    EventManager.on(document.getElementById('aiEnhanceBtn'), 'click', aiEnhanceText);
+    EventManager.on(document.getElementById('customColorizeBtn'), 'click', ()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); });
+    EventManager.on(document.getElementById('resetColorsBtn'), 'click', resetAllColors);
     document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveSettings(); }));
     
-    // ثلاث أوضاع علوية
+    // ثلاث أوضاع
     const modeBtns = document.querySelectorAll('.mode-btn');
     const titleDiv = document.querySelector('.title'), bodyDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
     const modes = {
@@ -836,14 +897,14 @@
         }
     }
     modeBtns.forEach(btn=>{
-        btn.onclick = ()=>{
+        EventManager.on(btn, 'click', ()=>{
             modeBtns.forEach(b=>b.classList.remove('active'));
             btn.classList.add('active');
             switchMode(btn.dataset.mode);
-        };
+        });
     });
     
-    // كشف حالة الانترنت
+    // حالة الانترنت
     const offlineDiv = document.getElementById('offlineNotification');
     function updateOnline(){
         if(!navigator.onLine) offlineDiv.classList.add('show');
@@ -853,13 +914,14 @@
     window.addEventListener('offline', updateOnline);
     updateOnline();
     
-    // بدء التطبيق بعد التحقق من الملفات وتحديث الزر
+    // بدء التطبيق
     window.addEventListener('load', async () => {
-        await updateInstallButton();       // التحقق من الملفات وإظهار الزر الأخضر إذا أمكن
+        await updatePWAStatusBar();           // تحليل مستودع GitHub
+        await updateInstallButton();          // فحص الملفات المحلية وعرض الدائرة/الزر
         loadSettings();
         updateWordCount();
         autoFitWidthAI();
-        toast("✨ SP Studio Pro | نظام تحقق تلقائي من PWA", 3500);
+        toast("✨ SP Studio Pro | نظام تحقق متكامل PWA وجلب من GitHub", 4000);
     });
 })();
 </script>
