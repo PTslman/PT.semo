@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SP Studio Pro | تجربة سلسة | زجاجية فائقة</title>
+    <title>SP Studio Pro | تجربة سلسة | PWA كامل</title>
     
-    <!-- ========== تحسينات الأداء و PWA ========== -->
+    <!-- تحسينات الأداء المسبقة -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA Meta Tags (ربط خارجي) -->
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,15 +18,18 @@
     <meta name="application-name" content="SP Studio Pro">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- Manifest -->
-    <link rel="manifest" id="dynamicManifest">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%233b82f6'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-weight='bold' font-family='Cairo'%3ESP%3C/text%3E%3C/svg%3E">
+    <!-- ربط ملفات PWA الخارجية (المفروض وجودها في جذر المشروع) -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     
-    <!-- 8 خطوط عربية محدثة -->
+    <!-- أيقونة اختصار عامة -->
+    <link rel="shortcut icon" href="/icons/icon-96.png">
+    
+    <!-- 8 خطوط عربية -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&family=El+Messiri:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Changa:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET + تحسين الأداء الرسومي */
+        /* استراتيجيات تسريع الرندر: استخدام GPU acceleration */
         * {
             margin: 0;
             padding: 0;
@@ -41,22 +44,23 @@
             padding: 80px 20px 40px;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            transition: background 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            will-change: background;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
-        /* تسريع الريندر العام */
+        /* تسريع العناصر المتحركة */
         .floating-buttons,
         .top-modes,
         .preview-wrapper,
         .button-bar,
-        .panels-container {
+        .panels-container,
+        .panel-card {
             will-change: transform;
             transform: translateZ(0);
             backface-visibility: hidden;
         }
 
-        /* أزرار عائمة مع زجاج محسن وحركة سلسة */
+        /* أزرار عائمة */
         .floating-buttons {
             position: fixed;
             top: 16px;
@@ -79,26 +83,15 @@
             font-size: 13px;
             color: white;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), background 0.2s;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             gap: 8px;
-            will-change: transform;
         }
-        .float-btn:active {
-            transform: scale(0.96);
-            transition: transform 0.1s;
-        }
-        .float-btn:hover {
-            background: rgba(30, 41, 59, 0.8);
-            transform: translateY(-2px);
-        }
-        .tools-btn {
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.8), rgba(139, 92, 246, 0.8));
-            border: none;
-            backdrop-filter: blur(20px);
-        }
+        .float-btn:active { transform: scale(0.96); }
+        .float-btn:hover { background: rgba(30, 41, 59, 0.8); transform: translateY(-2px); }
+        .tools-btn { background: linear-gradient(135deg, rgba(124, 58, 237, 0.8), rgba(139, 92, 246, 0.8)); border: none; }
         
         /* الأوضاع العلوية */
         .top-modes {
@@ -107,7 +100,6 @@
             gap: 14px;
             margin-bottom: 24px;
             flex-wrap: wrap;
-            position: relative;
             z-index: 20;
         }
         .mode-btn {
@@ -120,9 +112,8 @@
             font-size: 14px;
             color: #e2e8f0;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            will-change: transform;
         }
         .mode-btn.active {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
@@ -138,24 +129,21 @@
             padding: 8px;
             background: rgba(255, 255, 255, 0.02);
             margin-bottom: 28px;
-            transition: all 0.25s ease;
             backdrop-filter: blur(4px);
         }
         #export-area {
             background: #ffffff;
             border-radius: 36px;
             box-shadow: 0 30px 40px -20px rgba(0, 0, 0, 0.5);
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.3s;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
             width: 100%;
             max-width: 95vw;
             margin: 0 auto;
             position: relative;
             overflow: hidden;
-            will-change: transform;
+            transform: translateZ(0);
         }
-        #export-area:active {
-            transform: scale(0.99);
-        }
+        #export-area:active { transform: scale(0.99); }
         .art-bg {
             position: absolute;
             inset: 0;
@@ -204,7 +192,6 @@
             border-radius: 8px;
             padding: 0 2px;
             transition: background 0.1s, transform 0.1s;
-            will-change: transform;
         }
         .body-text span.word-colorable:hover {
             background: rgba(0, 0, 0, 0.04);
@@ -218,17 +205,8 @@
             padding-top: 16px;
             margin-top: 14px;
         }
-        .dr-name {
-            font-size: 19px;
-            font-weight: 800;
-            color: #0f172a;
-        }
-        .dr-sub {
-            font-size: 12px;
-            font-weight: 700;
-            color: #3b82f6;
-            letter-spacing: -0.2px;
-        }
+        .dr-name { font-size: 19px; font-weight: 800; color: #0f172a; }
+        .dr-sub { font-size: 12px; font-weight: 700; color: #3b82f6; letter-spacing: -0.2px; }
         .logo-icon {
             font-size: 38px;
             font-weight: 900;
@@ -248,7 +226,6 @@
             gap: 16px;
             margin-bottom: 32px;
             flex-wrap: wrap;
-            position: relative;
             z-index: 15;
         }
         .glass-btn {
@@ -261,23 +238,19 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            will-change: transform;
         }
-        .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.18);
-            transform: translateY(-2px);
-        }
+        .glass-btn:hover { background: rgba(255, 255, 255, 0.18); transform: translateY(-2px); }
         .save-image-btn {
             background: linear-gradient(135deg, #10b981, #059669);
             border: none;
             box-shadow: 0 6px 14px rgba(16, 185, 129, 0.3);
         }
         
-        /* اللوحات الثابتة – زجاجية فائقة النعومة */
+        /* اللوحات الثابتة */
         .panels-container {
             display: flex;
             flex-wrap: wrap;
@@ -296,15 +269,14 @@
             padding: 18px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.2s;
             color: white;
             animation: fadeSlideUp 0.4s ease-out;
-            will-change: transform, box-shadow;
+            will-change: transform;
         }
         .panel-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.5);
-            background: rgba(12, 20, 35, 0.85);
         }
         .panel-card .section-label {
             font-weight: 800;
@@ -323,24 +295,15 @@
             align-items: center;
             gap: 10px;
             transition: background 0.2s;
-            will-change: background;
         }
-        .slider-group:hover {
-            background: rgba(0, 0, 0, 0.45);
-        }
-        .slider-label {
-            font-size: 12px;
-            font-weight: 600;
-            min-width: 70px;
-            color: #f1f5f9;
-        }
+        .slider-group:hover { background: rgba(0, 0, 0, 0.45); }
+        .slider-label { font-size: 12px; font-weight: 600; min-width: 70px; color: #f1f5f9; }
         input[type="range"] {
             flex: 1;
             height: 4px;
             background: #334155;
             border-radius: 10px;
             -webkit-appearance: none;
-            transition: opacity 0.2s;
         }
         input[type="range"]::-webkit-slider-thumb {
             width: 16px;
@@ -349,7 +312,6 @@
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 0 6px #3b82f6;
-            transition: transform 0.1s;
         }
         .value-display {
             background: rgba(0, 0, 0, 0.5);
@@ -366,15 +328,11 @@
             padding: 6px 14px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: transform 0.1s, background 0.2s;
             color: white;
-            will-change: transform;
         }
-        .aspect-btn:hover, .ai-btn:hover {
-            background: #3b82f6;
-            transform: translateY(-2px);
-            border-color: #fff;
-        }
+        .aspect-btn:active, .ai-btn:active { transform: scale(0.96); }
+        .aspect-btn:hover, .ai-btn:hover { background: #3b82f6; border-color: #fff; }
         .color-grid {
             display: flex;
             flex-wrap: wrap;
@@ -387,14 +345,11 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: transform 0.1s;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            will-change: transform;
         }
-        .color-dot:hover {
-            transform: scale(1.08);
-            border-color: white;
-        }
+        .color-dot:active { transform: scale(0.95); }
+        .color-dot:hover { transform: scale(1.08); border-color: white; }
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             border: none;
@@ -405,12 +360,9 @@
             cursor: pointer;
             color: white;
             text-align: center;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            will-change: transform;
+            transition: transform 0.1s;
         }
-        .btn-primary:active {
-            transform: scale(0.96);
-        }
+        .btn-primary:active { transform: scale(0.96); }
         .word-counter {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 60px;
@@ -421,7 +373,7 @@
             font-weight: 500;
             backdrop-filter: blur(4px);
         }
-        /* لوحة الألوان العائمة */
+        /* لوحة ألوان عائمة */
         .word-color-picker {
             position: fixed;
             background: rgba(30, 41, 59, 0.95);
@@ -436,7 +388,6 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             cursor: grab;
             min-width: 200px;
-            will-change: left, top;
         }
         .word-color-picker .color-option {
             width: 40px;
@@ -446,9 +397,7 @@
             border: 2px solid white;
             transition: transform 0.1s;
         }
-        .word-color-picker .color-option:active {
-            transform: scale(0.92);
-        }
+        .word-color-picker .color-option:active { transform: scale(0.92); }
         .word-color-picker input[type="color"] {
             width: 40px;
             height: 40px;
@@ -473,7 +422,6 @@
             pointer-events: none;
             border: 1px solid rgba(255, 255, 255, 0.2);
             font-weight: 500;
-            will-change: opacity, transform;
         }
         .offline-detected {
             position: fixed;
@@ -487,49 +435,21 @@
             font-size: 12px;
             z-index: 10030;
             transform: translateY(-100%);
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: transform 0.3s ease;
         }
-        .offline-detected.show {
-            transform: translateY(0);
-        }
-        .hidden-panel {
-            display: none;
-        }
+        .offline-detected.show { transform: translateY(0); }
         @keyframes fadeSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 700px) {
-            body {
-                padding: 70px 16px 30px;
-            }
-            .content-wrap {
-                padding: 20px 16px;
-            }
-            .title {
-                font-size: 24px;
-            }
-            .body-text {
-                font-size: 14px;
-            }
-            .panel-card {
-                min-width: 100%;
-                max-width: 100%;
-            }
-            .color-dot {
-                width: 36px;
-                height: 36px;
-            }
-            .float-btn {
-                padding: 6px 14px;
-                font-size: 11px;
-            }
+            body { padding: 70px 16px 30px; }
+            .content-wrap { padding: 20px 16px; }
+            .title { font-size: 24px; }
+            .body-text { font-size: 14px; }
+            .panel-card { min-width: 100%; max-width: 100%; }
+            .color-dot { width: 36px; height: 36px; }
+            .float-btn { padding: 6px 14px; font-size: 11px; }
         }
     </style>
 </head>
@@ -565,7 +485,7 @@
     <div class="glass-btn save-image-btn" id="saveImageBtn">📸 حفظ الصورة PNG</div>
 </div>
 
-<div class="panels-container" id="panelsContainer">
+<div class="panels-container">
     <div class="panel-card" id="smartPanel">
         <div class="section-label">📐 نسب الأبعاد</div>
         <div class="aspect-grid" id="aspectGrid"></div>
@@ -596,7 +516,7 @@
 
 <script>
 (function(){
-    // ========== الوظائف الأساسية المحسنة (متوافقة مع التصميم الجديد) ==========
+    // ========== مساعدات عامة ==========
     function toast(msg, dur=2200){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
@@ -635,7 +555,7 @@
         }
     });
     
-    // متغيرات التلوين
+    // ========== تلوين الكلمات ==========
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
     
@@ -698,6 +618,8 @@
         let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
         toast('♻️ تم إعادة ألوان الكلمات',1000); saveAllSettings();
     }
+    
+    // ========== وظائف النصوص الأساسية ==========
     function applyBulletToText(bullet){
         const body = document.querySelector('.body-text');
         let html = body.innerHTML;
@@ -752,7 +674,7 @@
         autoFitWidthAI(); toast('✨ تحسين النص بالذكاء',1800); saveAllSettings();
     }
     
-    // حفظ واسترجاع الإعدادات
+    // حفظ الإعدادات
     function saveAllSettings(){
         let wordColors={};
         if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
@@ -810,160 +732,163 @@
         updateWordCount(); saveAllSettings(); toast("✅ إعادة ضبط كامل",1500);
     }
     
-    // تصدير الصورة
-    async function exportImage(){
-        const el = document.getElementById('export-area');
+    // ========== حفظ الصورة باستخدام File System API (يعمل في PWA) ==========
+    async function exportImage() {
+        const element = document.getElementById('export-area');
         const btn = document.getElementById('saveImageBtn');
-        if(!window.html2canvas){
-            toast("⏳ تحميل مكتبة التصوير...",800);
-            await new Promise((res)=>{ let script=document.createElement('script'); script.src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"; script.onload=res; document.head.appendChild(script); });
+        if (!window.html2canvas) {
+            toast("⏳ تحميل مكتبة التصوير...", 800);
+            await new Promise((res) => {
+                let script = document.createElement('script');
+                script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+                script.onload = res;
+                document.head.appendChild(script);
+            });
         }
         const editables = document.querySelectorAll('[contenteditable="true"]');
-        const oldBg = []; editables.forEach(el=>{ oldBg.push(el.style.background); el.style.background='transparent'; });
-        btn.innerHTML="🖼️ جاري..."; btn.disabled=true;
-        try{
-            const canvas = await window.html2canvas(el,{scale:2, backgroundColor:'#ffffff',logging:false, useCORS:false});
-            canvas.toBlob(blob=>{
-                if(!blob) throw new Error();
-                let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.download=`SP_Studio_${Date.now()}.png`; a.href=url; a.click(); URL.revokeObjectURL(url);
-                btn.innerHTML="✅ تم الحفظ!"; setTimeout(()=>{ btn.innerHTML="📸 حفظ الصورة PNG"; btn.disabled=false; },1500);
-                toast("تم حفظ الصورة",1500);
-            },'image/png');
-        } catch(e){ btn.innerHTML="❌ خطأ"; setTimeout(()=>{ btn.innerHTML="📸 حفظ الصورة PNG"; btn.disabled=false; },1500); toast("خطأ في التصدير",2000); }
-        finally{ editables.forEach((el,i)=>{ el.style.background=oldBg[i]; }); }
-    }
-    
-    // تهيئة المكونات
-    const baseColors=['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
-    const colorGrid=document.getElementById('colorGrid');
-    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.addEventListener('click',()=>applyTheme(c)); colorGrid.appendChild(dot); });
-    const aspects=[{label:'1:1',val:'1/1'},{label:'4:5',val:'4/5'},{label:'1.91:1',val:'1.91/1'},{label:'9:16',val:'9/16'},{label:'تلقائي',val:'auto'}];
-    const aspectGrid=document.getElementById('aspectGrid');
-    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.addEventListener('click',()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveAllSettings(); toast(`نسبة ${a.label}`,800); }); aspectGrid.appendChild(btn); });
-    
-    document.getElementById('titleSize').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveAllSettings(); });
-    document.getElementById('bodySize').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveAllSettings(); });
-    document.getElementById('lineHeight').addEventListener('input',e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveAllSettings(); });
-    document.getElementById('fontSelect').addEventListener('change',e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveAllSettings(); });
-    document.getElementById('bulletSelect').addEventListener('change',e=>{ applyBulletToText(e.target.value); saveAllSettings(); });
-    document.getElementById('saveImageBtn').addEventListener('click',exportImage);
-    document.getElementById('resetTextBtn').addEventListener('click',fullReset);
-    document.getElementById('autoFitBtn').addEventListener('click',autoFitWidthAI);
-    document.getElementById('aiEnhanceBtn').addEventListener('click',aiEnhanceText);
-    document.getElementById('customColorizeBtn').addEventListener('click',()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); });
-    document.getElementById('resetColorsBtn').addEventListener('click',resetAllColors);
-    document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveAllSettings(); }));
-    
-    // ثلاث أوضاع
-    let currentMode='prof';
-    const modeBtns=document.querySelectorAll('.mode-btn');
-    const bodyTextDiv=document.querySelector('.body-text'), titleDiv=document.querySelector('.title'), drNameDiv=document.querySelector('.dr-name'), drSubDiv=document.querySelector('.dr-sub');
-    const modesContent={
-        prof:{ title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني جسر ثقة مع المريض.<br>• الخطط العلاجية الشخصية تحقق نتائج ملموسة.<br><br>الاحترافية ليست مهارة فقط، بل منهج حياة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي وتأهيل حركي" },
-        compare:{ title:"المقارنة: ميزات وسلبيات", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>✅ الميزات: متابعة دورية - دعم نفسي.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>⚠️ السلبيات: تكاليف أولية مرتفعة نسبياً.<br><br>الخلاصة: الفوائد تفوق التحديات مع الإرادة.", drName:"تحليل SP", drSub:"رؤية موضوعية للعلاج" },
-        qa:{ title:"سؤال وجواب (FAQ)", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: يختلف حسب الحالة لكن متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: هدفنا تقليل الألم، الجلسات مريحة تدريجياً.<br>❓ س: متى تظهر النتائج؟<br>✅ ج: تحسن ملحوظ خلال 3-4 أسابيع.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
-    };
-    function switchMode(mode){
-        currentMode=mode; let c=modesContent[mode];
-        if(c){ titleDiv.innerHTML=c.title; bodyTextDiv.innerHTML=c.body; drNameDiv.innerHTML=c.drName; drSubDiv.innerHTML=c.drSub; }
-        applyBulletToText(document.getElementById('bulletSelect').value); updateWordCount(); saveAllSettings(); toast(`🔄 تم التبديل إلى ${mode === 'prof' ? 'المهني' : mode === 'compare' ? 'المقارنة' : 'الأسئلة'}`,1200);
-    }
-    modeBtns.forEach(btn=>{ btn.addEventListener('click',()=>{ modeBtns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); switchMode(btn.dataset.mode); }); });
-    
-    // ========== PWA & Service Worker متقدم ==========
-    function generateDynamicIcons() {
-        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
-        const icons = [];
-        for (let size of sizes) {
-            const canvas = document.createElement('canvas');
-            canvas.width = size; canvas.height = size;
-            const ctx = canvas.getContext('2d');
-            const grad = ctx.createLinearGradient(0, 0, size, size);
-            grad.addColorStop(0, '#3b82f6');
-            grad.addColorStop(1, '#8b5cf6');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, size, size);
-            ctx.fillStyle = '#ffffff';
-            ctx.font = `bold ${size * 0.42}px 'Cairo'`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('SP', size/2, size/2 - size*0.05);
-            ctx.font = `${size * 0.12}px 'Cairo'`;
-            ctx.fillText('STUDIO', size/2, size/2 + size*0.25);
-            icons.push({ src: canvas.toDataURL('image/png'), sizes: `${size}x${size}`, type: 'image/png' });
-        }
-        return icons;
-    }
-    function updateManifest() {
-        const manifest = {
-            name: "SP Studio Pro",
-            short_name: "SP Studio",
-            description: "بطاقة ذكية احترافية مع لوحات ثابتة وأدوات ذكاء",
-            start_url: "/",
-            scope: "/",
-            display: "standalone",
-            theme_color: "#3b82f6",
-            background_color: "#0b1120",
-            orientation: "portrait",
-            icons: generateDynamicIcons(),
-            categories: ["design", "productivity", "health"],
-            lang: "ar",
-            dir: "rtl"
-        };
-        const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const manifestLink = document.getElementById('dynamicManifest');
-        manifestLink.href = url;
-        manifestLink.rel = 'manifest';
-        let appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
-        if(appleIcon) appleIcon.href = generateDynamicIcons()[0].src;
-    }
-    
-    async function registerSW() {
-        if (!('serviceWorker' in navigator)) return;
-        const swCode = `
-            const CACHE_NAME = 'sp-studio-pro-v1';
-            const urlsToCache = ['./', './index.html', './manifest.json', 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap'];
-            self.addEventListener('install', event => {
-                event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache).catch(()=>{})));
-                self.skipWaiting();
-            });
-            self.addEventListener('fetch', event => {
-                event.respondWith(caches.match(event.request).then(response => response || fetch(event.request).catch(() => caches.match('./'))));
-            });
-            self.addEventListener('activate', event => {
-                event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
-                self.clients.claim();
-            });
-        `;
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        const swUrl = URL.createObjectURL(blob);
+        const oldBg = [];
+        editables.forEach(el => { oldBg.push(el.style.background); el.style.background = 'transparent'; });
+        btn.innerHTML = "🖼️ جاري...";
+        btn.disabled = true;
         try {
-            await navigator.serviceWorker.register(swUrl);
-            console.log('SW registered');
-            setTimeout(() => URL.revokeObjectURL(swUrl), 5000);
-        } catch(e) { console.warn(e); }
+            const canvas = await window.html2canvas(element, { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: false });
+            // محاولة استخدام showSaveFilePicker (مدعوم في PWA ضمن السياق الآمن)
+            let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: `SP_Studio_${Date.now()}.png`,
+                        types: [{
+                            description: 'PNG Image',
+                            accept: { 'image/png': ['.png'] }
+                        }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(blob);
+                    await writable.close();
+                    toast("✅ تم حفظ الصورة في الموقع الذي اخترته", 2000);
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        // fallback للتحميل العادي
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `SP_Studio_${Date.now()}.png`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        toast("📸 تم حفظ الصورة (طريقة بديلة)", 1500);
+                    }
+                }
+            } else {
+                // fallback للمتصفحات القديمة
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `SP_Studio_${Date.now()}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+                toast("📸 تم حفظ الصورة", 1500);
+            }
+        } catch(e) {
+            console.error(e);
+            toast("❌ فشل حفظ الصورة", 2000);
+        } finally {
+            btn.innerHTML = "📸 حفظ الصورة PNG";
+            btn.disabled = false;
+            editables.forEach((el,i) => { el.style.background = oldBg[i]; });
+        }
     }
     
+    // ========== تهيئة واجهة التحكم ==========
+    const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
+    const colorGrid = document.getElementById('colorGrid');
+    baseColors.forEach(c => {
+        let dot = document.createElement('div'); dot.className = 'color-dot'; dot.style.backgroundColor = c;
+        dot.addEventListener('click', () => applyTheme(c));
+        colorGrid.appendChild(dot);
+    });
+    const aspects = [{label:'1:1',val:'1/1'},{label:'4:5',val:'4/5'},{label:'1.91:1',val:'1.91/1'},{label:'9:16',val:'9/16'},{label:'تلقائي',val:'auto'}];
+    const aspectGrid = document.getElementById('aspectGrid');
+    aspects.forEach(a => {
+        let btn = document.createElement('div'); btn.className = 'aspect-btn'; btn.innerText = a.label;
+        btn.addEventListener('click', () => { document.getElementById('export-area').style.aspectRatio = a.val; saveAllSettings(); toast(`نسبة ${a.label}`,800); });
+        aspectGrid.appendChild(btn);
+    });
+    
+    document.getElementById('titleSize').addEventListener('input', e => { let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveAllSettings(); });
+    document.getElementById('bodySize').addEventListener('input', e => { let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveAllSettings(); });
+    document.getElementById('lineHeight').addEventListener('input', e => { let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveAllSettings(); });
+    document.getElementById('fontSelect').addEventListener('change', e => { document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveAllSettings(); });
+    document.getElementById('bulletSelect').addEventListener('change', e => { applyBulletToText(e.target.value); saveAllSettings(); });
+    document.getElementById('saveImageBtn').addEventListener('click', exportImage);
+    document.getElementById('resetTextBtn').addEventListener('click', fullReset);
+    document.getElementById('autoFitBtn').addEventListener('click', autoFitWidthAI);
+    document.getElementById('aiEnhanceBtn').addEventListener('click', aiEnhanceText);
+    document.getElementById('customColorizeBtn').addEventListener('click', () => { if(colorizeActive) disableWordColoring(); else enableWordColoring(); });
+    document.getElementById('resetColorsBtn').addEventListener('click', resetAllColors);
+    document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el => el.addEventListener('input', () => { updateWordCount(); if(colorizeActive) disableWordColoring(); saveAllSettings(); }));
+    
+    // ثلاث أوضاع (محتويات مسبقة)
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    const titleDiv = document.querySelector('.title'), bodyTextDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
+    const modesContent = {
+        prof: { title: "الحوار المهني المتقدم", body: "• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني جسر ثقة مع المريض.<br>• الخطط العلاجية الشخصية تحقق نتائج ملموسة.<br><br>الاحترافية ليست مهارة فقط، بل منهج حياة.", drName: "د. سليمان الحربي", drSub: "استشاري علاج طبيعي وتأهيل حركي" },
+        compare: { title: "المقارنة: ميزات وسلبيات", body: "✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>✅ الميزات: متابعة دورية - دعم نفسي.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>⚠️ السلبيات: تكاليف أولية مرتفعة نسبياً.<br><br>الخلاصة: الفوائد تفوق التحديات مع الإرادة.", drName: "تحليل SP", drSub: "رؤية موضوعية للعلاج" },
+        qa: { title: "سؤال وجواب (FAQ)", body: "❓ س: كم جلسة أحتاج؟<br>✅ ج: يختلف حسب الحالة لكن متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: هدفنا تقليل الألم، الجلسات مريحة تدريجياً.<br>❓ س: متى تظهر النتائج؟<br>✅ ج: تحسن ملحوظ خلال 3-4 أسابيع.", drName: "الخدمة الذكية", drSub: "إجابات شاملة" }
+    };
+    function switchMode(mode) {
+        let c = modesContent[mode];
+        if(c) {
+            titleDiv.innerHTML = c.title;
+            bodyTextDiv.innerHTML = c.body;
+            drNameDiv.innerHTML = c.drName;
+            drSubDiv.innerHTML = c.drSub;
+            applyBulletToText(document.getElementById('bulletSelect').value);
+            updateWordCount();
+            saveAllSettings();
+            toast(`🔄 تم التبديل إلى ${mode === 'prof' ? 'المهني' : mode === 'compare' ? 'المقارنة' : 'الأسئلة'}`, 1200);
+        }
+    }
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            switchMode(btn.dataset.mode);
+        });
+    });
+    
+    // ========== PWA: تسجيل Service Worker (ربط بالملف الخارجي) ==========
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                console.log('Service Worker registered:', reg.scope);
+            }).catch(err => console.error('SW registration failed:', err));
+        });
+    }
+    
+    // زر التثبيت المخصص
     let deferredPrompt = null;
-    const installPwaBtn = document.getElementById('installPwaBtn');
+    const installBtn = document.getElementById('installPwaBtn');
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        if(installPwaBtn) installPwaBtn.style.display = 'inline-flex';
+        if(installBtn) installBtn.style.display = 'inline-flex';
     });
-    installPwaBtn?.addEventListener('click', async () => {
-        if(deferredPrompt){
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if(outcome === 'accepted') toast("✅ تم تثبيت SP Studio Pro", 3000);
-            deferredPrompt = null;
-            installPwaBtn.style.display = 'none';
-        } else {
-            toast("⚠️ استخدم قائمة المتصفح ← تثبيت التطبيق", 4000);
-        }
-    });
+    if(installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if(deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if(outcome === 'accepted') toast("✅ تم تثبيت SP Studio Pro", 3000);
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            } else {
+                toast("⚠️ استخدم قائمة المتصفح ← تثبيت التطبيق", 4000);
+            }
+        });
+    }
     
+    // كشف حالة الانترنت
     const offlineDiv = document.getElementById('offlineNotification');
     function updateOnlineStatus() {
         if (!navigator.onLine) offlineDiv.classList.add('show');
@@ -973,15 +898,14 @@
     window.addEventListener('offline', updateOnlineStatus);
     updateOnlineStatus();
     
-    window.addEventListener('load', async () => {
-        updateManifest();
-        await registerSW();
+    // بدء التطبيق
+    window.addEventListener('load', () => {
         loadAllSettings();
         updateWordCount();
         autoFitWidthAI();
-        toast("✨ SP Studio Pro | لوحات ثابتة سلسة | PWA جاهز", 3500);
+        toast("✨ SP Studio Pro | جاهز للتثبيت الكامل", 3500);
     });
 })();
 </script>
 </body>
-</html>
+    </html>
