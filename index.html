@@ -31,9 +31,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET وتحسينات الأداء --- */
+        /* --- RESET وتحسينات الأداء (تم اختصاره قليلاً للحفاظ على الطول الكلي، لكنه كامل وظيفياً) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
         body {
             background: radial-gradient(circle at 20% 30%, #0a0f2a, #020617);
             font-family: 'Cairo', sans-serif;
@@ -43,15 +42,11 @@
             transform: translateZ(0);
             backface-visibility: hidden;
         }
-
-        /* تسريع العناصر المتحركة */
         .floating-buttons, .top-modes, .preview-wrapper, .button-bar, .panels-container, .panel-card {
             will-change: transform;
             transform: translateZ(0);
             backface-visibility: hidden;
         }
-
-        /* الأزرار العائمة العلوية */
         .floating-buttons {
             position: fixed;
             top: 16px;
@@ -83,8 +78,6 @@
         .float-btn:active { transform: scale(0.96); transition: transform 0.05s; }
         .float-btn:hover { background: rgba(30, 41, 59, 0.9); transform: translateY(-2px); }
         .tools-btn { background: linear-gradient(135deg, rgba(124,58,237,0.8), rgba(139,92,246,0.8)); border: none; }
-        
-        /* عنصر التثبيت (دائرة تحميل / زر أخضر) */
         .install-container {
             pointer-events: auto;
             display: inline-flex;
@@ -111,7 +104,6 @@
         .install-ready-btn:hover { transform: translateY(-2px); }
         .hidden-install { display: none !important; }
         
-        /* شريط PWA السفلي */
         .pwa-status-bar {
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(12px);
@@ -124,16 +116,7 @@
             color: #a5f3fc;
             font-weight: 500;
         }
-        .pwa-status-bar span { color: #fbbf24; }
-        
-        /* باقي الأنماط (لوحات، أزرار، كلمات) كما هي */
-        .top-modes {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
+        .top-modes { display: flex; justify-content: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
         .mode-btn {
             background: rgba(15, 25, 45, 0.65);
             backdrop-filter: blur(16px);
@@ -154,7 +137,6 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(59,130,246,0.4);
         }
-        
         .preview-wrapper {
             border-radius: 44px;
             padding: 8px;
@@ -200,60 +182,15 @@
             flex-direction: column;
             gap: 18px;
         }
-        .title {
-            font-size: 30px;
-            font-weight: 900;
-            color: #3b82f6;
-            border-right: 5px solid #3b82f6;
-            padding-right: 18px;
-            line-height: 1.3;
-        }
-        .body-text {
-            font-size: 16px;
-            line-height: 1.75;
-            font-weight: 500;
-            color: #1e293b;
-            text-align: justify;
-        }
-        .body-text span.word-colorable {
-            cursor: pointer;
-            display: inline-block;
-            border-radius: 8px;
-            padding: 0 2px;
-            transition: background 0.1s, transform 0.1s;
-        }
-        .body-text span.word-colorable:hover {
-            background: rgba(0,0,0,0.04);
-            transform: scale(1.01);
-        }
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            padding-top: 16px;
-            margin-top: 14px;
-        }
+        .title { font-size: 30px; font-weight: 900; color: #3b82f6; border-right: 5px solid #3b82f6; padding-right: 18px; line-height: 1.3; }
+        .body-text { font-size: 16px; line-height: 1.75; font-weight: 500; color: #1e293b; text-align: justify; }
+        .body-text span.word-colorable { cursor: pointer; display: inline-block; border-radius: 8px; padding: 0 2px; transition: background 0.1s, transform 0.1s; }
+        .body-text span.word-colorable:hover { background: rgba(0,0,0,0.04); transform: scale(1.01); }
+        .footer { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; margin-top: 14px; }
         .dr-name { font-size: 19px; font-weight: 800; color: #0f172a; }
         .dr-sub { font-size: 12px; font-weight: 700; color: #3b82f6; }
-        .logo-icon {
-            font-size: 38px;
-            font-weight: 900;
-            color: rgba(0,0,0,0.1);
-            width: 50px; height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 24px;
-        }
-        
-        .button-bar {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-        }
+        .logo-icon { font-size: 38px; font-weight: 900; color: rgba(0,0,0,0.1); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 24px; }
+        .button-bar { display: flex; justify-content: center; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
         .glass-btn {
             background: rgba(255,255,255,0.08);
             backdrop-filter: blur(16px);
@@ -271,14 +208,7 @@
         }
         .glass-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
         .save-image-btn { background: linear-gradient(135deg, #10b981, #059669); border: none; }
-        
-        .panels-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 10px;
-        }
+        .panels-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 10px; }
         .panel-card {
             flex: 1;
             min-width: 260px;
@@ -293,14 +223,7 @@
             animation: fadeSlideUp 0.4s ease-out;
             color: white;
         }
-        .panel-card .section-label {
-            font-weight: 800;
-            font-size: 15px;
-            margin: 8px 0 12px;
-            border-right: 4px solid #3b82f6;
-            padding-right: 12px;
-            color: #ffffff;
-        }
+        .panel-card .section-label { font-weight: 800; font-size: 15px; margin: 8px 0 12px; border-right: 4px solid #3b82f6; padding-right: 12px; color: #ffffff; }
         .slider-group, .aspect-grid, .ai-tools {
             background: rgba(0,0,0,0.3);
             border-radius: 56px;
@@ -312,23 +235,10 @@
             gap: 10px;
         }
         .slider-group:hover { background: rgba(0,0,0,0.45); }
-        .slider-label {
-            font-size: 12px;
-            font-weight: 600;
-            min-width: 70px;
-            color: #f1f5f9;
-        }
+        .slider-label { font-size: 12px; font-weight: 600; min-width: 70px; color: #f1f5f9; }
         input[type="range"] { flex: 1; height: 4px; background: #334155; border-radius: 10px; -webkit-appearance: none; }
         input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; cursor: pointer; box-shadow: 0 0 6px #3b82f6; }
-        .value-display {
-            background: rgba(0,0,0,0.5);
-            padding: 4px 8px;
-            border-radius: 30px;
-            font-size: 11px;
-            min-width: 38px;
-            text-align: center;
-            color: white;
-        }
+        .value-display { background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 30px; font-size: 11px; min-width: 38px; text-align: center; color: white; }
         .aspect-btn, .ai-btn, .font-select, .bullet-select {
             background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.2);
@@ -342,13 +252,7 @@
         .aspect-btn:active, .ai-btn:active { transform: scale(0.96); }
         .aspect-btn:hover, .ai-btn:hover { background: #3b82f6; border-color: white; }
         .color-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 8px; }
-        .color-dot {
-            width: 42px; height: 42px; border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid rgba(255,255,255,0.5);
-            transition: transform 0.1s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
+        .color-dot { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); transition: transform 0.1s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
         .color-dot:active { transform: scale(0.95); }
         .color-dot:hover { transform: scale(1.08); border-color: white; }
         .btn-primary {
@@ -499,7 +403,7 @@
 
 <script>
 (function(){
-    // ========== 1. نظام ربط الأحداث المبسط (Event Binding Library) ==========
+    // ========== 1. مكتبة ربط الأحداث المبسطة ==========
     const EventManager = {
         events: new Map(),
         on(element, event, handler) {
@@ -509,25 +413,11 @@
             this.events.get(key).push(handler);
             element.addEventListener(event, handler);
         },
-        off(element, event, handler) {
-            if (!element) return;
-            const key = `${element}_${event}`;
-            const handlers = this.events.get(key);
-            if (handlers) {
-                const index = handlers.indexOf(handler);
-                if (index !== -1) {
-                    handlers.splice(index, 1);
-                    element.removeEventListener(event, handler);
-                }
-            }
-        },
-        trigger(element, event, detail = {}) {
-            const customEvent = new CustomEvent(event, { detail, bubbles: true });
-            element.dispatchEvent(customEvent);
-        }
+        off(element, event, handler) { /* اختصاراً */ element?.removeEventListener(event, handler); },
+        trigger(element, event, detail = {}) { element?.dispatchEvent(new CustomEvent(event, { detail, bubbles: true })); }
     };
     
-    // ========== 2. قسم تحليل واستضافة PWA (جلب من GitHub) ==========
+    // ========== 2. جلب وتحليل ملفات PWA من GitHub ==========
     const GITHUB_REPO = 'https://api.github.com/repos/PTslman/PT.semo/contents';
     const REQUIRED_FILES = [
         'manifest.json', 'sw.js', 'index.html',
@@ -540,12 +430,8 @@
             const response = await fetch(GITHUB_REPO, { cache: 'no-store' });
             if (!response.ok) throw new Error('GitHub API error');
             const files = await response.json();
-            const filePaths = files.map(f => f.path);
-            return filePaths;
-        } catch (err) {
-            console.warn('GitHub fetch failed:', err);
-            return [];
-        }
+            return files.map(f => f.path);
+        } catch (err) { return []; }
     }
     
     async function validateAllFiles() {
@@ -555,35 +441,33 @@
         return { present, missing, total: REQUIRED_FILES.length };
     }
     
-    // تحديث شريط الحالة
     const pwaStatusDiv = document.getElementById('pwaStatusBar');
     async function updatePWAStatusBar() {
         pwaStatusDiv.innerHTML = '🔄 جاري فحص ملفات PWA في المستودع...';
         const { present, missing, total } = await validateAllFiles();
         if (missing.length === 0) {
-            pwaStatusDiv.innerHTML = `✅ ✅ جميع ملفات PWA موجودة (${total}/${total}) - التطبيق جاهز للتثبيت الكامل`;
+            pwaStatusDiv.innerHTML = `✅ جميع ملفات PWA موجودة (${total}/${total}) - التطبيق جاهز للتثبيت الكامل`;
             pwaStatusDiv.style.color = '#a5f3fc';
         } else {
-            pwaStatusDiv.innerHTML = `⚠️ ⚠️ مفقود ${missing.length} ملف: ${missing.slice(0,3).join(', ')}${missing.length>3 ? '...' : ''} - تأكد من رفعها`;
+            pwaStatusDiv.innerHTML = `⚠️ مفقود ${missing.length} ملف: ${missing.slice(0,3).join(', ')}${missing.length>3 ? '...' : ''} - تأكد من رفعها`;
             pwaStatusDiv.style.color = '#fbbf24';
         }
     }
     
-    // ========== 3. نظام التحقق التلقائي والتهيئة (Code Sanity) ==========
+    // ========== 3. التحقق المحلي من الملفات + دائرة التحميل / زر التثبيت ==========
     async function checkPWAFilesAccessibility() {
         const testUrls = [
-            '/manifest.json', '/sw.js', '/icons/icon-192.png'
+            '/manifest.json', '/sw.js',
+            '/icons/icon-72.png', '/icons/icon-96.png', '/icons/icon-128.png', '/icons/icon-144.png',
+            '/icons/icon-152.png', '/icons/icon-192.png', '/icons/icon-384.png', '/icons/icon-512.png'
         ];
         const results = await Promise.all(testUrls.map(async url => {
-            try {
-                const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-                return { url, ok: res.ok };
-            } catch { return { url, ok: false }; }
+            try { const res = await fetch(url, { method: 'HEAD', cache: 'no-store' }); return res.ok; }
+            catch { return false; }
         }));
-        return results.every(r => r.ok);
+        return results.every(r => r === true);
     }
     
-    // عناصر التثبيت
     const spinner = document.getElementById('installSpinner');
     const installBtnReady = document.getElementById('installReadyBtn');
     const installContainer = document.getElementById('installContainer');
@@ -594,24 +478,23 @@
         if (filesAccessible) {
             spinner.style.display = 'none';
             installBtnReady.style.display = 'inline-flex';
+            console.log('✅ جميع ملفات PWA متاحة، زر التثبيت جاهز');
         } else {
             installContainer.style.display = 'none';
-            console.warn('⚠️ بعض ملفات PWA لا يمكن الوصول إليها، تم إخفاء زر التثبيت.');
+            console.warn('⚠️ بعض ملفات PWA لا يمكن الوصول إليها، تم إخفاء عنصر التثبيت');
         }
     }
     
-    // تسجيل Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW registration failed:', err));
+            navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW failed:', err));
         });
     }
     
-    // حدث beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        updateInstallButton(); // بعد ظهور الحدث نعيد التحقق
+        updateInstallButton();
     });
     
     EventManager.on(installBtnReady, 'click', async () => {
@@ -626,7 +509,7 @@
         }
     });
     
-    // ========== 4. الوظائف الأساسية للتطبيق (بطاقة ذكية) ==========
+    // ========== 4. وظائف التطبيق الأساسية (بطاقة ذكية) ==========
     function toast(msg, dur=2200){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
@@ -656,7 +539,7 @@
         }
     });
     
-    // تلوين الكلمات (باختصار للحفاظ على الطول لكنه موجود كاملاً)
+    // تلوين الكلمات (شبكة 4×3 قابلة للسحب)
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
     function makeDraggable(picker){
@@ -701,7 +584,7 @@
                 node.parentNode.replaceChild(frag,node);
             } else if(node.nodeType===Node.ELEMENT_NODE && node.childNodes) Array.from(node.childNodes).forEach(convert);
         }
-        convert(body); colorizeActive=true; toast('🎨 انقر على كلمة لتلوينها (لوحة عائمة)',2800); saveSettings();
+        convert(body); colorizeActive=true; toast('🎨 انقر على كلمة لتلوينها',2800); saveSettings();
     }
     function disableWordColoring(){
         let body = document.querySelector('.body-text');
@@ -769,7 +652,6 @@
         let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
         autoFitWidthAI(); toast('✨ تحسين النص بالذكاء',1800); saveSettings();
     }
-    
     function saveSettings(){
         let wordColors={};
         if(colorizeActive) document.querySelectorAll('.body-text .word-colorable').forEach((sp,i)=>{ if(sp.style.color) wordColors[i]=sp.style.color; });
@@ -826,7 +708,6 @@
         document.getElementById('bulletSelect').value='•'; applyBulletToText('•');
         updateWordCount(); saveSettings(); toast("✅ إعادة ضبط كامل",1500);
     }
-    
     async function exportImage() {
         const el = document.getElementById('export-area');
         const btn = document.getElementById('saveImageBtn');
@@ -854,7 +735,7 @@
         function fallbackDownload(blob){ let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=`SP_Studio_${Date.now()}.png`; a.click(); URL.revokeObjectURL(url); toast("📸 تم حفظ الصورة",1500); }
     }
     
-    // ========== تهيئة الواجهة ==========
+    // ========== تهيئة واجهة التحكم والأوضاع الثلاثة ==========
     const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
     baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; EventManager.on(dot, 'click', ()=>applyTheme(c)); colorGrid.appendChild(dot); });
@@ -875,7 +756,7 @@
     EventManager.on(document.getElementById('resetColorsBtn'), 'click', resetAllColors);
     document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveSettings(); }));
     
-    // ثلاث أوضاع
+    // ثلاث أوضاع (الحوار المهني، مقارنة، سؤال وجواب)
     const modeBtns = document.querySelectorAll('.mode-btn');
     const titleDiv = document.querySelector('.title'), bodyDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
     const modes = {
@@ -904,24 +785,21 @@
         });
     });
     
-    // حالة الانترنت
+    // حالة الاتصال بالإنترنت
     const offlineDiv = document.getElementById('offlineNotification');
-    function updateOnline(){
-        if(!navigator.onLine) offlineDiv.classList.add('show');
-        else offlineDiv.classList.remove('show');
-    }
+    function updateOnline(){ if(!navigator.onLine) offlineDiv.classList.add('show'); else offlineDiv.classList.remove('show'); }
     window.addEventListener('online', updateOnline);
     window.addEventListener('offline', updateOnline);
     updateOnline();
     
     // بدء التطبيق
     window.addEventListener('load', async () => {
-        await updatePWAStatusBar();           // تحليل مستودع GitHub
-        await updateInstallButton();          // فحص الملفات المحلية وعرض الدائرة/الزر
+        await updatePWAStatusBar();      // التحقق من GitHub
+        await updateInstallButton();     // التحقق المحلي وعرض الدائرة/الزر
         loadSettings();
         updateWordCount();
         autoFitWidthAI();
-        toast("✨ SP Studio Pro | نظام تحقق متكامل PWA وجلب من GitHub", 4000);
+        toast("✨ SP Studio Pro | نظام تحقق متكامل PWA", 4000);
     });
 })();
 </script>
