@@ -1,48 +1,54 @@
-<!-- SU.html - ملف التحديث النهائي مع التوكن المضمن -->
-<!-- يقوم هذا الملف بحذف زر الإحصائيات بشكل دائم من ملف index.html على GitHub -->
+<!-- SU.html - الإصدار النهائي لحذف زر الإحصائيات -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>تحديث جذري - حذف زر الإحصائيات</title>
+    <title>تحديث - حذف زر الإحصائيات</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: radial-gradient(circle at 30% 20%, #0a0f2a, #020617);
-            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            font-family: 'Cairo', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        .update-container {
-            background: rgba(12, 20, 35, 0.95);
+        .container {
+            background: rgba(12,20,35,0.95);
             backdrop-filter: blur(24px);
             border-radius: 48px;
-            padding: 40px 32px;
-            max-width: 550px;
-            width: 100%;
+            padding: 40px;
+            max-width: 500px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: fadeInUp 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: fadeIn 0.4s ease;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .update-icon { font-size: 64px; margin-bottom: 20px; }
-        h2 { color: white; margin-bottom: 16px; font-size: 28px; }
-        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 60px; height: 8px; margin: 24px 0; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 60px; transition: width 0.3s ease; }
-        .status-text { color: #a5f3fc; margin: 16px 0; font-size: 14px; }
-        .step { color: #94a3b8; font-size: 12px; margin: 8px 0; text-align: right; padding-right: 20px; }
-        .step.completed { color: #10b981; }
-        .step.active { color: #3b82f6; font-weight: bold; }
-        .step.error { color: #ef4444; }
-        .restart-btn {
+        .icon { font-size: 64px; margin-bottom: 20px; }
+        h2 { color: white; margin-bottom: 16px; }
+        .status { color: #a5f3fc; margin: 16px 0; font-size: 14px; }
+        .log {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 12px;
+            margin: 20px 0;
+            font-size: 11px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            color: #94a3b8;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        button {
             background: linear-gradient(135deg, #10b981, #059669);
             border: none;
             border-radius: 60px;
@@ -51,227 +57,216 @@
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 24px;
+            margin-top: 10px;
             display: none;
-            transition: transform 0.2s;
         }
-        .restart-btn:hover { transform: scale(1.02); }
-        .log {
-            background: rgba(0,0,0,0.4);
-            border-radius: 20px;
-            padding: 12px;
-            margin-top: 20px;
-            font-size: 11px;
-            color: #94a3b8;
-            text-align: left;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: monospace;
+        .progress {
+            background: rgba(255,255,255,0.1);
+            border-radius: 60px;
+            height: 6px;
+            margin: 20px 0;
+            overflow: hidden;
         }
-        .warning { color: #f59e0b; }
-        .success { color: #10b981; }
-        .error { color: #ef4444; }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s;
+        }
     </style>
 </head>
 <body>
-<div class="update-container">
-    <div class="update-icon">🔧</div>
-    <h2>تحديث جذري للتطبيق</h2>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="status-text" id="statusText">جاري تجهيز التحديث التلقائي...</div>
-    <div id="stepsContainer">
-        <div class="step" id="step1">🔍 1. جلب ملف index.html من المستودع</div>
-        <div class="step" id="step2">✏️ 2. تعديل الملف - حذف زر الإحصائيات</div>
-        <div class="step" id="step3">💾 3. حفظ الملف المعدل في المستودع</div>
-        <div class="step" id="step4">🧹 4. مسح ذاكرة التخزين المؤقت</div>
-        <div class="step" id="step5">🔄 5. إعادة تشغيل التطبيق</div>
-    </div>
-    <div class="log" id="logContainer"></div>
-    <button class="restart-btn" id="restartBtn" style="display: none;">🚀 إعادة تشغيل التطبيق</button>
+<div class="container">
+    <div class="icon">🔧</div>
+    <h2>تحديث التطبيق</h2>
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="status" id="status">جاري التجهيز...</div>
+    <div class="log" id="log"></div>
+    <button id="restartBtn">🔄 إعادة التشغيل</button>
 </div>
 
 <script>
     (function() {
         const progressFill = document.getElementById('progressFill');
-        const statusText = document.getElementById('statusText');
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
         const restartBtn = document.getElementById('restartBtn');
-        const logContainer = document.getElementById('logContainer');
         
-        // التوكن المضمن (تم وضعه مباشرة)
         const GITHUB_TOKEN = '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';
         const REPO_OWNER = 'PTslman';
         const REPO_NAME = 'PT.semo';
         const FILE_PATH = 'index.html';
         const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
         
-        function addLog(message, type = 'info') {
-            const logEntry = document.createElement('div');
-            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logEntry.className = type;
-            logContainer.appendChild(logEntry);
-            logContainer.scrollTop = logContainer.scrollHeight;
-            console.log(message);
-        }
-        
-        function updateStep(stepId, status) {
-            const step = document.getElementById(stepId);
-            step.classList.remove('active', 'completed', 'error');
-            if (status === 'active') step.classList.add('active');
-            else if (status === 'completed') step.classList.add('completed');
-            else if (status === 'error') step.classList.add('error');
+        function addLog(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            div.className = type;
+            logDiv.appendChild(div);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
         }
         
         function updateProgress(percent, text) {
             progressFill.style.width = percent + '%';
-            if (text) statusText.textContent = text;
+            statusDiv.innerHTML = text;
         }
         
-        function modifyIndexHtml(content) {
+        // دالة قوية لحذف زر الإحصائيات من المحتوى
+        function removeStatsButton(content) {
             let modified = content;
             
-            // إزالة زر viewStatsBtn بالكامل من HTML
-            const statsBtnRegex = /<button[^>]*id=["']viewStatsBtn["'][^>]*>[\s\S]*?<\/button>\s*\n?/gi;
-            modified = modified.replace(statsBtnRegex, '');
+            // 1. حذف زر viewStatsBtn من HTML (أي سطر يحتوي عليه)
+            const lines = modified.split('\n');
+            const newLines = [];
+            let removedCount = 0;
             
-            // إزالة الكود الخاص بـ viewStatsBtn في الجافاسكريبت
-            const jsRegex = /document\.getElementById\(['"]viewStatsBtn['"]\)\.onclick\s*=\s*async\s*\(\)\s*=>\s*\{[\s\S]*?\n\s*\};?\n?/gi;
-            modified = modified.replace(jsRegex, '');
+            for (const line of lines) {
+                // إذا كان السطر يحتوي على viewStatsBtn تخطيه
+                if (line.includes('viewStatsBtn') || 
+                    (line.includes('إحصائيات') && line.includes('button')) ||
+                    (line.includes('stats') && line.includes('btn'))) {
+                    removedCount++;
+                    continue;
+                }
+                newLines.push(line);
+            }
             
-            // إزالة أي إشارة أخرى إلى viewStatsBtn
-            const anyRefRegex = /viewStatsBtn/g;
-            modified = modified.replace(anyRefRegex, '');
+            modified = newLines.join('\n');
+            addLog(`✅ تم حذف ${removedCount} سطر متعلق بزر الإحصائيات`, 'success');
             
-            // إزالة سطر إحصائيات من شريط الأزرار السفلي (بديل)
-            const statsLineRegex = /<button class="glass-btn"[^>]*id="viewStatsBtn"[^>]*>[\s\S]*?<\/button>\s*\n?/gi;
-            modified = modified.replace(statsLineRegex, '');
+            // 2. حذف أي كود JavaScript يتعلق بـ viewStatsBtn
+            const jsPatterns = [
+                /document\.getElementById\(['"]viewStatsBtn['"]\)[^;]*;?\n?/gi,
+                /getElementById\(['"]viewStatsBtn['"]\)/gi,
+                /viewStatsBtn\.onclick\s*=\s*function[^{]*\{[^}]*\}/gi,
+                /\.onclick\s*=\s*async\s*\(\)\s*=>\s*\{[^}]*\}/gi
+            ];
+            
+            for (const pattern of jsPatterns) {
+                modified = modified.replace(pattern, '');
+            }
+            
+            // 3. حذف أي mention لـ viewStatsBtn نهائياً
+            modified = modified.replace(/viewStatsBtn/g, '');
             
             return modified;
         }
         
-        async function updateFileOnGithub(content, sha) {
-            const response = await fetch(API_URL, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: 'حذف زر الإحصائيات نهائياً (تحديث تلقائي)',
-                    content: btoa(unescape(encodeURIComponent(content))),
-                    sha: sha,
-                    branch: 'main'
-                })
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'فشل حفظ الملف');
-            }
-            return await response.json();
-        }
-        
         async function startUpdate() {
+            updateProgress(10, 'جاري الاتصال بـ GitHub...');
+            addLog('🚀 بدء عملية التحديث', 'info');
+            
             try {
-                // ========== الخطوة 1: جلب الملف ==========
-                updateStep('step1', 'active');
-                updateProgress(10, 'جاري جلب ملف index.html من المستودع...');
-                addLog('🔄 جاري الاتصال بـ GitHub API...');
+                // ===== الخطوة 1: جلب الملف =====
+                updateProgress(20, 'جلب ملف index.html...');
+                addLog('📥 جلب الملف من المستودع...', 'info');
                 
-                const fileResponse = await fetch(API_URL, {
+                const fileRes = await fetch(API_URL, {
                     headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
                 });
                 
-                if (!fileResponse.ok) {
-                    throw new Error(`فشل جلب الملف: ${fileResponse.status}`);
-                }
+                if (!fileRes.ok) throw new Error(`فشل جلب الملف: ${fileRes.status}`);
                 
-                const fileData = await fileResponse.json();
+                const fileData = await fileRes.json();
                 const originalContent = decodeURIComponent(escape(atob(fileData.content)));
                 addLog('✅ تم جلب الملف بنجاح', 'success');
-                updateStep('step1', 'completed');
                 
-                // ========== الخطوة 2: تعديل الملف ==========
-                updateStep('step2', 'active');
-                updateProgress(40, 'جاري تعديل الملف - حذف زر الإحصائيات...');
+                // ===== الخطوة 2: تعديل المحتوى =====
+                updateProgress(50, 'تعديل الملف...');
+                addLog('✏️ جاري حذف زر الإحصائيات...', 'info');
                 
-                const modifiedContent = modifyIndexHtml(originalContent);
+                const modifiedContent = removeStatsButton(originalContent);
                 
-                // التحقق مما إذا كان هناك تغيير فعلي
                 if (originalContent === modifiedContent) {
-                    addLog('⚠️ لم يتم العثور على زر الإحصائيات في الملف (ربما محذوف مسبقاً)', 'warning');
+                    addLog('⚠️ لم يتم العثور على زر الإحصائيات (ربما محذوف مسبقاً)', 'info');
                 } else {
                     addLog('✅ تم حذف زر الإحصائيات بنجاح', 'success');
                 }
                 
-                updateStep('step2', 'completed');
+                // ===== الخطوة 3: حفظ الملف =====
+                updateProgress(70, 'حفظ التغييرات...');
+                addLog('💾 جاري حفظ الملف المعدل...', 'info');
                 
-                // ========== الخطوة 3: حفظ الملف ==========
-                updateStep('step3', 'active');
-                updateProgress(70, 'جاري حفظ الملف المعدل في المستودع...');
+                const putRes = await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'حذف زر الإحصائيات نهائياً',
+                        content: btoa(unescape(encodeURIComponent(modifiedContent))),
+                        sha: fileData.sha,
+                        branch: 'main'
+                    })
+                });
                 
-                await updateFileOnGithub(modifiedContent, fileData.sha);
-                addLog('✅ تم حفظ الملف المعدل في المستودع', 'success');
-                updateStep('step3', 'completed');
+                if (!putRes.ok) {
+                    const err = await putRes.json();
+                    throw new Error(err.message || 'فشل الحفظ');
+                }
                 
-                // ========== الخطوة 4: مسح الكاش ==========
-                updateStep('step4', 'active');
-                updateProgress(85, 'جاري مسح ذاكرة التخزين المؤقت...');
+                addLog('✅ تم حفظ الملف في المستودع', 'success');
+                
+                // ===== الخطوة 4: مسح الكاش =====
+                updateProgress(85, 'مسح ذاكرة التخزين...');
+                addLog('🧹 جاري مسح الكاش...', 'info');
                 
                 if ('caches' in window) {
-                    const cacheKeys = await caches.keys();
-                    for (const key of cacheKeys) {
+                    const keys = await caches.keys();
+                    for (const key of keys) {
                         await caches.delete(key);
-                        addLog(`✅ تم حذف الكاش: ${key}`, 'success');
+                        addLog(`✅ حذف الكاش: ${key}`, 'success');
                     }
                 }
                 
                 if ('serviceWorker' in navigator) {
                     const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (const registration of registrations) {
-                        await registration.unregister();
-                        addLog('✅ تم إلغاء تسجيل Service Worker', 'success');
+                    for (const reg of registrations) {
+                        await reg.unregister();
+                        addLog('✅ إلغاء تسجيل Service Worker', 'success');
                     }
                 }
                 
+                // مسح localStorage للإحصائيات
                 localStorage.removeItem('spStudio_analytics');
                 localStorage.removeItem('spStudio_stats');
-                addLog('✅ تم تنظيف التخزين المحلي', 'success');
-                updateStep('step4', 'completed');
+                localStorage.removeItem('spStudio_session');
+                addLog('✅ تنظيف localStorage', 'success');
                 
-                // ========== الخطوة 5: إعادة التشغيل ==========
-                updateStep('step5', 'active');
-                updateProgress(100, '✅ اكتمل التحديث بنجاح!');
-                addLog('✨ تم حذف زر الإحصائيات بشكل دائم من المشروع', 'success');
-                updateStep('step5', 'completed');
+                // ===== الانتهاء =====
+                updateProgress(100, '✅ اكتمل التحديث!');
+                addLog('✨ تم حذف زر الإحصائيات نهائياً', 'success');
                 
                 // إظهار زر إعادة التشغيل
                 restartBtn.style.display = 'block';
                 
                 let countdown = 3;
-                restartBtn.textContent = `🚀 إعادة التشغيل (${countdown})`;
+                restartBtn.textContent = `🔄 إعادة التشغيل (${countdown})`;
                 const timer = setInterval(() => {
                     countdown--;
-                    restartBtn.textContent = `🚀 إعادة التشغيل (${countdown})`;
+                    restartBtn.textContent = `🔄 إعادة التشغيل (${countdown})`;
                     if (countdown <= 0) {
                         clearInterval(timer);
-                        window.location.href = '/PT.semo/?update=' + Date.now();
+                        window.location.href = '/PT.semo/?force=' + Date.now();
                     }
                 }, 1000);
                 
                 restartBtn.onclick = () => {
                     clearInterval(timer);
-                    window.location.href = '/PT.semo/?update=' + Date.now();
+                    window.location.href = '/PT.semo/?force=' + Date.now();
                 };
                 
             } catch (error) {
                 console.error(error);
-                addLog(`❌ فشل التحديث: ${error.message}`, 'error');
-                updateProgress(0, 'فشل التحديث');
-                statusText.textContent = '❌ فشل التحديث. يرجى المحاولة مرة أخرى لاحقاً';
+                updateProgress(0, '❌ فشل التحديث');
+                addLog(`❌ خطأ: ${error.message}`, 'error');
+                addLog('⚠️ تأكد من أن التوكن صحيح ولديه صلاحيات repo', 'error');
             }
         }
         
-        // بدء التحديث تلقائياً فور تحميل الصفحة
+        // بدء التحديث فوراً
         startUpdate();
     })();
 </script>
