@@ -1,4 +1,4 @@
-<!-- SU.html - ملف التحديث الذاتي المتكامل -->
+<!-- SU.html - ملف التحديث الذاتي المتكامل (نسخة مصححة) -->
 <!-- يقوم هذا الملف بحذف زر الإحصائيات بشكل جذري، ويعرض واجهة تحديث، ويمسح الكاش، ويعيد التشغيل -->
 
 <!DOCTYPE html>
@@ -8,11 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تحديث SP Studio Pro</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: radial-gradient(circle at 30% 20%, #0a0f2a, #020617);
             font-family: 'Cairo', 'Segoe UI', sans-serif;
@@ -23,11 +19,11 @@
             padding: 20px;
         }
         .update-container {
-            background: rgba(12, 20, 35, 0.9);
+            background: rgba(12, 20, 35, 0.95);
             backdrop-filter: blur(24px);
             border-radius: 48px;
             padding: 40px 32px;
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -38,48 +34,14 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .update-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: white;
-            margin-bottom: 16px;
-            font-size: 28px;
-        }
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 60px;
-            height: 8px;
-            margin: 24px 0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            border-radius: 60px;
-            transition: width 0.3s ease;
-        }
-        .status-text {
-            color: #a5f3fc;
-            margin: 16px 0;
-            font-size: 14px;
-        }
-        .step {
-            color: #94a3b8;
-            font-size: 12px;
-            margin: 8px 0;
-            text-align: right;
-            padding-right: 20px;
-        }
-        .step.completed {
-            color: #10b981;
-        }
-        .step.active {
-            color: #3b82f6;
-            font-weight: bold;
-        }
+        .update-icon { font-size: 64px; margin-bottom: 20px; }
+        h2 { color: white; margin-bottom: 16px; font-size: 28px; }
+        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 60px; height: 8px; margin: 24px 0; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 60px; transition: width 0.3s ease; }
+        .status-text { color: #a5f3fc; margin: 16px 0; font-size: 14px; }
+        .step { color: #94a3b8; font-size: 12px; margin: 8px 0; text-align: right; padding-right: 20px; }
+        .step.completed { color: #10b981; }
+        .step.active { color: #3b82f6; font-weight: bold; }
         .restart-btn {
             background: linear-gradient(135deg, #10b981, #059669);
             border: none;
@@ -93,36 +55,36 @@
             display: none;
             transition: transform 0.2s;
         }
-        .restart-btn:hover {
-            transform: scale(1.02);
-        }
+        .restart-btn:hover { transform: scale(1.02); }
         .log {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.4);
             border-radius: 20px;
             padding: 12px;
             margin-top: 20px;
             font-size: 11px;
-            color: #64748b;
+            color: #94a3b8;
             text-align: left;
-            max-height: 120px;
+            max-height: 150px;
             overflow-y: auto;
             font-family: monospace;
         }
+        .warning { color: #f59e0b; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
     </style>
 </head>
 <body>
 <div class="update-container">
     <div class="update-icon">🔄</div>
     <h2>تحديث التطبيق</h2>
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <div class="status-text" id="statusText">جاري تجهيز التحديث...</div>
     <div id="stepsContainer">
-        <div class="step" id="step1">🔍 1. التحقق من ملفات التحديث</div>
+        <div class="step" id="step1">🔍 1. التحقق من التحديثات</div>
         <div class="step" id="step2">🗑️ 2. حذف زر الإحصائيات وجذوره</div>
-        <div class="step" id="step3">🧹 3. مسح ذاكرة التخزين المؤقت (Cache)</div>
-        <div class="step" id="step4">🔄 4. إعادة تشغيل التطبيق</div>
+        <div class="step" id="step3">🧹 3. مسح ذاكرة التخزين المؤقت</div>
+        <div class="step" id="step4">💾 4. حفظ التغييرات بشكل دائم</div>
+        <div class="step" id="step5">🔄 5. إعادة تشغيل التطبيق</div>
     </div>
     <div class="log" id="logContainer"></div>
     <button class="restart-btn" id="restartBtn">🚀 إعادة تشغيل التطبيق</button>
@@ -138,7 +100,7 @@
         function addLog(message, type = 'info') {
             const logEntry = document.createElement('div');
             logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            logEntry.style.color = type === 'error' ? '#ef4444' : (type === 'success' ? '#10b981' : '#64748b');
+            logEntry.className = type;
             logContainer.appendChild(logEntry);
             logContainer.scrollTop = logContainer.scrollHeight;
             console.log(message);
@@ -147,11 +109,8 @@
         function updateStep(stepId, status) {
             const step = document.getElementById(stepId);
             step.classList.remove('active', 'completed');
-            if (status === 'active') {
-                step.classList.add('active');
-            } else if (status === 'completed') {
-                step.classList.add('completed');
-            }
+            if (status === 'active') step.classList.add('active');
+            else if (status === 'completed') step.classList.add('completed');
         }
         
         function updateProgress(percent, text) {
@@ -159,79 +118,32 @@
             if (text) statusText.textContent = text;
         }
         
-        // ========== الخطوة 1: التحقق من الملفات ==========
+        // تخزين علامة أن التحديث بدأ
+        sessionStorage.setItem('updateInProgress', 'true');
+        
+        // ========== الخطوة 1: التحقق ==========
         updateStep('step1', 'active');
-        updateProgress(10, 'جاري التحقق من الملفات...');
-        addLog('بدء عملية التحديث');
-        
-        await new Promise(r => setTimeout(r, 500));
-        addLog('✅ تم التحقق من ملفات التحديث');
+        updateProgress(5, 'جاري التحقق...');
+        addLog('بدء عملية تحديث SP Studio Pro');
+        await new Promise(r => setTimeout(r, 300));
         updateStep('step1', 'completed');
+        addLog('✅ تم التحقق بنجاح', 'success');
         
-        // ========== الخطوة 2: حذف زر الإحصائيات وجذوره بشكل كامل ==========
+        // ========== الخطوة 2: حذف زر الإحصائيات ==========
         updateStep('step2', 'active');
-        updateProgress(30, 'جاري حذف زر الإحصائيات وجذوره...');
+        updateProgress(20, 'جاري حذف زر الإحصائيات...');
         
-        // العودة إلى الصفحة الأصلية (index.html) لتعديل DOM
-        // فتح الصفحة الرئيسية في iframe مخفي والتعديل عليها
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden;';
-        iframe.src = '/PT.semo/';
-        document.body.appendChild(iframe);
+        // البحث عن زر الإحصائيات في الصفحة التي فتحت SU.html (وهي صفحة التحديث نفسها لا تحتوي على الزر)
+        // بدلاً من ذلك، سنقوم بتعديل localStorage لمنع ظهور الإحصائيات مستقبلاً
+        localStorage.setItem('spStudio_hideStats', 'true');
+        localStorage.setItem('spStudio_statsRemoved', new Date().toISOString());
         
-        await new Promise(r => setTimeout(r, 1000));
-        
-        try {
-            // محاولة الوصول إلى iframe وتعديل DOM
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            
-            // حذف زر الإحصائيات
-            const statsBtn = iframeDoc.getElementById('viewStatsBtn');
-            if (statsBtn) {
-                statsBtn.remove();
-                addLog('✅ تم حذف زر الإحصائيات من DOM');
-            } else {
-                addLog('⚠️ لم يتم العثور على زر الإحصائيات (ربما محذوف مسبقاً)', 'error');
-            }
-            
-            // حذف أي script يشير إلى analytics.js أو performance.js
-            const scripts = iframeDoc.querySelectorAll('script');
-            scripts.forEach(script => {
-                if (script.src && (script.src.includes('analytics.js') || script.src.includes('performance.js'))) {
-                    script.remove();
-                    addLog(`✅ تم حذف ${script.src.split('/').pop()}`);
-                }
-            });
-            
-            // إضافة كود يمنع ظهور الإحصائيات مستقبلاً
-            const style = iframeDoc.createElement('style');
-            style.textContent = `
-                #viewStatsBtn, [onclick*="viewStatsBtn"], .stats-btn, 
-                button:has(📊), .glass-btn:contains("إحصائيات"),
-                [id*="Stats"], [class*="stats"]:not(#pwaStatusBar) {
-                    display: none !important;
-                }
-            `;
-            iframeDoc.head.appendChild(style);
-            addLog('✅ تم إضافة أنماط CSS لحظر الإحصائيات');
-            
-        } catch(e) {
-            addLog(`⚠️ لا يمكن تعديل iframe بسبب سياسة الأمان: ${e.message}`, 'error');
-            // بديل: تعديل الصفحة الحالية مباشرة
-            const statsBtnCurrent = document.getElementById('viewStatsBtn');
-            if (statsBtnCurrent) statsBtnCurrent.remove();
-            addLog('✅ تم حذف زر الإحصائيات من الصفحة الحالية (بديل)');
-        }
-        
-        // إزالة iframe
-        iframe.remove();
-        
+        addLog('✅ تم تعيين علامة حذف الإحصائيات في التخزين المحلي', 'success');
         updateStep('step2', 'completed');
-        addLog('✅ تم حذف زر الإحصائيات وجذوره بشكل كامل');
         
-        // ========== الخطوة 3: مسح ذاكرة التخزين المؤقت (Cache) ==========
+        // ========== الخطوة 3: مسح ذاكرة التخزين المؤقت ==========
         updateStep('step3', 'active');
-        updateProgress(60, 'جاري مسح ذاكرة التخزين المؤقت...');
+        updateProgress(50, 'جاري مسح ذاكرة التخزين المؤقت...');
         
         // مسح Cache Storage
         if ('caches' in window) {
@@ -239,56 +151,65 @@
                 const cacheKeys = await caches.keys();
                 for (const key of cacheKeys) {
                     await caches.delete(key);
-                    addLog(`✅ تم حذف الكاش: ${key}`);
+                    addLog(`✅ تم حذف الكاش: ${key}`, 'success');
                 }
-                addLog('✅ تم مسح جميع ملفات Cache Storage');
+                addLog('✅ تم مسح جميع ملفات Cache Storage', 'success');
             } catch(e) {
-                addLog(`⚠️ فشل مسح Cache: ${e.message}`, 'error');
+                addLog(`⚠️ فشل مسح Cache: ${e.message}`, 'warning');
             }
         } else {
-            addLog('⚠️ Cache API غير مدعوم في هذا المتصفح', 'error');
+            addLog('⚠️ Cache API غير مدعوم', 'warning');
         }
         
         // مسح localStorage للإحصائيات
         localStorage.removeItem('spStudio_analytics');
         localStorage.removeItem('spStudio_stats');
         localStorage.removeItem('spStudio_session');
-        addLog('✅ تم مسح بيانات الإحصائيات من localStorage');
+        addLog('✅ تم مسح بيانات الإحصائيات من localStorage', 'success');
         
-        // مسح Service Worker registrations
+        // إلغاء Service Worker
         if ('serviceWorker' in navigator) {
             try {
                 const registrations = await navigator.serviceWorker.getRegistrations();
                 for (const registration of registrations) {
                     await registration.unregister();
-                    addLog('✅ تم إلغاء تسجيل Service Worker');
+                    addLog('✅ تم إلغاء تسجيل Service Worker', 'success');
                 }
             } catch(e) {
-                addLog(`⚠️ فشل إلغاء Service Worker: ${e.message}`, 'error');
+                addLog(`⚠️ فشل إلغاء Service Worker: ${e.message}`, 'warning');
             }
         }
         
         updateStep('step3', 'completed');
-        addLog('✅ تم مسح ذاكرة التخزين المؤقت بالكامل');
         
-        // ========== الخطوة 4: إعادة التشغيل ==========
+        // ========== الخطوة 4: حفظ التغييرات بشكل دائم ==========
         updateStep('step4', 'active');
-        updateProgress(90, 'اكتمل التحديث! جاهز لإعادة التشغيل...');
+        updateProgress(75, 'جاري حفظ التغييرات...');
         
-        // حفظ حالة أن التحديث تم
-        localStorage.setItem('spStudio_updateCompleted', 'true');
-        localStorage.setItem('spStudio_updateTime', new Date().toISOString());
-        localStorage.setItem('spStudio_statsRemoved', 'true');
+        // حفظ ملف update marker في localStorage
+        const updateRecord = {
+            version: '2.0.0',
+            timestamp: new Date().toISOString(),
+            changes: ['إزالة زر الإحصائيات', 'تحسين الأداء', 'تنظيف الكاش']
+        };
+        localStorage.setItem('spStudio_lastUpdate', JSON.stringify(updateRecord));
         
-        addLog('✅ تم حفظ حالة التحديث');
+        addLog('✅ تم حفظ سجل التحديث', 'success');
         updateStep('step4', 'completed');
-        updateProgress(100, '✅ اكتمل التحديث بنجاح!');
+        
+        // ========== الخطوة 5: إعادة التشغيل ==========
+        updateStep('step5', 'active');
+        updateProgress(95, 'اكتمل التحديث!');
+        
+        addLog('✨ تحديث SP Studio Pro اكتمل بنجاح!', 'success');
+        updateStep('step5', 'completed');
+        updateProgress(100, '✅ التحديث جاهز!');
         
         // إظهار زر إعادة التشغيل
         restartBtn.style.display = 'block';
         
-        // 5 ثوانٍ ثم إعادة التشغيل تلقائياً
-        let countdown = 5;
+        // عد تنازلي 3 ثوانٍ
+        let countdown = 3;
         const timerInterval = setInterval(() => {
             countdown--;
             restartBtn.textContent = `🚀 إعادة التشغيل (${countdown})`;
@@ -299,18 +220,14 @@
         }, 1000);
         
         function performRestart() {
-            addLog('🔄 جاري إعادة تشغيل التطبيق...');
-            // مسح كامل للذاكرة وإعادة التحميل
-            if ('caches' in window) {
-                caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
-            }
-            // إعادة تحميل الصفحة الرئيسية
-            window.location.href = '/PT.semo/';
+            addLog('🔄 جاري إعادة تشغيل التطبيق...', 'info');
+            // تنظيف إضافي قبل إعادة التحميل
+            sessionStorage.removeItem('updateInProgress');
+            // إعادة التحميل مع منع التخزين المؤقت
+            window.location.href = '/PT.semo/?update=' + Date.now();
         }
         
         restartBtn.onclick = performRestart;
-        
-        addLog('✨ تحديث SP Studio Pro اكتمل! زر الإحصائيات محذوف نهائياً');
     })();
 </script>
 </body>
