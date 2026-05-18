@@ -1,1 +1,65 @@
+<!-- SU.html - ملف تحديث التطبيق (نظام التحديث الذاتي) -->
+<!-- هذا الملف يحتوي على تعليمات التحديث. عند وجوده، سيطبق التطبيق التغييرات. -->
+<!-- في هذا المثال: سيتم إخفاء زر الإحصائيات من الواجهة -->
 
+<script>
+(function() {
+    console.log('🔄 SU.html: تطبيق تحديث - إخفاء زر الإحصائيات');
+    
+    // الانتظار حتى تحميل الصفحة بالكامل
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyUpdate);
+    } else {
+        applyUpdate();
+    }
+    
+    function applyUpdate() {
+        // البحث عن زر الإحصائيات وإخفاؤه
+        const statsBtn = document.getElementById('viewStatsBtn');
+        if (statsBtn) {
+            statsBtn.style.display = 'none';
+            console.log('✅ تم إخفاء زر الإحصائيات بنجاح');
+            
+            // إضافة إشعار للمستخدم
+            showToastNotification('تم تحديث التطبيق: إخفاء زر الإحصائيات');
+        } else {
+            console.warn('⚠️ لم يتم العثور على زر الإحصائيات');
+            // محاولة بديلة: البحث عن الزر عبر محدد آخر
+            const altStatsBtn = document.querySelector('#viewStatsBtn, .glass-btn:has(📊), button:contains("إحصائيات")');
+            if (altStatsBtn) altStatsBtn.style.display = 'none';
+        }
+        
+        // حفظ سجل التحديث في localStorage
+        const updateLog = JSON.parse(localStorage.getItem('spStudio_updateLog') || '[]');
+        updateLog.unshift({
+            timestamp: new Date().toISOString(),
+            action: 'hide_stats_button',
+            description: 'تم إخفاء زر الإحصائيات بناءً على تحديث SU.html'
+        });
+        localStorage.setItem('spStudio_updateLog', JSON.stringify(updateLog.slice(0, 20)));
+    }
+    
+    // دالة مساعدة لعرض إشعار للمستخدم
+    function showToastNotification(message) {
+        let toast = document.querySelector('.dynamic-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'dynamic-toast';
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(30,41,59,0.95);backdrop-filter:blur(20px);color:white;padding:8px 20px;border-radius:60px;font-size:12px;z-index:10060;white-space:nowrap;pointer-events:none;border:1px solid rgba(255,255,255,0.2);';
+            document.body.appendChild(toast);
+        }
+        toast.innerHTML = `🔔 ${message}`;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+    
+    // تسجيل نجاح التحديث في وحدة التحكم
+    console.log('✅ SU.html: تم تطبيق التحديث بنجاح - زر الإحصائيات مخفي الآن');
+})();
+</script>
+
+<!-- يمكن إضافة تعليمات إضافية هنا -->
+<style>
+    /* يمكن إضافة أنماط إضافية في التحديث */
+    /* على سبيل المثال: تحسينات بصرية أو تعديلات في التنسيق */
+</style>
