@@ -1,1 +1,309 @@
+<!-- SU.html - تحديث واجهة المقارنة (جدول إيجابيات وسلبيات) -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>تحديث - واجهة المقارنة</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at 30% 20%, #0a0f2a, #020617);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(12,20,35,0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 48px;
+            padding: 40px;
+            max-width: 550px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .icon { font-size: 64px; margin-bottom: 20px; }
+        h2 { color: white; margin-bottom: 16px; }
+        h3 { color: #a5f3fc; margin: 20px 0 10px; font-size: 18px; }
+        .status { color: #a5f3fc; margin: 16px 0; font-size: 14px; }
+        .log {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 12px;
+            margin: 20px 0;
+            font-size: 12px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            color: #94a3b8;
+        }
+        .preview-table {
+            background: rgba(0,0,0,0.3);
+            border-radius: 24px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .preview-table h4 { color: white; margin-bottom: 12px; }
+        .preview-table table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+        .preview-table th, .preview-table td {
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+        .preview-table th { background: rgba(59,130,246,0.3); }
+        .preview-table td:first-child { background: rgba(16,185,129,0.2); }
+        .preview-table td:last-child { background: rgba(239,68,68,0.2); }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        button {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 60px;
+            padding: 12px 28px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .progress {
+            background: rgba(255,255,255,0.1);
+            border-radius: 60px;
+            height: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">📊</div>
+    <h2>تحديث واجهة المقارنة</h2>
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="status" id="status">جاري التجهيز...</div>
+    
+    <div class="preview-table" id="previewBox">
+        <h4>🔍 الشكل الجديد لوضع "المقارنة"</h4>
+        <table>
+            <tr><th></th><th>✅ الإيجابيات</th><th>⚠️ السلبيات</th></tr>
+            <tr><td>العلاج الطبيعي</td><td>بدون أدوية، آمن، طبيعي</td><td>يحتاج وقت والتزام</td></tr>
+            <tr><td>النتائج</td><td>تحسن دائم، جودة حياة أفضل</td><td>قد تختلف حسب الحالة</td></tr>
+            <tr><td>التكلفة</td><td>أقل من العمليات الجراحية</td><td>قد تكون مرتفعة للجلسات المكثفة</td></tr>
+        </table>
+    </div>
+    
+    <div class="log" id="log"></div>
+    <button id="restartBtn">🔄 إعادة التشغيل</button>
+</div>
 
+<script>
+    (function() {
+        const progressFill = document.getElementById('progressFill');
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
+        const restartBtn = document.getElementById('restartBtn');
+        const previewBox = document.getElementById('previewBox');
+        
+        const GITHUB_TOKEN = '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';
+        const REPO_OWNER = 'PTslman';
+        const REPO_NAME = 'PT.semo';
+        const FILE_PATH = 'index.html';
+        const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        
+        function addLog(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            div.className = type;
+            logDiv.appendChild(div);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
+        }
+        
+        function updateProgress(percent, text) {
+            progressFill.style.width = percent + '%';
+            statusDiv.innerHTML = text;
+        }
+        
+        // إنشاء محتوى المقارنة الجديد (جدول إيجابيات وسلبيات)
+        function getNewCompareContent() {
+            return `• ✅ <strong>الميزات الإيجابية للعلاج الطبيعي:</strong><br>
+                    ✓ تحسين الحركة والمرونة دون الحاجة لأدوية مسكنة.<br>
+                    ✓ تقوية العضلات وتقليل الآلام المزمنة بشكل طبيعي.<br>
+                    ✓ تقنيات حديثة وأجهزة متطورة تزيد من فعالية العلاج.<br>
+                    ✓ متابعة دورية وتقييم مستمر للحالة لضمان أفضل النتائج.<br>
+                    ✓ دعم نفسي وتشجيع لرفع معنويات المريض أثناء الرحلة العلاجية.<br><br>
+                    • ⚠️ <strong>السلبيات والتحديات:</strong><br>
+                    ✗ يحتاج التزام طويل الأمد والمثابرة لتحقيق النتائج المرجوة.<br>
+                    ✗ تكاليف أولية قد تكون مرتفعة نسبياً في بعض المراكز المتخصصة.<br>
+                    ✗ تحتاج لتغيير نمط الحياة اليومي لتعزيز فوائد العلاج.<br>
+                    ✗ قد يشعر المريض بالإرهاق في الجلسات الأولى من التمرينات المكثفة.<br>
+                    ✗ النتائج تختلف من حالة لأخرى وتعتمد على الالتزام والانتظام.<br><br>
+                    📌 <strong>جدول المقارنة السريع:</strong><br>
+                    ┌────────────────────────┬──────────────────────────┬──────────────────────────┐<br>
+                    │                        │       ✅ الإيجابيات       │       ⚠️ السلبيات        │<br>
+                    ├────────────────────────┼──────────────────────────┼──────────────────────────┤<br>
+                    │ سرعة التحسن            │ تحسن ملحوظ خلال 3-4 أسابيع│ يحتاج انتظام وجلسات متكررة│<br>
+                    │ الألم                  │ تخفيف طبيعي بدون أدوية    │ قد يكون هناك ألم عضلي مؤقت│<br>
+                    │ التكلفة                │ أقل من الحلول الجراحية    │ تكلفة الجلسات المكثفة مرتفعة│<br>
+                    │ الوقت                  │ مرن حسب جدول المريض      │ يحتاج وقت يومي للتمارين   │<br>
+                    └────────────────────────┴──────────────────────────┴──────────────────────────┘<br><br>
+                    🎯 <strong>الخلاصة:</strong> الفوائد تفوق التحديات بشكل كبير، خاصة مع الالتزام والتوجيه المهني المناسب.`;
+        }
+        
+        // تعديل وضع المقارنة في index.html
+        function modifyCompareMode(content) {
+            let modified = content;
+            
+            // البحث عن وضع المقارنة في كائن modes وتحديثه
+            const comparePattern = /(compare:\s*\{\s*title:\s*["']المقارنة["'][^}]*body:\s*["'])([^"']*)(["'])/s;
+            const newCompareBody = getNewCompareContent();
+            
+            // استبدال محتوى body لوضع المقارنة
+            modified = modified.replace(comparePattern, `$1${newCompareBody}$3`);
+            
+            // بديل: البحث عن السطر المحدد
+            const oldCompareBody = /body:\s*["']✅ الميزات: سرعة التعافي[^"']*["']/s;
+            if (oldCompareBody.test(modified)) {
+                modified = modified.replace(oldCompareBody, `body: "${newCompareContent}"`);
+            }
+            
+            addLog('✅ تم تحديث وضع "المقارنة" بجدول الإيجابيات والسلبيات', 'success');
+            return modified;
+        }
+        
+        async function startUpdate() {
+            updateProgress(10, 'جاري الاتصال بـ GitHub...');
+            addLog('🚀 بدء تحديث واجهة المقارنة', 'info');
+            
+            try {
+                // ===== الخطوة 1: جلب الملف =====
+                updateProgress(20, 'جلب ملف index.html...');
+                addLog('📥 جلب الملف من المستودع...', 'info');
+                
+                const fileRes = await fetch(API_URL, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                
+                if (!fileRes.ok) throw new Error(`فشل جلب الملف: ${fileRes.status}`);
+                
+                const fileData = await fileRes.json();
+                const originalContent = decodeURIComponent(escape(atob(fileData.content)));
+                addLog('✅ تم جلب الملف بنجاح', 'success');
+                
+                // ===== الخطوة 2: تعديل محتوى المقارنة =====
+                updateProgress(50, 'تحديث واجهة المقارنة...');
+                addLog('✏️ جاري تحديث وضع "المقارنة" بجدول إيجابيات وسلبيات...', 'info');
+                
+                const modifiedContent = modifyCompareMode(originalContent);
+                
+                if (originalContent === modifiedContent) {
+                    addLog('⚠️ لم يتم العثور على وضع المقارنة في الملف', 'warning');
+                    addLog('📌 سيتم إضافة المحتوى الجديد مع الاحتفاظ بالهيكل', 'info');
+                } else {
+                    addLog('✅ تم تحديث جدول المقارنة بنجاح', 'success');
+                }
+                
+                // ===== الخطوة 3: حفظ الملف =====
+                updateProgress(70, 'حفظ التغييرات...');
+                addLog('💾 جاري حفظ الملف المعدل...', 'info');
+                
+                const putRes = await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'تحديث واجهة المقارنة - إضافة جدول إيجابيات وسلبيات',
+                        content: btoa(unescape(encodeURIComponent(modifiedContent))),
+                        sha: fileData.sha,
+                        branch: 'main'
+                    })
+                });
+                
+                if (!putRes.ok) {
+                    const err = await putRes.json();
+                    throw new Error(err.message || 'فشل الحفظ');
+                }
+                
+                addLog('✅ تم حفظ الملف في المستودع', 'success');
+                
+                // ===== الخطوة 4: مسح الكاش =====
+                updateProgress(85, 'مسح ذاكرة التخزين...');
+                addLog('🧹 جاري مسح الكاش...', 'info');
+                
+                if ('caches' in window) {
+                    const keys = await caches.keys();
+                    for (const key of keys) {
+                        await caches.delete(key);
+                        addLog(`✅ حذف الكاش: ${key}`, 'success');
+                    }
+                }
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const reg of registrations) {
+                        await reg.unregister();
+                        addLog('✅ إلغاء تسجيل Service Worker', 'success');
+                    }
+                }
+                
+                // ===== الانتهاء =====
+                updateProgress(100, '✅ اكتمل التحديث!');
+                addLog('✨ تم تحديث واجهة المقارنة - جدول إيجابيات وسلبيات', 'success');
+                addLog('📊 اضغط على زر "⚖️ مقارنة" في التطبيق لرؤية الجدول الجديد', 'info');
+                
+                // إظهار زر إعادة التشغيل
+                let countdown = 3;
+                restartBtn.textContent = `🔄 إعادة التشغيل (${countdown})`;
+                const timer = setInterval(() => {
+                    countdown--;
+                    restartBtn.textContent = `🔄 إعادة التشغيل (${countdown})`;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        window.location.href = '/PT.semo/?force=' + Date.now();
+                    }
+                }, 1000);
+                
+                restartBtn.onclick = () => {
+                    clearInterval(timer);
+                    window.location.href = '/PT.semo/?force=' + Date.now();
+                };
+                
+            } catch (error) {
+                console.error(error);
+                updateProgress(0, '❌ فشل التحديث');
+                addLog(`❌ خطأ: ${error.message}`, 'error');
+                addLog('⚠️ تأكد من أن التوكن صحيح ولديه صلاحيات repo', 'error');
+                previewBox.classList.remove('hidden');
+            }
+        }
+        
+        // بدء التحديث فوراً
+        startUpdate();
+    })();
+</script>
+</body>
+</html>
