@@ -1,17 +1,4 @@
-# Security contact
 Contact: mailto:your-email@example.com
-
-# Expiry date (1 year from now)
 Expires: 2026-01-01T00:00:00.000Z
-
-# Preferred languages
 Preferred-Languages: ar, en
-
-# Canonical URL
 Canonical: https://ptslman.github.io/PT.semo/security.txt
-
-# PGP key (optional)
-# Encryption: https://example.com/pgp-key.txt
-
-# Acknowledgments
-Acknowledgments: https://github.com/ptslman/PT.semo/graphs/contributors
