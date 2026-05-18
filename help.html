@@ -5,62 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مساعدة | SP Studio</title>
     <style>
-        body {
-            background: linear-gradient(135deg, #0b1120, #020617);
-            font-family: 'Cairo', sans-serif;
-            min-height: 100vh;
-            color: white;
-            padding: 20px;
-        }
+        body { background: linear-gradient(135deg, #0b1120, #020617); font-family: 'Cairo', sans-serif; color: white; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; }
-        h1 { text-align: center; margin-bottom: 30px; }
-        .card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .card h3 { color: #3b82f6; margin-bottom: 10px; }
-        .card p { color: #cbd5e1; line-height: 1.6; }
+        .card { background: rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; margin-bottom: 16px; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        button { background: #3b82f6; border: none; padding: 10px 24px; border-radius: 60px; cursor: pointer; color: white; display: block; margin: 30px auto; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📖 دليل استخدام SP Studio</h1>
-        
-        <div class="card">
-            <h3>🎨 تخصيص الألوان</h3>
-            <p>اختر من الألوان الجاهزة أو استخدم منتقي الألوان المخصص لتغيير لون البطاقة.</p>
-        </div>
-        
-        <div class="card">
-            <h3>✍️ تلوين الكلمات</h3>
-            <p>فعّل "تلوين مخصص" ثم انقر على أي كلمة لتظهر لوحة ألوان 4×3 قابلة للسحب.</p>
-        </div>
-        
-        <div class="card">
-            <h3>📏 ضبط العرض الذكي</h3>
-            <p>الضغطة زر "ضبط عرض ذكي" يجعل البطاقة متناسبة مع محتواها تلقائياً.</p>
-        </div>
-        
-        <div class="card">
-            <h3>✨ تحسين النص</h3>
-            <p>يستخدم الذكاء الاصطناعي لإعادة صياغة النص بشكل احترافي ومنظم.</p>
-        </div>
-        
-        <div class="card">
-            <h3>📸 حفظ الصورة</h3>
-            <p>يحفظ البطاقة كصورة PNG بجودة عالية لمشاركتها مع المرضى.</p>
-        </div>
-        
-        <div class="card">
-            <h3>📲 تثبيت التطبيق</h3>
-            <p>اضغط على زر "تثبيت التطبيق" لتثبيت SP Studio كتطبيق مستقل على هاتفك.</p>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-            <button onclick="location.href='/PT.semo/'" style="background: #3b82f6; border: none; color: white; padding: 10px 30px; border-radius: 60px; cursor: pointer;">🏠 العودة للتطبيق</button>
-        </div>
+        <div class="card"><h3>🎨 تلوين الكلمات</h3><p>فعّل "تلوين مخصص" ثم انقر على أي كلمة لتظهر لوحة ألوان 4×3 قابلة للسحب.</p></div>
+        <div class="card"><h3>📏 ضبط العرض الذكي</h3><p>يضبط عرض البطاقة تلقائياً حسب طول النص.</p></div>
+        <div class="card"><h3>✨ تحسين النص بالذكاء</h3><p>يعيد صياغة النص بأسلوب احترافي.</p></div>
+        <div class="card"><h3>📸 حفظ الصورة</h3><p>يحفظ البطاقة كصورة PNG بجودة عالية.</p></div>
+        <button onclick="location.href='/'">🏠 العودة للتطبيق</button>
     </div>
 </body>
 </html>
