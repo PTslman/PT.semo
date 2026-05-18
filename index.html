@@ -3,177 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SP Studio Pro | نظام تحقق متكامل PWA</title>
+    <title>SP Studio Pro | تجربة فائقة السلاسة</title>
     
-    <!-- ربط ملفات PWA الخارجية -->
-    <link rel="manifest" href="/manifest.json">
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#3b82f6" id="themeColorMeta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SP Studio Pro">
     <meta name="application-name" content="SP Studio Pro">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
-    <link rel="shortcut icon" href="/icons/icon-96.png">
-    <link rel="browserconfig" href="/browserconfig.xml">
     
-    <!-- تحسينات الأداء -->
+    <!-- Manifest ديناميكي -->
+    <link rel="manifest" id="dynamicManifest">
+    <link rel="apple-touch-icon" href="#" id="appleTouchIcon">
+    <link rel="shortcut icon" href="#" id="faviconIcon">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://api.github.com">
-    
-    <!-- ملفات JavaScript (إن وجدت) -->
-    <script src="/analytics.js" defer></script>
-    <script src="/performance.js" defer></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@400;600;800&family=Amiri:wght@400;700&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET وتحسينات الأداء (تم اختصاره قليلاً للحفاظ على الطول الكلي، لكنه كامل وظيفياً) --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background: radial-gradient(circle at 20% 30%, #0a0f2a, #020617);
+            background: radial-gradient(circle at 30% 20%, #0a0f2a, #020617);
             font-family: 'Cairo', sans-serif;
             min-height: 100vh;
-            padding: 80px 20px 40px;
+            padding: 90px 20px 40px;
             overflow-x: hidden;
-            transform: translateZ(0);
-            backface-visibility: hidden;
         }
-        .floating-buttons, .top-modes, .preview-wrapper, .button-bar, .panels-container, .panel-card {
-            will-change: transform;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-        .floating-buttons {
+
+        /* ========== شريط الأزرار العلوي العائم والمحسن ========== */
+        .floating-navbar {
             position: fixed;
             top: 16px;
             left: 16px;
             right: 16px;
             display: flex;
-            justify-content: space-between;
-            z-index: 1001;
-            gap: 14px;
-            pointer-events: none;
-        }
-        .float-btn {
-            pointer-events: auto;
-            background: rgba(12, 20, 35, 0.75);
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            z-index: 10000;
+            background: rgba(10, 20, 35, 0.7);
             backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 80px;
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            width: auto;
+            min-width: 280px;
+            max-width: 600px;
+            margin: 0 auto;
+            left: 50%;
+            transform: translateX(-50%);
+            right: auto;
+        }
+        
+        .navbar-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 8px 18px;
             font-weight: 700;
             font-size: 13px;
             color: white;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1), background 0.2s;
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            gap: 6px;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
         }
-        .float-btn:active { transform: scale(0.96); transition: transform 0.05s; }
-        .float-btn:hover { background: rgba(30, 41, 59, 0.9); transform: translateY(-2px); }
-        .tools-btn { background: linear-gradient(135deg, rgba(124,58,237,0.8), rgba(139,92,246,0.8)); border: none; }
-        .install-container {
-            pointer-events: auto;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 120px;
-        }
-        .spinner {
-            width: 28px;
-            height: 28px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid #10b981;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .install-ready-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            border: none;
-            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .install-ready-btn:hover { transform: translateY(-2px); }
-        .hidden-install { display: none !important; }
         
-        .pwa-status-bar {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(12px);
-            border-radius: 60px;
-            padding: 8px 20px;
-            margin: 15px auto 0;
-            text-align: center;
-            width: fit-content;
-            font-size: 12px;
-            color: #a5f3fc;
-            font-weight: 500;
+        .navbar-btn:active {
+            transform: scale(0.96);
         }
-        .top-modes { display: flex; justify-content: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+        
+        .navbar-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+        
+        .navbar-btn.primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+        
+        .navbar-btn.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .navbar-btn.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .navbar-btn.purple {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .install-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #10b981;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ========== أزرار الوضع العلوية ========== */
+        .top-modes {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 20;
+        }
+        
         .mode-btn {
-            background: rgba(15, 25, 45, 0.65);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 60px;
             padding: 10px 24px;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             color: #e2e8f0;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
+        
         .mode-btn.active {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-color: rgba(255,255,255,0.3);
+            border-color: rgba(255, 255, 255, 0.3);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59,130,246,0.4);
+            box-shadow: 0 8px 18px rgba(59, 130, 246, 0.3);
         }
+        
+        /* ========== حاوية البطاقة ========== */
         .preview-wrapper {
-            border-radius: 44px;
+            border-radius: 48px;
             padding: 8px;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             margin-bottom: 28px;
-            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
         }
+        
         #export-area {
             background: #ffffff;
-            border-radius: 36px;
-            box-shadow: 0 30px 40px -20px rgba(0,0,0,0.5);
-            transition: transform 0.2s cubic-bezier(0.2,0,0,1);
+            border-radius: 38px;
+            box-shadow: 0 30px 45px -20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.3s;
             width: 100%;
             max-width: 95vw;
             margin: 0 auto;
             position: relative;
             overflow: hidden;
         }
-        #export-area:active { transform: scale(0.99); }
+        
+        #export-area:active {
+            transform: scale(0.99);
+        }
+        
         .art-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 20% 30%, rgba(59,130,246,0.08), transparent 70%);
+            background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.06), transparent 70%);
             pointer-events: none;
         }
+        
         .watermark-modern {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-12deg);
-            font-size: clamp(32px,10vw,80px);
+            font-size: clamp(28px, 9vw, 70px);
             font-weight: 900;
-            color: rgba(0,0,0,0.02);
+            color: rgba(0, 0, 0, 0.015);
             white-space: nowrap;
             font-family: 'Tajawal';
             pointer-events: none;
         }
+        
         .content-wrap {
             position: relative;
             z-index: 2;
@@ -182,50 +210,143 @@
             flex-direction: column;
             gap: 18px;
         }
-        .title { font-size: 30px; font-weight: 900; color: #3b82f6; border-right: 5px solid #3b82f6; padding-right: 18px; line-height: 1.3; }
-        .body-text { font-size: 16px; line-height: 1.75; font-weight: 500; color: #1e293b; text-align: justify; }
-        .body-text span.word-colorable { cursor: pointer; display: inline-block; border-radius: 8px; padding: 0 2px; transition: background 0.1s, transform 0.1s; }
-        .body-text span.word-colorable:hover { background: rgba(0,0,0,0.04); transform: scale(1.01); }
-        .footer { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 16px; margin-top: 14px; }
-        .dr-name { font-size: 19px; font-weight: 800; color: #0f172a; }
-        .dr-sub { font-size: 12px; font-weight: 700; color: #3b82f6; }
-        .logo-icon { font-size: 38px; font-weight: 900; color: rgba(0,0,0,0.1); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 24px; }
-        .button-bar { display: flex; justify-content: center; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+        
+        .title {
+            font-size: 30px;
+            font-weight: 900;
+            color: #3b82f6;
+            border-right: 5px solid #3b82f6;
+            padding-right: 18px;
+            line-height: 1.3;
+            transition: color 0.2s;
+        }
+        
+        .body-text {
+            font-size: 16px;
+            line-height: 1.75;
+            font-weight: 500;
+            color: #1e293b;
+            text-align: justify;
+        }
+        
+        .body-text span.word-colorable {
+            cursor: pointer;
+            display: inline-block;
+            border-radius: 6px;
+            padding: 0 2px;
+            transition: all 0.1s ease;
+        }
+        
+        .body-text span.word-colorable:active {
+            transform: scale(0.98);
+        }
+        
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 16px;
+            margin-top: 14px;
+        }
+        
+        .dr-name {
+            font-size: 19px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        
+        .dr-sub {
+            font-size: 12px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        .logo-icon {
+            font-size: 38px;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.08);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+        }
+        
+        /* ========== شريط الأزرار السفلي ========== */
+        .bottom-bar {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        
         .glass-btn {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
             border-radius: 60px;
             padding: 10px 22px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1);
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
-        .glass-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
-        .save-image-btn { background: linear-gradient(135deg, #10b981, #059669); border: none; }
-        .panels-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 10px; }
+        
+        .glass-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* ========== اللوحات ========== */
+        .panels-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
         .panel-card {
             flex: 1;
             min-width: 260px;
             max-width: 380px;
-            background: rgba(12,20,35,0.75);
-            backdrop-filter: blur(24px) saturate(180%);
+            background: rgba(12, 20, 35, 0.75);
+            backdrop-filter: blur(24px);
             border-radius: 32px;
             padding: 18px;
-            border: 1px solid rgba(255,255,255,0.12);
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
-            transition: transform 0.2s cubic-bezier(0.2,0.9,0.4,1.1), box-shadow 0.2s;
-            animation: fadeSlideUp 0.4s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             color: white;
         }
-        .panel-card .section-label { font-weight: 800; font-size: 15px; margin: 8px 0 12px; border-right: 4px solid #3b82f6; padding-right: 12px; color: #ffffff; }
+        
+        .panel-card:hover {
+            transform: translateY(-3px);
+            background: rgba(12, 20, 35, 0.85);
+        }
+        
+        .panel-card .section-label {
+            font-weight: 800;
+            font-size: 15px;
+            margin: 8px 0 12px;
+            border-right: 4px solid #3b82f6;
+            padding-right: 12px;
+        }
+        
         .slider-group, .aspect-grid, .ai-tools {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.35);
             border-radius: 56px;
             padding: 10px 16px;
             margin-bottom: 12px;
@@ -233,28 +354,87 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
+            transition: background 0.2s;
         }
-        .slider-group:hover { background: rgba(0,0,0,0.45); }
-        .slider-label { font-size: 12px; font-weight: 600; min-width: 70px; color: #f1f5f9; }
-        input[type="range"] { flex: 1; height: 4px; background: #334155; border-radius: 10px; -webkit-appearance: none; }
-        input[type="range"]::-webkit-slider-thumb { width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; cursor: pointer; box-shadow: 0 0 6px #3b82f6; }
-        .value-display { background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 30px; font-size: 11px; min-width: 38px; text-align: center; color: white; }
+        
+        .slider-group:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .slider-label {
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 70px;
+            color: #e2e8f0;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: #334155;
+            border-radius: 10px;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 4px #3b82f6;
+            transition: transform 0.1s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+        }
+        
+        .value-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 11px;
+            min-width: 38px;
+            text-align: center;
+        }
+        
         .aspect-btn, .ai-btn, .font-select, .bullet-select {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 40px;
             padding: 6px 14px;
             font-size: 12px;
             cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
+            transition: all 0.15s ease;
             color: white;
         }
-        .aspect-btn:active, .ai-btn:active { transform: scale(0.96); }
-        .aspect-btn:hover, .ai-btn:hover { background: #3b82f6; border-color: white; }
-        .color-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 8px; }
-        .color-dot { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); transition: transform 0.1s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .color-dot:active { transform: scale(0.95); }
-        .color-dot:hover { transform: scale(1.08); border-color: white; }
+        
+        .aspect-btn:active, .ai-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .color-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 12px 0 8px;
+        }
+        
+        .color-dot {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-dot:active {
+            transform: scale(0.94);
+        }
+        
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             border: none;
@@ -265,10 +445,15 @@
             cursor: pointer;
             color: white;
             text-align: center;
+            transition: all 0.15s;
         }
-        .btn-primary:active { transform: scale(0.96); }
+        
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+        
         .word-counter {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 60px;
             padding: 8px 12px;
             text-align: center;
@@ -276,62 +461,120 @@
             font-size: 12px;
             font-weight: 500;
             backdrop-filter: blur(4px);
-            color: white;
         }
+        
+        /* لوحة الألوان العائمة */
         .word-color-picker {
             position: fixed;
-            background: rgba(30,41,59,0.95);
-            backdrop-filter: blur(32px) saturate(200%);
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(32px);
             border-radius: 36px;
-            padding: 14px;
+            padding: 12px;
             display: grid;
-            grid-template-columns: repeat(4,1fr);
-            gap: 12px;
-            z-index: 10010;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.25);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            z-index: 10050;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             cursor: grab;
-            min-width: 200px;
+            min-width: 190px;
         }
-        .word-color-picker .color-option { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
-        .word-color-picker input[type="color"] { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; background: transparent; cursor: pointer; }
+        
+        .word-color-picker .color-option {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: transform 0.1s;
+        }
+        
+        .word-color-picker .color-option:active {
+            transform: scale(0.92);
+        }
+        
+        .word-color-picker input[type="color"] {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background: transparent;
+            cursor: pointer;
+        }
+        
         .dynamic-toast {
             position: fixed;
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(30,41,59,0.9);
+            background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(24px);
             color: white;
-            padding: 8px 24px;
+            padding: 10px 24px;
             border-radius: 60px;
             font-size: 13px;
-            z-index: 10020;
+            z-index: 10060;
             white-space: nowrap;
             pointer-events: none;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             font-weight: 500;
         }
+        
         .offline-detected {
-            position: fixed; top: 0; left: 0; right: 0;
-            background: #ef4444; color: white; text-align: center; padding: 8px;
-            font-size: 12px; z-index: 10030; transform: translateY(-100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            z-index: 10070;
+            transform: translateY(-100%);
             transition: transform 0.3s ease;
         }
-        .offline-detected.show { transform: translateY(0); }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .offline-detected.show {
+            transform: translateY(0);
         }
-        @media (max-width: 700px) {
-            body { padding: 70px 16px 30px; }
-            .content-wrap { padding: 20px 16px; }
-            .title { font-size: 24px; }
-            .body-text { font-size: 14px; }
-            .panel-card { min-width: 100%; max-width: 100%; }
-            .color-dot { width: 36px; height: 36px; }
-            .float-btn { padding: 6px 14px; font-size: 11px; }
-            .install-container { min-width: 100px; }
+        
+        .status-bar {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 8px 20px;
+            margin: 10px auto 0;
+            text-align: center;
+            width: fit-content;
+            font-size: 12px;
+            color: #a5f3fc;
+        }
+        
+        @media (max-width: 650px) {
+            body {
+                padding: 100px 16px 30px;
+            }
+            .floating-navbar {
+                gap: 6px;
+                padding: 6px 12px;
+            }
+            .navbar-btn {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            .mode-btn {
+                padding: 7px 16px;
+                font-size: 11px;
+            }
+            .panel-card {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            .color-dot {
+                width: 36px;
+                height: 36px;
+            }
         }
     </style>
 </head>
@@ -339,21 +582,24 @@
 
 <div id="offlineNotification" class="offline-detected">📡 وضع غير متصل - بعض الميزات محدودة</div>
 
-<div class="floating-buttons">
-    <div class="float-btn hide-panel-btn" id="togglePanelBtn">🎛️ إخفاء اللوحة</div>
-    <div class="float-btn tools-btn" id="toggleToolsBtn">🧰 الأدوات الذكية</div>
-    <div class="install-container" id="installContainer">
-        <div class="spinner" id="installSpinner"></div>
-        <button id="installReadyBtn" class="float-btn install-ready-btn" style="display: none;">📲 تثبيت التطبيق</button>
+<!-- شريط الأزرار العلوي العائم والمتطور -->
+<div class="floating-navbar">
+    <button class="navbar-btn primary" id="togglePanelBtn">🎛️ لوحة الأبعاد</button>
+    <button class="navbar-btn purple" id="toggleToolsBtn">🧰 الأدوات الذكية</button>
+    <div id="installContainer" style="display: inline-flex; align-items: center;">
+        <div id="installSpinner" class="install-spinner"></div>
+        <button id="installReadyBtn" class="navbar-btn success" style="display: none;">📲 تثبيت</button>
     </div>
 </div>
 
+<!-- أزرار الوضع -->
 <div class="top-modes">
     <div class="mode-btn active" data-mode="prof">🎓 الحوار المهني</div>
-    <div class="mode-btn" data-mode="compare">⚖️ مقارنة ميزات وسلبيات</div>
+    <div class="mode-btn" data-mode="compare">⚖️ مقارنة</div>
     <div class="mode-btn" data-mode="qa">💬 سؤال وجواب</div>
 </div>
 
+<!-- البطاقة -->
 <div class="preview-wrapper">
     <div id="export-area">
         <div class="art-bg"></div>
@@ -366,10 +612,12 @@
     </div>
 </div>
 
-<div class="button-bar">
-    <div class="glass-btn save-image-btn" id="saveImageBtn">📸 حفظ الصورة PNG</div>
+<!-- شريط سفلي -->
+<div class="bottom-bar">
+    <button class="glass-btn save-btn" id="saveImageBtn">📸 حفظ الصورة PNG</button>
 </div>
 
+<!-- اللوحات -->
 <div class="panels-container">
     <div class="panel-card" id="smartPanel">
         <div class="section-label">📐 نسب الأبعاد</div>
@@ -380,13 +628,13 @@
         <div class="slider-group"><span class="slider-label">تباعد الأسطر</span><input type="range" id="lineHeight" min="1.2" max="2.0" value="1.75" step="0.05"><span id="lineHeightVal" class="value-display">1.75</span></div>
         <div class="slider-group"><span class="slider-label">الخط</span><select id="fontSelect" class="font-select"><option value="Cairo">Cairo</option><option value="Tajawal">Tajawal</option><option value="Noto Kufi Arabic">Noto Kufi</option><option value="Amiri">Amiri</option><option value="Almarai">Almarai</option></select></div>
         <div class="slider-group"><span class="slider-label">رمز القائمة</span><select id="bulletSelect" class="bullet-select"><option value="•">• نقطة</option><option value="★">★ نجمة</option><option value="●">● دائرة</option><option value="✓">✓ صح</option></select></div>
-        <div style="text-align:center; font-size:11px; margin-top:10px; opacity:0.7;">💡 انقر "الأدوات الذكية" للتلوين والذكاء</div>
+        <div style="text-align:center; font-size:11px; margin-top:8px; opacity:0.6;">💡 انقر "الأدوات الذكية" للتلوين</div>
     </div>
 
     <div class="panel-card" id="toolsPanel" style="display: none;">
-        <div class="section-label">🎨 الألوان الأساسية</div>
+        <div class="section-label">🎨 الألوان</div>
         <div class="color-grid" id="colorGrid"></div>
-        <div class="section-label">🧠 أدوات الذكاء والتلوين</div>
+        <div class="section-label">🧠 أدوات ذكاء</div>
         <div class="ai-tools">
             <div class="ai-btn" id="autoFitBtn">📏 ضبط عرض ذكي</div>
             <div class="ai-btn" id="aiEnhanceBtn">✨ تحسين النص</div>
@@ -394,123 +642,99 @@
             <div class="ai-btn" id="resetColorsBtn">♻️ إعادة الألوان</div>
         </div>
         <div class="word-counter" id="wordCounter">📖 عدد الكلمات: 0</div>
-        <div style="display:flex; gap:12px; margin-top:16px; margin-bottom:6px;"><div class="btn-primary" id="resetTextBtn">⟳ إعادة ضبط الكل</div></div>
-        <div style="text-align:center; font-size:11px; opacity:0.7; margin-top:8px;">💡 فعّل "تلوين مخصص" ثم اضغط على أي كلمة</div>
+        <div style="display:flex; gap:12px; margin-top:16px;"><div class="btn-primary" id="resetTextBtn">⟳ إعادة ضبط الكل</div></div>
+        <div style="text-align:center; font-size:11px; margin-top:8px; opacity:0.6;">💡 فعّل "تلوين مخصص" ثم اضغط أي كلمة</div>
     </div>
 </div>
 
-<div class="pwa-status-bar" id="pwaStatusBar">🔄 جاري التحقق من مستودع GitHub وملفات PWA...</div>
+<div class="status-bar" id="pwaStatusBar">🔄 تجهيز الأيقونات وتهيئة PWA...</div>
 
 <script>
 (function(){
-    // ========== 1. مكتبة ربط الأحداث المبسطة ==========
-    const EventManager = {
-        events: new Map(),
-        on(element, event, handler) {
-            if (!element) return;
-            const key = `${element}_${event}`;
-            if (!this.events.has(key)) this.events.set(key, []);
-            this.events.get(key).push(handler);
-            element.addEventListener(event, handler);
-        },
-        off(element, event, handler) { /* اختصاراً */ element?.removeEventListener(event, handler); },
-        trigger(element, event, detail = {}) { element?.dispatchEvent(new CustomEvent(event, { detail, bubbles: true })); }
-    };
+    // ========== توليد الأيقونات ديناميكياً ==========
+    const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512];
+    let generatedIcons = [];
     
-    // ========== 2. جلب وتحليل ملفات PWA من GitHub ==========
-    const GITHUB_REPO = 'https://api.github.com/repos/PTslman/PT.semo/contents';
-    const REQUIRED_FILES = [
-        'manifest.json', 'sw.js', 'index.html',
-        'icons/icon-72.png', 'icons/icon-96.png', 'icons/icon-128.png', 'icons/icon-144.png',
-        'icons/icon-152.png', 'icons/icon-192.png', 'icons/icon-384.png', 'icons/icon-512.png'
-    ];
-    
-    async function fetchGitHubFileList() {
-        try {
-            const response = await fetch(GITHUB_REPO, { cache: 'no-store' });
-            if (!response.ok) throw new Error('GitHub API error');
-            const files = await response.json();
-            return files.map(f => f.path);
-        } catch (err) { return []; }
-    }
-    
-    async function validateAllFiles() {
-        const existingPaths = await fetchGitHubFileList();
-        const missing = REQUIRED_FILES.filter(file => !existingPaths.includes(file));
-        const present = REQUIRED_FILES.filter(file => existingPaths.includes(file));
-        return { present, missing, total: REQUIRED_FILES.length };
-    }
-    
-    const pwaStatusDiv = document.getElementById('pwaStatusBar');
-    async function updatePWAStatusBar() {
-        pwaStatusDiv.innerHTML = '🔄 جاري فحص ملفات PWA في المستودع...';
-        const { present, missing, total } = await validateAllFiles();
-        if (missing.length === 0) {
-            pwaStatusDiv.innerHTML = `✅ جميع ملفات PWA موجودة (${total}/${total}) - التطبيق جاهز للتثبيت الكامل`;
-            pwaStatusDiv.style.color = '#a5f3fc';
-        } else {
-            pwaStatusDiv.innerHTML = `⚠️ مفقود ${missing.length} ملف: ${missing.slice(0,3).join(', ')}${missing.length>3 ? '...' : ''} - تأكد من رفعها`;
-            pwaStatusDiv.style.color = '#fbbf24';
-        }
-    }
-    
-    // ========== 3. التحقق المحلي من الملفات + دائرة التحميل / زر التثبيت ==========
-    async function checkPWAFilesAccessibility() {
-        const testUrls = [
-            '/manifest.json', '/sw.js',
-            '/icons/icon-72.png', '/icons/icon-96.png', '/icons/icon-128.png', '/icons/icon-144.png',
-            '/icons/icon-152.png', '/icons/icon-192.png', '/icons/icon-384.png', '/icons/icon-512.png'
-        ];
-        const results = await Promise.all(testUrls.map(async url => {
-            try { const res = await fetch(url, { method: 'HEAD', cache: 'no-store' }); return res.ok; }
-            catch { return false; }
-        }));
-        return results.every(r => r === true);
-    }
-    
-    const spinner = document.getElementById('installSpinner');
-    const installBtnReady = document.getElementById('installReadyBtn');
-    const installContainer = document.getElementById('installContainer');
-    let deferredPrompt = null;
-    
-    async function updateInstallButton() {
-        const filesAccessible = await checkPWAFilesAccessibility();
-        if (filesAccessible) {
-            spinner.style.display = 'none';
-            installBtnReady.style.display = 'inline-flex';
-            console.log('✅ جميع ملفات PWA متاحة، زر التثبيت جاهز');
-        } else {
-            installContainer.style.display = 'none';
-            console.warn('⚠️ بعض ملفات PWA لا يمكن الوصول إليها، تم إخفاء عنصر التثبيت');
-        }
-    }
-    
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW failed:', err));
+    function generateIconBlob(size) {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createLinearGradient(0, 0, size, size);
+            grad.addColorStop(0, '#1e1b4b');
+            grad.addColorStop(0.5, '#3b82f6');
+            grad.addColorStop(1, '#8b5cf6');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, size, size);
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size * 0.38, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ffffff20';
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${size * 0.42}px 'Cairo'`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('SP', size/2, size/2 - size*0.05);
+            ctx.font = `${size * 0.12}px 'Cairo'`;
+            ctx.fillStyle = '#ffffffee';
+            ctx.fillText('STUDIO', size/2, size/2 + size*0.28);
+            canvas.toBlob(resolve, 'image/png');
         });
     }
     
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        updateInstallButton();
-    });
-    
-    EventManager.on(installBtnReady, 'click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') toast("✅ تم تثبيت SP Studio Pro", 3000);
-            deferredPrompt = null;
-            installBtnReady.style.display = 'none';
-        } else {
-            toast("⚠️ المتصفح لا يدعم التثبيت الآن. استخدم القائمة ⋮", 4000);
+    async function generateAllIcons() {
+        const pwaStatus = document.getElementById('pwaStatusBar');
+        pwaStatus.innerHTML = '🎨 توليد الأيقونات...';
+        const icons = [];
+        for (const size of iconSizes) {
+            const blob = await generateIconBlob(size);
+            const url = URL.createObjectURL(blob);
+            icons.push({ size, url });
         }
-    });
+        generatedIcons = icons;
+        return icons;
+    }
     
-    // ========== 4. وظائف التطبيق الأساسية (بطاقة ذكية) ==========
-    function toast(msg, dur=2200){
+    async function createManifestWithIcons() {
+        const manifest = {
+            name: "SP Studio Pro",
+            short_name: "SP Studio",
+            start_url: "/",
+            scope: "/",
+            display: "standalone",
+            theme_color: "#3b82f6",
+            background_color: "#0b1120",
+            orientation: "portrait",
+            icons: generatedIcons.map(icon => ({ src: icon.url, sizes: `${icon.size}x${icon.size}`, type: "image/png" })),
+            categories: ["design", "productivity"],
+            lang: "ar",
+            dir: "rtl"
+        };
+        const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        document.getElementById('dynamicManifest').href = url;
+        const appleIcon = generatedIcons.find(i=>i.size===192) || generatedIcons[0];
+        if(appleIcon) {
+            document.getElementById('appleTouchIcon').href = appleIcon.url;
+            document.getElementById('faviconIcon').href = generatedIcons.find(i=>i.size===96)?.url || appleIcon.url;
+        }
+        document.getElementById('pwaStatusBar').innerHTML = '✅ أيقونات ومانيفست جاهزان - اضغط تثبيت';
+    }
+    
+    async function registerSW() {
+        if (!('serviceWorker' in navigator)) return;
+        const swCode = `const CACHE='sp-studio-v4'; self.addEventListener('install',e=>{self.skipWaiting()}); self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request))}); self.addEventListener('activate',e=>{self.clients.claim()});`;
+        const blob = new Blob([swCode], {type: 'application/javascript'});
+        const url = URL.createObjectURL(blob);
+        try {
+            await navigator.serviceWorker.register(url);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        } catch(e) { console.warn(e); }
+    }
+    
+    // ========== UI ==========
+    function toast(msg, dur=2000){
         let t = document.querySelector('.dynamic-toast');
         if(!t){ t=document.createElement('div'); t.className='dynamic-toast'; document.body.appendChild(t); }
         t.innerHTML=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',dur);
@@ -519,36 +743,39 @@
     // إظهار/إخفاء اللوحات
     const mainPanel = document.getElementById('smartPanel');
     const toolsPanel = document.getElementById('toolsPanel');
-    EventManager.on(document.getElementById('togglePanelBtn'), 'click', () => {
+    document.getElementById('togglePanelBtn').onclick = () => {
         if (mainPanel.style.display === 'none') {
             mainPanel.style.display = 'block';
-            document.getElementById('togglePanelBtn').innerHTML = '🎛️ إخفاء اللوحة';
         } else {
             mainPanel.style.display = 'none';
-            document.getElementById('togglePanelBtn').innerHTML = '🎛️ إظهار اللوحة';
         }
-    });
-    EventManager.on(document.getElementById('toggleToolsBtn'), 'click', () => {
-        if (toolsPanel.style.display === 'none' || toolsPanel.style.display === '') {
+    };
+    document.getElementById('toggleToolsBtn').onclick = () => {
+        if (toolsPanel.style.display === 'none') {
             toolsPanel.style.display = 'block';
-            document.getElementById('toggleToolsBtn').innerHTML = '🧰 إغلاق الأدوات';
             if (mainPanel.style.display === 'none') mainPanel.style.display = 'block';
         } else {
             toolsPanel.style.display = 'none';
-            document.getElementById('toggleToolsBtn').innerHTML = '🧰 الأدوات الذكية';
         }
-    });
+    };
     
-    // تلوين الكلمات (شبكة 4×3 قابلة للسحب)
+    // ========== وظائف البطاقة ==========
     let colorizeActive = false, currentPicker = null;
     const colorPalette = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4','#000000','#ffffff','#64748b'];
+    
     function makeDraggable(picker){
         let drag={active:false, sx:0,sy:0, l:0,t:0};
-        picker.addEventListener('mousedown', (e) => { if(e.target.classList.contains('color-option') || e.target.type==='color') return; drag.active=true; drag.sx=e.clientX; drag.sy=e.clientY; let rect=picker.getBoundingClientRect(); drag.l=rect.left; drag.t=rect.top; document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp); e.preventDefault(); });
+        picker.addEventListener('mousedown', (e) => {
+            if(e.target.classList.contains('color-option') || e.target.type==='color') return;
+            drag.active=true; drag.sx=e.clientX; drag.sy=e.clientY;
+            let rect=picker.getBoundingClientRect(); drag.l=rect.left; drag.t=rect.top;
+            document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp); e.preventDefault();
+        });
         function onMove(e){ if(!drag.active) return; picker.style.left=(drag.l + e.clientX - drag.sx)+'px'; picker.style.top=(drag.t + e.clientY - drag.sy)+'px'; }
         function onUp(){ drag.active=false; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); }
     }
-    function createColorPickerForWord(span,curColor){
+    
+    function createPickerForWord(span,curColor){
         if(currentPicker) currentPicker.remove();
         const picker = document.createElement('div'); picker.className = 'word-color-picker';
         colorPalette.forEach(col => {
@@ -567,6 +794,7 @@
         const close=(e)=>{ if(picker && !picker.contains(e.target)){ picker.remove(); currentPicker=null; document.removeEventListener('click',close); } };
         setTimeout(()=>document.addEventListener('click',close),10);
     }
+    
     function enableWordColoring(){
         if(colorizeActive) disableWordColoring();
         let body = document.querySelector('.body-text');
@@ -575,16 +803,16 @@
                 let words = node.textContent.split(/(\s+)/);
                 let frag = document.createDocumentFragment();
                 for(let w of words){
-                    if(w.trim().length && !/^[•★●✓❓⚠️✅❌\s]+$/.test(w)){
+                    if(w.trim().length && !/^[•★●✓\s]+$/.test(w)){
                         let span = document.createElement('span'); span.className='word-colorable'; span.textContent=w; span.style.color='inherit';
-                        span.onclick = (e) => { e.stopPropagation(); createColorPickerForWord(span,span.style.color); };
+                        span.onclick = (e) => { e.stopPropagation(); createPickerForWord(span,span.style.color); };
                         frag.appendChild(span);
                     } else frag.appendChild(document.createTextNode(w));
                 }
                 node.parentNode.replaceChild(frag,node);
             } else if(node.nodeType===Node.ELEMENT_NODE && node.childNodes) Array.from(node.childNodes).forEach(convert);
         }
-        convert(body); colorizeActive=true; toast('🎨 انقر على كلمة لتلوينها',2800); saveSettings();
+        convert(body); colorizeActive=true; toast('🎨 انقر كلمة لتلوينها (اسحب اللوحة)',2800); saveSettings();
     }
     function disableWordColoring(){
         let body = document.querySelector('.body-text');
@@ -602,7 +830,7 @@
     function applyBulletToText(bullet){
         const body = document.querySelector('.body-text');
         let html = body.innerHTML;
-        const all = ['•','★','●','✓','❓','⚠️','✅','❌','■','◆'];
+        const all = ['•','★','●','✓'];
         const regex = new RegExp(`(^|<br>)\\s*([${all.join('')}])\\s*`,'gi');
         html = html.replace(regex, `$1 ${bullet} `);
         let lines = html.split('<br>');
@@ -615,10 +843,10 @@
         updateWordCount();
     }
     function updateWordCount(){
-        let txt = document.querySelector('.body-text').innerText.replace(/[•★●✓❓⚠️✅❌]/g,' ');
+        let txt = document.querySelector('.body-text').innerText.replace(/[•★●✓]/g,' ');
         let c = txt.split(/\s+/).filter(w=>w.length).length;
         let wc = document.getElementById('wordCounter');
-        if(wc) wc.innerHTML = `📖 عدد الكلمات: ${c} | قراءة ~${Math.ceil(c/50)} دقيقة`;
+        if(wc) wc.innerHTML = `📖 عدد الكلمات: ${c} | ~${Math.ceil(c/50)} دقيقة`;
     }
     function applyTheme(color){
         let art = document.querySelector('.art-bg');
@@ -637,7 +865,7 @@
         div.style.cssText = `font-size:${cs.fontSize}; font-family:${cs.fontFamily}; position:absolute; top:-9999px; white-space:nowrap;`;
         document.body.appendChild(div);
         let lines = bodyElem.innerText.split('\n'); let maxW=0;
-        for(let line of lines){ let clean = line.replace(/^[•★●✓❓⚠️✅❌]\s*/,''); div.innerText=clean; maxW = Math.max(maxW, div.getBoundingClientRect().width); }
+        for(let line of lines){ let clean = line.replace(/^[•★●✓]\s*/,''); div.innerText=clean; maxW = Math.max(maxW, div.getBoundingClientRect().width); }
         document.body.removeChild(div);
         let wrapperW = document.querySelector('.preview-wrapper').clientWidth;
         let desired = Math.min(96, Math.max(70, (maxW+40)/wrapperW*100));
@@ -647,10 +875,10 @@
     function aiEnhanceText(){
         let bodyElem = document.querySelector('.body-text');
         let sentences = bodyElem.innerText.split(/[.،\n]/).filter(s=>s.trim().length);
-        let enhanced = sentences.map(s=>{ s=s.trim(); if(s.includes('وضوح')&&s.includes('تشخيص')) return '✓ الوضوح في التشخيص = توفير الوقت + دقة أعلى'; if(s.includes('وضوح')&&s.includes('نتائج')) return '✓ الوضوح في النتائج = بناء الثقة العلاجية'; if(s.includes('وضوح')&&s.includes('خطة')) return '✓ الوضوح في الخطة = الالتزام التام من المريض'; return '✨ '+s; });
+        let enhanced = sentences.map(s=>{ s=s.trim(); if(s.includes('وضوح')) return '✓ الوضوح أساس النجاح'; return '✨ '+s; });
         bodyElem.innerHTML = [...new Set(enhanced)].join('<br>');
         let bullet = document.getElementById('bulletSelect').value; applyBulletToText(bullet);
-        autoFitWidthAI(); toast('✨ تحسين النص بالذكاء',1800); saveSettings();
+        autoFitWidthAI(); toast('✨ تحسين النص',1800); saveSettings();
     }
     function saveSettings(){
         let wordColors={};
@@ -719,50 +947,45 @@
         const oldBg = []; editables.forEach(el=>{ oldBg.push(el.style.background); el.style.background='transparent'; });
         btn.innerHTML="🖼️ جاري..."; btn.disabled=true;
         try{
-            const canvas = await window.html2canvas(el,{scale:2, backgroundColor:'#ffffff', logging:false, useCORS:false});
-            const blob = await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
-            if(window.showSaveFilePicker){
-                try{
-                    const handle = await window.showSaveFilePicker({ suggestedName: `SP_Studio_${Date.now()}.png`, types:[{description:'PNG', accept:{'image/png':['.png']}}] });
-                    const writable = await handle.createWritable();
-                    await writable.write(blob);
-                    await writable.close();
-                    toast("✅ تم حفظ الصورة في الموقع المختار",2000);
-                }catch(e){ if(e.name!=='AbortError') fallbackDownload(blob); }
-            } else { fallbackDownload(blob); }
-        }catch(e){ toast("❌ فشل حفظ الصورة",2000); }
+            const canvas = await window.html2canvas(el,{scale:2, backgroundColor:'#ffffff', logging:false});
+            canvas.toBlob(blob=>{
+                const url=URL.createObjectURL(blob);
+                const a=document.createElement('a'); a.href=url; a.download=`SP_Studio_${Date.now()}.png`; a.click();
+                URL.revokeObjectURL(url);
+                toast("📸 تم حفظ الصورة",1500);
+            },'image/png');
+        } catch(e){ toast("❌ فشل حفظ الصورة",2000); }
         finally{ btn.innerHTML="📸 حفظ الصورة PNG"; btn.disabled=false; editables.forEach((el,i)=>{ el.style.background=oldBg[i]; }); }
-        function fallbackDownload(blob){ let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download=`SP_Studio_${Date.now()}.png`; a.click(); URL.revokeObjectURL(url); toast("📸 تم حفظ الصورة",1500); }
     }
     
-    // ========== تهيئة واجهة التحكم والأوضاع الثلاثة ==========
+    // تهيئة الواجهة
     const baseColors = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec489a','#06b6d4'];
     const colorGrid = document.getElementById('colorGrid');
-    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; EventManager.on(dot, 'click', ()=>applyTheme(c)); colorGrid.appendChild(dot); });
+    baseColors.forEach(c=>{ let dot=document.createElement('div'); dot.className='color-dot'; dot.style.backgroundColor=c; dot.onclick=()=>applyTheme(c); colorGrid.appendChild(dot); });
     const aspects = [{label:'1:1',val:'1/1'},{label:'4:5',val:'4/5'},{label:'1.91:1',val:'1.91/1'},{label:'9:16',val:'9/16'},{label:'تلقائي',val:'auto'}];
     const aspectGrid = document.getElementById('aspectGrid');
-    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; EventManager.on(btn, 'click', ()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveSettings(); toast(`نسبة ${a.label}`,800); }); aspectGrid.appendChild(btn); });
+    aspects.forEach(a=>{ let btn=document.createElement('div'); btn.className='aspect-btn'; btn.innerText=a.label; btn.onclick=()=>{ document.getElementById('export-area').style.aspectRatio=a.val; saveSettings(); toast(`نسبة ${a.label}`,800); }; aspectGrid.appendChild(btn); });
     
-    EventManager.on(document.getElementById('titleSize'), 'input', e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveSettings(); });
-    EventManager.on(document.getElementById('bodySize'), 'input', e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveSettings(); });
-    EventManager.on(document.getElementById('lineHeight'), 'input', e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveSettings(); });
-    EventManager.on(document.getElementById('fontSelect'), 'change', e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveSettings(); });
-    EventManager.on(document.getElementById('bulletSelect'), 'change', e=>{ applyBulletToText(e.target.value); saveSettings(); });
-    EventManager.on(document.getElementById('saveImageBtn'), 'click', exportImage);
-    EventManager.on(document.getElementById('resetTextBtn'), 'click', fullReset);
-    EventManager.on(document.getElementById('autoFitBtn'), 'click', autoFitWidthAI);
-    EventManager.on(document.getElementById('aiEnhanceBtn'), 'click', aiEnhanceText);
-    EventManager.on(document.getElementById('customColorizeBtn'), 'click', ()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); });
-    EventManager.on(document.getElementById('resetColorsBtn'), 'click', resetAllColors);
+    document.getElementById('titleSize').oninput = e=>{ let v=e.target.value; document.getElementById('titleSizeVal').innerText=v; document.querySelector('.title').style.fontSize=v+'px'; saveSettings(); };
+    document.getElementById('bodySize').oninput = e=>{ let v=e.target.value; document.getElementById('bodySizeVal').innerText=v; document.querySelector('.body-text').style.fontSize=v+'px'; saveSettings(); };
+    document.getElementById('lineHeight').oninput = e=>{ let v=e.target.value; document.getElementById('lineHeightVal').innerText=v; document.querySelector('.body-text').style.lineHeight=v; saveSettings(); };
+    document.getElementById('fontSelect').onchange = e=>{ document.querySelector('#export-area').style.fontFamily=`'${e.target.value}', sans-serif`; saveSettings(); };
+    document.getElementById('bulletSelect').onchange = e=>{ applyBulletToText(e.target.value); saveSettings(); };
+    document.getElementById('saveImageBtn').onclick = exportImage;
+    document.getElementById('resetTextBtn').onclick = fullReset;
+    document.getElementById('autoFitBtn').onclick = autoFitWidthAI;
+    document.getElementById('aiEnhanceBtn').onclick = aiEnhanceText;
+    document.getElementById('customColorizeBtn').onclick = ()=>{ if(colorizeActive) disableWordColoring(); else enableWordColoring(); };
+    document.getElementById('resetColorsBtn').onclick = resetAllColors;
     document.querySelectorAll('.title, .body-text, .dr-name, .dr-sub').forEach(el=>el.addEventListener('input',()=>{ updateWordCount(); if(colorizeActive) disableWordColoring(); saveSettings(); }));
     
-    // ثلاث أوضاع (الحوار المهني، مقارنة، سؤال وجواب)
+    // الأوضاع
     const modeBtns = document.querySelectorAll('.mode-btn');
     const titleDiv = document.querySelector('.title'), bodyDiv = document.querySelector('.body-text'), drNameDiv = document.querySelector('.dr-name'), drSubDiv = document.querySelector('.dr-sub');
     const modes = {
-        prof: { title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني جسر ثقة مع المريض.<br>• الخطط العلاجية الشخصية تحقق نتائج ملموسة.<br><br>الاحترافية ليست مهارة فقط، بل منهج حياة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي وتأهيل حركي" },
-        compare: { title:"المقارنة: ميزات وسلبيات", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>✅ الميزات: متابعة دورية - دعم نفسي.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>⚠️ السلبيات: تكاليف أولية مرتفعة نسبياً.<br><br>الخلاصة: الفوائد تفوق التحديات مع الإرادة.", drName:"تحليل SP", drSub:"رؤية موضوعية للعلاج" },
-        qa: { title:"سؤال وجواب (FAQ)", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: يختلف حسب الحالة لكن متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: هدفنا تقليل الألم، الجلسات مريحة تدريجياً.<br>❓ س: متى تظهر النتائج؟<br>✅ ج: تحسن ملحوظ خلال 3-4 أسابيع.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
+        prof: { title:"الحوار المهني المتقدم", body:"• التشخيص الدقيق يعزز فعالية العلاج.<br>• التواصل الواضح يبني ثقة المريض.<br>• الخطط الشخصية تحقق نتائج ملموسة.", drName:"د. سليمان الحربي", drSub:"استشاري علاج طبيعي" },
+        compare: { title:"المقارنة", body:"✅ الميزات: سرعة التعافي - تقنيات حديثة.<br>⚠️ السلبيات: تحتاج التزام طويل الأمد.<br>✅ الفوائد تفوق التحديات.", drName:"تحليل SP", drSub:"رؤية موضوعية" },
+        qa: { title:"سؤال وجواب", body:"❓ س: كم جلسة أحتاج؟<br>✅ ج: متوسط 8-12 جلسة.<br>❓ س: هل العلاج مؤلم؟<br>✅ ج: الجلسات مريحة تدريجياً.", drName:"الخدمة الذكية", drSub:"إجابات شاملة" }
     };
     function switchMode(mode){
         let m = modes[mode];
@@ -772,34 +995,56 @@
             drNameDiv.innerHTML = m.drName;
             drSubDiv.innerHTML = m.drSub;
             applyBulletToText(document.getElementById('bulletSelect').value);
-            updateWordCount();
-            saveSettings();
-            toast(`🔄 تم التبديل إلى ${mode === 'prof' ? 'المهني' : mode === 'compare' ? 'المقارنة' : 'الأسئلة'}`, 1200);
+            updateWordCount(); saveSettings();
+            toast(`🔄 تم التبديل`, 1000);
         }
     }
     modeBtns.forEach(btn=>{
-        EventManager.on(btn, 'click', ()=>{
+        btn.onclick = ()=>{
             modeBtns.forEach(b=>b.classList.remove('active'));
             btn.classList.add('active');
             switchMode(btn.dataset.mode);
-        });
+        };
     });
     
-    // حالة الاتصال بالإنترنت
+    // PWA
+    let deferredPrompt = null;
+    const spinner = document.getElementById('installSpinner');
+    const installBtnReady = document.getElementById('installReadyBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        spinner.style.display = 'none';
+        installBtnReady.style.display = 'inline-flex';
+    });
+    installBtnReady.onclick = async () => {
+        if(deferredPrompt){
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installBtnReady.style.display = 'none';
+            toast("✅ تم التثبيت", 2000);
+        } else {
+            toast("⚠️ استخدم قائمة ⋮ ← تثبيت", 3000);
+        }
+    };
+    
+    // حالة الانترنت
     const offlineDiv = document.getElementById('offlineNotification');
     function updateOnline(){ if(!navigator.onLine) offlineDiv.classList.add('show'); else offlineDiv.classList.remove('show'); }
     window.addEventListener('online', updateOnline);
     window.addEventListener('offline', updateOnline);
     updateOnline();
     
-    // بدء التطبيق
+    // بدء التشغيل
     window.addEventListener('load', async () => {
-        await updatePWAStatusBar();      // التحقق من GitHub
-        await updateInstallButton();     // التحقق المحلي وعرض الدائرة/الزر
+        await generateAllIcons();
+        await createManifestWithIcons();
+        await registerSW();
         loadSettings();
         updateWordCount();
         autoFitWidthAI();
-        toast("✨ SP Studio Pro | نظام تحقق متكامل PWA", 4000);
+        toast("✨ SP Studio Pro | تجربة سلسة فائقة", 3500);
     });
 })();
 </script>
