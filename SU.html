@@ -1,4 +1,4 @@
-<!-- SU.html - تحديث واجهة المقارنة (جدول إيجابيات وسلبيات) -->
+<!-- SU.html - تحديث واجهة المقارنة مع التوكن المدمج -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -22,6 +22,7 @@
             border-radius: 48px;
             padding: 40px;
             max-width: 550px;
+            width: 100%;
             text-align: center;
             border: 1px solid rgba(255,255,255,0.15);
             animation: fadeIn 0.4s ease;
@@ -32,7 +33,6 @@
         }
         .icon { font-size: 64px; margin-bottom: 20px; }
         h2 { color: white; margin-bottom: 16px; }
-        h3 { color: #a5f3fc; margin: 20px 0 10px; font-size: 18px; }
         .status { color: #a5f3fc; margin: 16px 0; font-size: 14px; }
         .log {
             background: rgba(0,0,0,0.4);
@@ -41,7 +41,7 @@
             margin: 20px 0;
             font-size: 12px;
             text-align: left;
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
             font-family: monospace;
             color: #94a3b8;
@@ -102,9 +102,9 @@
     <div class="icon">📊</div>
     <h2>تحديث واجهة المقارنة</h2>
     <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="status" id="status">جاري التجهيز...</div>
+    <div class="status" id="status">جاري تجهيز التحديث...</div>
     
-    <div class="preview-table" id="previewBox">
+    <div class="preview-table">
         <h4>🔍 الشكل الجديد لوضع "المقارنة"</h4>
         <table>
             <tr><th></th><th>✅ الإيجابيات</th><th>⚠️ السلبيات</th></tr>
@@ -115,7 +115,7 @@
     </div>
     
     <div class="log" id="log"></div>
-    <button id="restartBtn">🔄 إعادة التشغيل</button>
+    <button id="restartBtn" style="display: none;">🔄 إعادة التشغيل</button>
 </div>
 
 <script>
@@ -124,9 +124,9 @@
         const statusDiv = document.getElementById('status');
         const logDiv = document.getElementById('log');
         const restartBtn = document.getElementById('restartBtn');
-        const previewBox = document.getElementById('previewBox');
         
-        const GITHUB_TOKEN = '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';
+        // التوكن المدمج (تم تحديثه بالتوكن الجديد)
+        const GITHUB_TOKEN = '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';
         const REPO_OWNER = 'PTslman';
         const REPO_NAME = 'PT.semo';
         const FILE_PATH = 'index.html';
@@ -146,7 +146,6 @@
             statusDiv.innerHTML = text;
         }
         
-        // إنشاء محتوى المقارنة الجديد (جدول إيجابيات وسلبيات)
         function getNewCompareContent() {
             return `• ✅ <strong>الميزات الإيجابية للعلاج الطبيعي:</strong><br>
                     ✓ تحسين الحركة والمرونة دون الحاجة لأدوية مسكنة.<br>
@@ -161,36 +160,9 @@
                     ✗ قد يشعر المريض بالإرهاق في الجلسات الأولى من التمرينات المكثفة.<br>
                     ✗ النتائج تختلف من حالة لأخرى وتعتمد على الالتزام والانتظام.<br><br>
                     📌 <strong>جدول المقارنة السريع:</strong><br>
-                    ┌────────────────────────┬──────────────────────────┬──────────────────────────┐<br>
-                    │                        │       ✅ الإيجابيات       │       ⚠️ السلبيات        │<br>
-                    ├────────────────────────┼──────────────────────────┼──────────────────────────┤<br>
-                    │ سرعة التحسن            │ تحسن ملحوظ خلال 3-4 أسابيع│ يحتاج انتظام وجلسات متكررة│<br>
-                    │ الألم                  │ تخفيف طبيعي بدون أدوية    │ قد يكون هناك ألم عضلي مؤقت│<br>
-                    │ التكلفة                │ أقل من الحلول الجراحية    │ تكلفة الجلسات المكثفة مرتفعة│<br>
-                    │ الوقت                  │ مرن حسب جدول المريض      │ يحتاج وقت يومي للتمارين   │<br>
-                    └────────────────────────┴──────────────────────────┴──────────────────────────┘<br><br>
+                    ✅ الإيجابيات: تحسن ملحوظ خلال 3-4 أسابيع، تخفيف طبيعي بدون أدوية، أقل من الحلول الجراحية<br>
+                    ⚠️ السلبيات: يحتاج انتظام وجلسات متكررة، قد يكون هناك ألم عضلي مؤقت، تكلفة الجلسات المكثفة مرتفعة<br><br>
                     🎯 <strong>الخلاصة:</strong> الفوائد تفوق التحديات بشكل كبير، خاصة مع الالتزام والتوجيه المهني المناسب.`;
-        }
-        
-        // تعديل وضع المقارنة في index.html
-        function modifyCompareMode(content) {
-            let modified = content;
-            
-            // البحث عن وضع المقارنة في كائن modes وتحديثه
-            const comparePattern = /(compare:\s*\{\s*title:\s*["']المقارنة["'][^}]*body:\s*["'])([^"']*)(["'])/s;
-            const newCompareBody = getNewCompareContent();
-            
-            // استبدال محتوى body لوضع المقارنة
-            modified = modified.replace(comparePattern, `$1${newCompareBody}$3`);
-            
-            // بديل: البحث عن السطر المحدد
-            const oldCompareBody = /body:\s*["']✅ الميزات: سرعة التعافي[^"']*["']/s;
-            if (oldCompareBody.test(modified)) {
-                modified = modified.replace(oldCompareBody, `body: "${newCompareContent}"`);
-            }
-            
-            addLog('✅ تم تحديث وضع "المقارنة" بجدول الإيجابيات والسلبيات', 'success');
-            return modified;
         }
         
         async function startUpdate() {
@@ -198,8 +170,23 @@
             addLog('🚀 بدء تحديث واجهة المقارنة', 'info');
             
             try {
-                // ===== الخطوة 1: جلب الملف =====
-                updateProgress(20, 'جلب ملف index.html...');
+                // ===== الخطوة 1: اختبار التوكن =====
+                updateProgress(15, 'التحقق من التوكن...');
+                addLog('🔑 جاري التحقق من صلاحية التوكن...', 'info');
+                
+                const testRes = await fetch('https://api.github.com/user', {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                
+                if (!testRes.ok) {
+                    if (testRes.status === 401) throw new Error('التوكن غير صالح أو منتهي الصلاحية');
+                    if (testRes.status === 403) throw new Error('التوكن لا يملك الصلاحيات المطلوبة');
+                    throw new Error(`خطأ في التوكن: ${testRes.status}`);
+                }
+                addLog('✅ التوكن صالح ولديه صلاحيات', 'success');
+                
+                // ===== الخطوة 2: جلب الملف =====
+                updateProgress(25, 'جلب ملف index.html...');
                 addLog('📥 جلب الملف من المستودع...', 'info');
                 
                 const fileRes = await fetch(API_URL, {
@@ -212,20 +199,28 @@
                 const originalContent = decodeURIComponent(escape(atob(fileData.content)));
                 addLog('✅ تم جلب الملف بنجاح', 'success');
                 
-                // ===== الخطوة 2: تعديل محتوى المقارنة =====
+                // ===== الخطوة 3: تعديل المحتوى =====
                 updateProgress(50, 'تحديث واجهة المقارنة...');
-                addLog('✏️ جاري تحديث وضع "المقارنة" بجدول إيجابيات وسلبيات...', 'info');
+                addLog('✏️ جاري تحديث وضع "المقارنة"...', 'info');
                 
-                const modifiedContent = modifyCompareMode(originalContent);
+                let modifiedContent = originalContent;
+                const newCompareBody = getNewCompareContent();
                 
-                if (originalContent === modifiedContent) {
-                    addLog('⚠️ لم يتم العثور على وضع المقارنة في الملف', 'warning');
-                    addLog('📌 سيتم إضافة المحتوى الجديد مع الاحتفاظ بالهيكل', 'info');
+                const comparePattern = /(compare:\s*\{\s*title:\s*["']المقارنة["'][^}]*body:\s*["'])([^"']*)(["'])/s;
+                if (comparePattern.test(modifiedContent)) {
+                    modifiedContent = modifiedContent.replace(comparePattern, `$1${newCompareBody}$3`);
+                    addLog('✅ تم تحديث وضع "المقارنة" بنجاح', 'success');
                 } else {
-                    addLog('✅ تم تحديث جدول المقارنة بنجاح', 'success');
+                    addLog('⚠️ لم يتم العثور على وضع المقارنة، جاري البحث بطريقة أخرى...', 'warning');
+                    // محاولة بديلة
+                    const altPattern = /(compare:\s*\{[\s\S]*?body:\s*["'])([^"']*)(["'])/;
+                    if (altPattern.test(modifiedContent)) {
+                        modifiedContent = modifiedContent.replace(altPattern, `$1${newCompareBody}$3`);
+                        addLog('✅ تم تحديث وضع "المقارنة" (بطريقة بديلة)', 'success');
+                    }
                 }
                 
-                // ===== الخطوة 3: حفظ الملف =====
+                // ===== الخطوة 4: حفظ الملف =====
                 updateProgress(70, 'حفظ التغييرات...');
                 addLog('💾 جاري حفظ الملف المعدل...', 'info');
                 
@@ -250,7 +245,7 @@
                 
                 addLog('✅ تم حفظ الملف في المستودع', 'success');
                 
-                // ===== الخطوة 4: مسح الكاش =====
+                // ===== الخطوة 5: مسح الكاش =====
                 updateProgress(85, 'مسح ذاكرة التخزين...');
                 addLog('🧹 جاري مسح الكاش...', 'info');
                 
@@ -277,7 +272,9 @@
                 
                 // إظهار زر إعادة التشغيل
                 let countdown = 3;
+                restartBtn.style.display = 'block';
                 restartBtn.textContent = `🔄 إعادة التشغيل (${countdown})`;
+                
                 const timer = setInterval(() => {
                     countdown--;
                     restartBtn.textContent = `🔄 إعادة التشغيل (${countdown})`;
@@ -296,12 +293,11 @@
                 console.error(error);
                 updateProgress(0, '❌ فشل التحديث');
                 addLog(`❌ خطأ: ${error.message}`, 'error');
-                addLog('⚠️ تأكد من أن التوكن صحيح ولديه صلاحيات repo', 'error');
-                previewBox.classList.remove('hidden');
+                addLog('⚠️ يرجى التأكد من أن التوكن صحيح ولديه صلاحية repo', 'warning');
             }
         }
         
-        // بدء التحديث فوراً
+        // بدء التحديث تلقائياً فور تحميل الصفحة
         startUpdate();
     })();
 </script>
